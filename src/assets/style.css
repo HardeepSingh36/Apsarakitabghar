@@ -26948,7 +26948,7 @@ body.rtl .menu-label {
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: var(--theme-color);
+  
 }
 [dir='rtl'] .top-selling-box .top-selling-title::after {
   left: unset;

@@ -1,4 +1,4 @@
-import "./assets/style.css"
+import './assets/style.css';
 import './assets/css/bulk-style.css';
 import './assets/css/animate.min.css';
 import './assets/css/vendors/vendor.css';
@@ -9,9 +9,7 @@ import { useEffect } from 'react';
 import feather from 'feather-icons';
 import Header from './components/Header';
 import MobileFixMenu from './components/MobileFixMenu';
-import HomeSection from './components/HomeSection';
-import HomeCategories from './components/PopularBooksByYear';
-import BooksCategories from './components/BooksCategories';
+import Home from './pages/Home';
 
 const App = () => {
   useEffect(() => {
@@ -21,9 +19,7 @@ const App = () => {
     <>
       <Header />
       <MobileFixMenu />
-      <HomeSection />
-      <BooksCategories />
-      <HomeCategories />
+      <Home />
     </>
   );
 };

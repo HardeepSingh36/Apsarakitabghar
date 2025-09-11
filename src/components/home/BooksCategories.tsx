@@ -1,38 +1,7 @@
 import { BookOpen } from 'lucide-react';
-import Heading2 from './general/Heading2';
+import Heading2 from '../general/Heading2';
 
 const BooksCategories = () => {
-  const settings = {
-    infinite: true,
-    speed: 1800,
-    slidesToShow: 8,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 1500,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 8,
-          infinite: true,
-        },
-      },
-      {
-        breakpoint: 700,
-        settings: {
-          slidesToShow: 3,
-          initialSlide: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-    ],
-  };
-
   const categories = [
     { name: 'Fiction' },
     { name: 'History' },
