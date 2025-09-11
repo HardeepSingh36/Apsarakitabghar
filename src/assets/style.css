@@ -13773,11 +13773,11 @@ body.rtl
   -webkit-box-shadow: none;
   box-shadow: none;
 }
-.ratio_27 .bg-size:before {
+/* .ratio_27 .bg-size:before {
   content: '';
   padding-top: 27%;
   display: block;
-}
+} */
 .ratio_30 .bg-size:before {
   content: '';
   padding-top: 30%;
@@ -43402,4 +43402,3 @@ body.rtl
 [dir='rtl'] ul {
   padding-right: 0;
 }
-/*# sourceMappingURL=style.css.map */

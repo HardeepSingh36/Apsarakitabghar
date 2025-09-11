@@ -1,6 +1,7 @@
-import React from 'react';
+import { useState } from 'react';
 
 const Header = () => {
+  const [showMenu, setShowMenu] = useState(false);
   return (
     <header className=''>
       <div className='header-top'>
@@ -105,7 +106,7 @@ const Header = () => {
                   className='navbar-toggler d-xl-none d-inline navbar-menu-button me-2'
                   type='button'
                   data-bs-toggle='offcanvas'
-                  data-bs-target='#primaryMenu'
+                  onClick={() => setShowMenu(!showMenu)}
                 >
                   <span className='navbar-toggler-icon'>
                     <i className='fa-solid fa-bars'></i>
@@ -117,13 +118,14 @@ const Header = () => {
 
                 <div className='header-nav-middle'>
                   <div className='main-nav navbar navbar-expand-xl navbar-light navbar-sticky'>
-                    <div className='offcanvas offcanvas-collapse order-xl-2' id='primaryMenu'>
+                    <div className={`offcanvas offcanvas-collapse order-xl-2 ${showMenu ? 'show' : ''}`}>
                       <div className='offcanvas-header navbar-shadow'>
                         <h5>Menu</h5>
                         <button
                           className='btn-close lead'
                           type='button'
                           data-bs-dismiss='offcanvas'
+                          onClick={() => setShowMenu(false)}
                         ></button>
                       </div>
                       <div className='offcanvas-body'>
