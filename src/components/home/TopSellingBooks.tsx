@@ -181,11 +181,11 @@ const TopSellingBooks = () => {
     <Tabs defaultValue='top' className='container-fluid-lg' onValueChange={handleTabChange}>
       <div className='row'>
         <div className='col-xxl-9 col-lg-8'>
-          <TabsList className='relative top-selling-box w-full flex justify-between md:justify-start md:gap-8 items-center mt-12 mb-8'>
-            <div className='absolute bottom-1 w-full bg-gray-100 h-0.5 '></div>
+          <TabsList className='relative top-selling-box w-full flex justify-between md:justify-start md:gap-8 items-center mt-12 mb-8 bg-transparent'>
+            <div className='absolute bottom-0.5 w-full bg-gray-100 h-0.5 '></div>
             <TabsTrigger
               className={clsx(
-                'top-selling-title mb-3 shadow-none !border-b-2 !border-transparent',
+                'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100',
                 activeTab === 'top' && '!border-gray-500/80'
               )}
               value='top'
@@ -195,7 +195,7 @@ const TopSellingBooks = () => {
 
             <TabsTrigger
               className={clsx(
-                'top-selling-title mb-3 shadow-none !border-b-2 !border-transparent',
+                'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100',
                 activeTab === 'trending' && '!border-gray-500/80'
               )}
               value='trending'
@@ -207,7 +207,7 @@ const TopSellingBooks = () => {
 
             <TabsTrigger
               className={clsx(
-                'top-selling-title mb-3 shadow-none !border-b-2 !border-transparent',
+                'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100',
                 activeTab === 'recent' && '!border-gray-500/80'
               )}
               value='recent'
