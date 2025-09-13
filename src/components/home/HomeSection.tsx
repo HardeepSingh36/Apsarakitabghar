@@ -2,7 +2,7 @@ import SearchBox from "./SearchBox";
 
 const HomeSection = () => {
   return (
-    <section className='home-section-2 home-section-bg pt-4 sm:p-0 overflow-hidden'>
+    <section className='home-section-2 home-section-bg pt-4 sm:p-0'>
       <div className='relative container-fluid p-0 ratio_27'>
         <div className='row'>
           <div className='col-12'>
@@ -15,7 +15,7 @@ const HomeSection = () => {
             </div>
           </div>
           {/* 🔍 Search Bar Overlay */}
-          <div className='absolute inset-0 top-1/5 flex items-start justify-center px-4'>
+          <div className='absolute inset-0 z-50 top-1/5 flex items-start justify-center px-4'>
             <SearchBox />
           </div>
         </div>
