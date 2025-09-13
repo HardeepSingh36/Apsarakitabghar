@@ -1,9 +1,9 @@
-import './assets/style.css';
-import './assets/css/bulk-style.css';
-import './assets/css/animate.min.css';
-import './assets/css/vendors/vendor.css';
-import './assets/css/vendors/animate.css';
-import './assets/css/vendors/bootstrap.css';
+// import './assets/style.css';
+// import './assets/css/bulk-style.css';
+// import './assets/css/animate.min.css';
+// import './assets/css/vendors/vendor.css';
+// import './assets/css/vendors/animate.css';
+// import './assets/css/vendors/bootstrap.css';
 
 import { useEffect } from 'react';
 import feather from 'feather-icons';

@@ -8,4 +8,15 @@ export interface Item {
   author: string;
   description: string;
   isBest?: boolean;
+};
+
+export interface Category {
+  created_at: string;
+  description: string;
+  id: number;
+  name: string;
+  parent_id: number | null; 
+  slug: string;
+  status: string;
+  updated_at: string;
 }

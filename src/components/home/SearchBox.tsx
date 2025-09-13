@@ -2,6 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Button } from '../ui/button';
 import { Search } from 'lucide-react';
+import { useEffect } from 'react';
 
 const searchTabs = [
   { value: 'book', label: 'Book', placeholder: 'Search for books...' },

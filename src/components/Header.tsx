@@ -22,7 +22,7 @@ const Header = () => {
                       data-bs-toggle='dropdown'
                     >
                       <img
-                        src='/src/aasets/images/country/united-kingdom.png'
+                        src='assets/images/country/united-kingdom.png'
                         className='img-fluid blur-up lazyload'
                         alt=''
                       />
@@ -32,7 +32,7 @@ const Header = () => {
                       <li>
                         <a className='dropdown-item' href='javascript:void(0)' id='english'>
                           <img
-                            src='/src/assets/images/country/united-kingdom.png'
+                            src='assets/images/country/united-kingdom.png'
                             className='img-fluid blur-up lazyload'
                             alt=''
                           />
@@ -42,7 +42,7 @@ const Header = () => {
                       <li>
                         <a className='dropdown-item' href='javascript:void(0)' id='france'>
                           <img
-                            src='/src/assets/images/country/germany.png'
+                            src='assets/images/country/germany.png'
                             className='img-fluid blur-up lazyload'
                             alt=''
                           />
@@ -52,7 +52,7 @@ const Header = () => {
                       <li>
                         <a className='dropdown-item' href='javascript:void(0)' id='chinese'>
                           <img
-                            src='/src/assets/images/country/turkish.png'
+                            src='assets/images/country/turkish.png'
                             className='img-fluid blur-up lazyload'
                             alt=''
                           />
@@ -113,7 +113,7 @@ const Header = () => {
                   </span>
                 </button>
                 <a href='index.html' className='web-logo nav-logo'>
-                  <img src='/src/assets/images/logo/1.png' className='img-fluid lazyload' alt='' />
+                  <img src='assets/logo/apsra.svg' className='img-fluid lazyload' alt='' />
                 </a>
 
                 <div className='header-nav-middle'>

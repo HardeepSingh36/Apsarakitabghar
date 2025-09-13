@@ -10,6 +10,7 @@ const Home = () => {
       <BooksCategories />
       <PopularBooksByYear />
       <TopSellingBooks />
+      
     </>
   );
 };

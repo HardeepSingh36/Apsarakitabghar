@@ -4,7 +4,7 @@ const PopularBooksByYear = () => {
   const books = [
     {
       id: 1,
-      image: '/src/assets//images/book/product/31.jpg',
+      image: 'assets/images/book/product/31.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -16,7 +16,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 2,
-      image: '/src/assets//images/book/product/32.jpg',
+      image: 'assets/images/book/product/32.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -28,7 +28,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 3,
-      image: '/src/assets//images/book/product/33.jpg',
+      image: 'assets/images/book/product/33.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -40,7 +40,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 4,
-      image: '/src/assets//images/book/product/34.jpg',
+      image: 'assets/images/book/product/34.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -52,7 +52,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 5,
-      image: '/src/assets//images/book/product/35.jpg',
+      image: 'assets/images/book/product/35.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -64,7 +64,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 6,
-      image: '/src/assets//images/book/product/36.jpg',
+      image: 'assets/images/book/product/36.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -76,7 +76,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 7,
-      image: '/src/assets//images/book/product/37.jpg',
+      image: 'assets/images/book/product/37.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -88,7 +88,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 8,
-      image: '/src/assets//images/book/product/38.jpg',
+      image: 'assets/images/book/product/38.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -100,7 +100,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 9,
-      image: '/src/assets//images/book/product/39.jpg',
+      image: 'assets/images/book/product/39.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -112,7 +112,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 10,
-      image: '/src/assets//images/book/product/40.jpg',
+      image: 'assets/images/book/product/40.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -124,7 +124,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 11,
-      image: '/src/assets//images/book/product/41.jpg',
+      image: 'assets/images/book/product/41.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
@@ -136,7 +136,7 @@ const PopularBooksByYear = () => {
     },
     {
       id: 12,
-      image: '/src/assets//images/book/product/42.jpg',
+      image: 'assets/images/book/product/42.jpg',
       description: 'Home Decor Lucky Deer Family Matte Finish Ceramic Figures',
       name:"Testing Name",
       author: 'Ellie Thomson, Henry',
