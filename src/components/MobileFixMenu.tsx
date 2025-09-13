@@ -15,7 +15,7 @@ const MobileFixMenu = () => {
           </li>
 
           <li className='mobile-category'>
-            <button className='text-white' onClick={() => setShowCategories(true)}>
+            <button className='text-white flex items-center flex-col gap-1.5 justify-center mx-auto' onClick={() => setShowCategories(true)}>
               <i className='iconly-Category icli js-link text-xl'></i>
               <span>Category</span>
             </button>

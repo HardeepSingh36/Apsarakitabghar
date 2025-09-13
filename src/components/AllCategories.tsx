@@ -1,6 +1,9 @@
-import { Drawer, DrawerContent, DrawerOverlay, DrawerTitle } from '@/components/ui/drawer';
+import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
 import { BookOpen, X } from 'lucide-react';
 import Heading2 from './general/Heading2';
+import type { Category } from '@/types/types';
+import { useEffect, useState } from 'react';
+import { BOOKS_CATEGORIES } from '@/services/API';
 
 interface AllCategoriesProps {
   show: boolean;
@@ -8,29 +11,22 @@ interface AllCategoriesProps {
 }
 
 const AllCategories = ({ show, setShow }: AllCategoriesProps) => {
-  const categories = [
-    { name: 'Fiction' },
-    { name: 'History' },
-    { name: 'Science' },
-    { name: 'Romance' },
-    { name: 'Mystery' },
-    { name: 'Fantasy' },
-    { name: 'Biography' },
-    { name: 'Children' },
-    { name: 'Self-help' },
-    { name: 'Horror' },
-    { name: 'Biography' },
-    { name: 'Children' },
-    { name: 'Self-help' },
-    { name: 'Horror' },
-    { name: 'Children' },
-    { name: 'Self-help' },
-    { name: 'Horror' },
-    { name: 'Children' },
-    { name: 'Self-help' },
-    { name: 'Horror' },
-    { name: 'Horror' },
-  ];
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const getBooks = async () => {
+    try {
+      const res = await fetch(BOOKS_CATEGORIES);
+      if (!res.ok) throw new Error('Failed to fetch categories');
+      const { data } = await res.json();
+      setCategories(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getBooks();
+  }, []);
 
   return (
     <Drawer open={show} onOpenChange={setShow} direction='bottom'>

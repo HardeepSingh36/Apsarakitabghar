@@ -1,27 +1,26 @@
 import { BookOpen } from 'lucide-react';
 import Heading2 from '../general/Heading2';
 import { useEffect, useState } from 'react';
-// import API from '@/services/API';
+import { BOOKS_CATEGORIES } from '@/services/API';
 import type { Category } from '@/types/types';
 
 const BooksCategories = () => {
   const [categories, setCategories] = useState<Category[] | []>([]);
 
-  // const getBooks = async () => {
-  //   try {
-  //     const res = await fetch(API.CATEGORIES);
-  //     if (!res.ok) throw new Error('Failed to fetch categories');
-  //     const { data } = await res.json();
-  //     console.log(data);
-  //     setCategories(data);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const getBooks = async () => {
+    try {
+      const res = await fetch(BOOKS_CATEGORIES);
+      if (!res.ok) throw new Error('Failed to fetch categories');
+      const { data } = await res.json();
+      setCategories(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  // useEffect(() => {
-  //   getBooks();
-  // }, []);
+  useEffect(() => {
+    getBooks();
+  }, []);
 
   return (
     <section className='book-category'>
