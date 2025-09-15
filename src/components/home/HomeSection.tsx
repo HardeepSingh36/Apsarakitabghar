@@ -2,7 +2,7 @@ import SearchBox from "./SearchBox";
 
 const HomeSection = () => {
   return (
-    <section className='home-section-2 home-section-bg pt-4 sm:p-0'>
+    <section className='home-section-2 home-section-bg pt-4 sm:p-0 overflow-x-hidden'>
       <div className='relative container-fluid p-0 ratio_27'>
         <div className='row'>
           <div className='col-12'>

@@ -2,13 +2,29 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Button } from '../ui/button';
 import { Search } from 'lucide-react';
+import { Book, Pencil, Building2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { getAuthors, searchBooks } from '@/services/bookService';
 
 const searchTabs = [
-  { value: 'book', label: 'Book', placeholder: 'Search for books...' },
-  { value: 'author', label: 'Author', placeholder: 'Search for authors...' },
-  { value: 'publisher', label: 'Publisher', placeholder: 'Search for publishers...' },
+  {
+    value: 'book',
+    label: 'Book',
+    placeholder: 'Search for books...',
+    icon: <Book className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />,
+  },
+  {
+    value: 'author',
+    label: 'Author',
+    placeholder: 'Search for authors...',
+    icon: <Pencil className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />,
+  },
+  {
+    value: 'publisher',
+    label: 'Publisher',
+    placeholder: 'Search for publishers...',
+    icon: <Building2 className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />,
+  },
 ];
 
 // Mock data for suggestions
@@ -196,7 +212,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
           <div className='max-h-64 py-2'>
             {filteredSuggestions.map((suggestion, index) => {
               // @ts-ignore
-              const Icon = searchTabs.find((tab) => tab.value === activeTab)?.icon || Search;
+              const Icon = searchTabs.find((tab) => tab.value === activeTab)?.icon || Search as any;
               return (
                 <button
                   key={suggestion}
@@ -208,7 +224,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
                 >
                   <Icon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
                   <span className='truncate'>{suggestion}</span>
-                </button>
+                </button> 
               );
             })}
           </div>
@@ -229,13 +245,14 @@ const SearchBox = () => {
     <div className='w-full bg-white/95 px-4 py-6 max-w-3xl rounded-md mx-auto'>
       <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
         {/* Tab List */}
-        <TabsList className='grid w-full grid-cols-3 mb-4 bg-white/95 backdrop-blur-sm h-11 shadow-subtle shadow-sm !rounded-none'>
+        <TabsList className='flex w-full justify-between mb-4 bg-white/95 backdrop-blur-sm h-11 shadow-subtle shadow-sm !rounded-none'>
           {searchTabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className={`!text-sm md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:bg-teal-600 data-[state=active]:text-primary-foreground data-[state=active]:shadow-emerald transition-all duration-200 px-4`}
+              className={`!text-xs flex-1 md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:bg-teal-600 data-[state=active]:text-primary-foreground data-[state=active]:shadow-emerald transition-all duration-200 px-4`}
             >
+              {tab.icon}
               {tab.label}
             </TabsTrigger>
           ))}

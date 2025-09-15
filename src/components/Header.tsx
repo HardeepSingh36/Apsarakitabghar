@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { Printer } from 'react-feather';
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -7,13 +8,11 @@ const Header = () => {
     <header className=''>
       <div className='header-top'>
         <div className='container-fluid-lg'>
-          <div className='row'>
-            <div className='col-xxl-3 d-xxl-block d-none text-white'>
-              <Link
-                to='/'
-                className='ml-4 px-3 py-2 rounded-md !bg-[#ff4f4f] text-white font-medium transition'
-              >
-                Publish Your Book
+          <div className='flex justify-between'>
+            <div className='col-xxl-2 d-xxl-block text-white'>
+              <Link to='/' className='flex text-white gap-2'>
+                <Printer size={18}/>
+                Publish With Us
               </Link>
             </div>
 
@@ -120,9 +119,9 @@ const Header = () => {
                     <i className='fa-solid fa-bars'></i>
                   </span>
                 </button>
-                <a href='index.html' className='web-logo nav-logo'>
+                <Link to='/' className='web-logo nav-logo'>
                   <img src='/assets/logo/apsra.svg' className='img-fluid lazyload' alt='' />
-                </a>
+                </Link>
 
                 <div className='header-nav-middle'>
                   <div className='main-nav navbar navbar-expand-xl navbar-light navbar-sticky'>
@@ -347,13 +346,13 @@ const Header = () => {
                             <Link to='/cart' className='btn btn-sm cart-button'>
                               View Cart
                             </Link>
-                            <a
-                              href='checkout.html'
+                            <Link
+                              to='/checkout'
                               className='btn btn-sm cart-button theme-bg-color
                                                     text-white'
                             >
                               Checkout
-                            </a>
+                            </Link>
                           </div>
                         </div>
                       </div>

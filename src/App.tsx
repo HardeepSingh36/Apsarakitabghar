@@ -9,6 +9,11 @@ import Footer from './components/Footer';
 import Cart from './pages/Cart';
 import WishList from './pages/WishList';
 import Checkout from './pages/Checkout';
+import { defineElement } from 'lord-icon-element';
+import Lottie from 'lottie-web';
+
+// define once globally
+defineElement(Lottie.loadAnimation);
 
 const App = () => {
   useEffect(() => {

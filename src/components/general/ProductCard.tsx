@@ -1,6 +1,8 @@
 import type { Book } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Link } from 'react-router-dom';
+import { Eye, Heart, ShoppingCart } from 'react-feather';
+import { Tooltip } from 'react-tooltip';
 
 interface ProductCardProps {
   item: Book;
@@ -18,20 +20,23 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
       )}
       <div className='product-image h-24 w-24 md:h-48 md:w-48'>
         <ul className='product-option !hidden md:!block'>
-          <li data-bs-toggle='tooltip' data-bs-placement='top' title='Add to cart'>
-            <Link to='cart.html'>
-              <i data-feather='shopping-cart'></i>
+          <li data-tip='Add to cart'>
+            <Link to='cart.html' data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
+              <ShoppingCart size={18} className='mx-auto text-gray-600' />
             </Link>
+            <Tooltip id='cart-tooltip' />
           </li>
-          <li data-bs-toggle='tooltip' data-bs-placement='top' title='Wishlist'>
+          <li data-tooltip-id='wishlist-tooltip' data-tooltip-content='Add to wishlist'>
             <Link to='wishlist.html' className='notifi-wishlist'>
-              <i data-feather='heart'></i>
+              <Heart size={18} className='mx-auto text-gray-600' />
             </Link>
+            <Tooltip id='wishlist-tooltip'/>
           </li>
-          <li data-bs-toggle='tooltip' data-bs-placement='top' title='View'>
+          <li data-tooltip-id='view-tooltip' data-tooltip-content='View'>
             <Link to='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#view'>
-              <i data-feather='eye'></i>
+              <Eye size={18} className='mx-auto text-gray-600' />
             </Link>
+            <Tooltip id='view-tooltip' />
           </li>
         </ul>
         <div className='front'>
