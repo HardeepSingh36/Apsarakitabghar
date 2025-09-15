@@ -1,7 +1,7 @@
-import Slider from 'react-slick';
-import AddProductBox from '../general/AddProductBox';
+import AddProductBox from '@/components/general/AddProductBox';
 
-const relatedProducts = [
+
+const wishlistItems = [
   {
     key: 1,
     spanName: 'Cake',
@@ -81,56 +81,53 @@ const relatedProducts = [
   },
 ];
 
-const sliderSettings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 6,
-  slidesToScroll: 1,
-  responsive: [
-    {
-      breakpoint: 1200,
-      settings: { slidesToShow: 6 },
-    },
-    {
-      breakpoint: 992,
-      settings: { slidesToShow: 4 },
-    },
-    {
-      breakpoint: 768,
-      settings: { slidesToShow: 3 },
-    },
-    {
-      breakpoint: 480,
-      settings: { slidesToShow: 2 },
-    },
-  ],
-};
-
-const RelatedProducts = () => {
+const WishList = () => {
   return (
-    <div className='container-fluid-lg'>
-      <div className='title'>
-        <h2>Related Products</h2>
-        <span className='title-leaf'>
-          <svg className='icon-width'>
-            <use xlinkHref='/assets/svg/leaf.svg#leaf'></use>
-          </svg>
-        </span>
-      </div>
-      <div className='row'>
-        <div className='col-12'>
-          <div className='slider-6_1 product-wrapper'>
-            <Slider {...sliderSettings}>
-              {relatedProducts.map((product, idx) => (
-                <AddProductBox key={product.key} product={product} idx={idx} showOptions={true}/>
-              ))}
-            </Slider>
+    <div>
+      {/* Breadcrumb Section Start */}
+      <section className='breadcrumb-section pt-0'>
+        <div className='container-fluid-lg'>
+          <div className='row'>
+            <div className='col-12'>
+              <div className='breadcrumb-contain'>
+                <h2>Wishlist</h2>
+                <nav>
+                  <ol className='breadcrumb mb-0'>
+                    <li className='breadcrumb-item'>
+                      <a href='index.html'>
+                        <i className='fa-solid fa-house'></i>
+                      </a>
+                    </li>
+                    <li className='breadcrumb-item active'>Wishlist</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Wishlist Section Start */}
+      <section className='wishlist-section section-b-space'>
+        <div className='container-fluid-lg'>
+          <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6'>
+            {wishlistItems.map((item) => (
+              <div key={item.key}>
+                <div className='wishlist-box'>
+                  <AddProductBox
+                    key={item.key}
+                    product={item}
+                    idx={item.key}
+                    removeButton={true}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
 
-export default RelatedProducts;
+export default WishList;

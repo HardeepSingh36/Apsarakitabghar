@@ -275,9 +275,9 @@ const Header = () => {
                       </div>
                     </li>
                     <li className='right-side'>
-                      <a href='wishlist.html' className='btn p-0 position-relative header-wishlist'>
+                      <Link to='/wishlist' className='btn p-0 position-relative header-wishlist'>
                         <i data-feather='bookmark'></i>
-                      </a>
+                      </Link>
                     </li>
                     <li className='right-side'>
                       <div className='onhover-dropdown header-badge'>
@@ -345,9 +345,9 @@ const Header = () => {
                           </div>
 
                           <div className='button-group'>
-                            <a href='cart.html' className='btn btn-sm cart-button'>
+                            <Link to='/cart' className='btn btn-sm cart-button'>
                               View Cart
-                            </a>
+                            </Link>
                             <a
                               href='checkout.html'
                               className='btn btn-sm cart-button theme-bg-color
