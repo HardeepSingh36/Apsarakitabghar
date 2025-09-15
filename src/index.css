@@ -119,3 +119,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* class for not showing dropdown icon */
+.nav-link.no-dropdown::before {
+  display: none !important;
+}

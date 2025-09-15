@@ -1,5 +1,6 @@
 import type { Book } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
+import { Link } from 'react-router-dom';
 
 interface ProductCardProps {
   item: Book;
@@ -18,32 +19,32 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
       <div className='product-image h-24 w-24 md:h-48 md:w-48'>
         <ul className='product-option !hidden md:!block'>
           <li data-bs-toggle='tooltip' data-bs-placement='top' title='Add to cart'>
-            <a href='cart.html'>
+            <Link to='cart.html'>
               <i data-feather='shopping-cart'></i>
-            </a>
+            </Link>
           </li>
           <li data-bs-toggle='tooltip' data-bs-placement='top' title='Wishlist'>
-            <a href='wishlist.html' className='notifi-wishlist'>
+            <Link to='wishlist.html' className='notifi-wishlist'>
               <i data-feather='heart'></i>
-            </a>
+            </Link>
           </li>
           <li data-bs-toggle='tooltip' data-bs-placement='top' title='View'>
-            <a href='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#view'>
+            <Link to='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#view'>
               <i data-feather='eye'></i>
-            </a>
+            </Link>
           </li>
         </ul>
         <div className='front'>
-          <a href='product-left-thumbnail.html' className='!no-underline'>
+          <Link to={`/books/${item.id}`} className='!no-underline'>
             <img src={item.cover_image_url} className='img-fluid lazyload' alt='' />
-          </a>
+          </Link>
         </div>
       </div>
       <div className='product-detail position-relative'>
         <h6 className='weight'>{item.title}</h6>
-        <a href='product-left-thumbnail.html' className='!no-underline'>
+        <Link to={`/books/${item.id}`} className='!no-underline'>
           <h5 className='name'>Home Decor Lucky Deer Family Matte Finish Ceramic Figures</h5>
-        </a>
+        </Link>
         <h6 className='byers'>
           <span>By</span> {item.author_names || 'Unknown Author'}
         </h6>

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
 const Header = () => {
@@ -7,7 +8,14 @@ const Header = () => {
       <div className='header-top'>
         <div className='container-fluid-lg'>
           <div className='row'>
-            <div className='col-xxl-3 d-xxl-block d-none'></div>
+            <div className='col-xxl-3 d-xxl-block d-none text-white'>
+              <Link
+                to='/'
+                className='ml-4 px-3 py-2 rounded-md !bg-[#ff4f4f] text-white font-medium transition'
+              >
+                Publish Your Book
+              </Link>
+            </div>
 
             <div className='col-xxl-6 col-lg-9 d-lg-block d-none'></div>
 
@@ -22,7 +30,7 @@ const Header = () => {
                       data-bs-toggle='dropdown'
                     >
                       <img
-                        src='assets/images/country/united-kingdom.png'
+                        src='/assets/images/country/united-kingdom.png'
                         className='img-fluid blur-up lazyload'
                         alt=''
                       />
@@ -32,7 +40,7 @@ const Header = () => {
                       <li>
                         <a className='dropdown-item' href='javascript:void(0)' id='english'>
                           <img
-                            src='assets/images/country/united-kingdom.png'
+                            src='/assets/images/country/united-kingdom.png'
                             className='img-fluid blur-up lazyload'
                             alt=''
                           />
@@ -42,7 +50,7 @@ const Header = () => {
                       <li>
                         <a className='dropdown-item' href='javascript:void(0)' id='france'>
                           <img
-                            src='assets/images/country/germany.png'
+                            src='/assets/images/country/germany.png'
                             className='img-fluid blur-up lazyload'
                             alt=''
                           />
@@ -52,7 +60,7 @@ const Header = () => {
                       <li>
                         <a className='dropdown-item' href='javascript:void(0)' id='chinese'>
                           <img
-                            src='assets/images/country/turkish.png'
+                            src='/assets/images/country/turkish.png'
                             className='img-fluid blur-up lazyload'
                             alt=''
                           />
@@ -113,12 +121,16 @@ const Header = () => {
                   </span>
                 </button>
                 <a href='index.html' className='web-logo nav-logo'>
-                  <img src='assets/logo/apsra.svg' className='img-fluid lazyload' alt='' />
+                  <img src='/assets/logo/apsra.svg' className='img-fluid lazyload' alt='' />
                 </a>
 
                 <div className='header-nav-middle'>
                   <div className='main-nav navbar navbar-expand-xl navbar-light navbar-sticky'>
-                    <div className={`offcanvas offcanvas-collapse order-xl-2 ${showMenu ? 'show' : ''}`}>
+                    <div
+                      className={`offcanvas offcanvas-collapse order-xl-2 ${
+                        showMenu ? 'show' : ''
+                      }`}
+                    >
                       <div className='offcanvas-header navbar-shadow'>
                         <h5>Menu</h5>
                         <button
@@ -130,117 +142,44 @@ const Header = () => {
                       </div>
                       <div className='offcanvas-body'>
                         <ul className='navbar-nav'>
-                          <li className='nav-item dropdown dropdown-mega'>
-                            <a
-                              className='nav-link dropdown-toggle ps-xl-2 ps-0'
-                              href='javascript:void(0)'
-                              data-bs-toggle='dropdown'
-                            >
-                              Home
-                            </a>
-
-                            <ul className='dropdown-menu'>
-                              <li>
-                                <a className='dropdown-item' href='index.html'>
-                                  Kartshop
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-2.html'>
-                                  Sweetshop
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-3.html'>
-                                  Organic
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-4.html'>
-                                  Supershop
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-5.html'>
-                                  classNameic shop
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-6.html'>
-                                  Furniture
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-7.html'>
-                                  Search Oriented
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-8.html'>
-                                  Category Focus
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-9.html'>
-                                  Fashion
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-10.html'>
-                                  Book
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='index-11.html'>
-                                  Digital
-                                </a>
-                              </li>
-                            </ul>
-                          </li>
-
                           <li className='nav-item dropdown'>
                             <a
                               className='nav-link dropdown-toggle'
                               href='javascript:void(0)'
                               data-bs-toggle='dropdown'
                             >
-                              Shop
+                              Best Selling
                             </a>
 
                             <ul className='dropdown-menu'>
                               <li>
                                 <a className='dropdown-item' href='shop-category-slider.html'>
-                                  Shop Category Slider
+                                  Best Selling Audiobooks
                                 </a>
                               </li>
                               <li>
                                 <a className='dropdown-item' href='shop-category.html'>
-                                  Shop Category Sidebar
+                                  Best Selling eBooks
                                 </a>
                               </li>
                               <li>
                                 <a className='dropdown-item' href='shop-banner.html'>
-                                  Shop Banner
+                                  Best Selling Print Books
                                 </a>
                               </li>
                               <li>
                                 <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                  Shop Left Sidebar
+                                  Editor’s Picks
                                 </a>
                               </li>
                               <li>
                                 <a className='dropdown-item' href='shop-list.html'>
-                                  Shop List
+                                  Trending Now
                                 </a>
                               </li>
                               <li>
                                 <a className='dropdown-item' href='shop-right-sidebar.html'>
-                                  Shop Right Sidebar
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='shop-top-filter.html'>
-                                  Shop Top Filter
+                                  All-Time Best Sellers
                                 </a>
                               </li>
                             </ul>
@@ -252,456 +191,56 @@ const Header = () => {
                               href='javascript:void(0)'
                               data-bs-toggle='dropdown'
                             >
-                              Product
+                              Top Categories
                             </a>
 
-                            <div className='dropdown-menu dropdown-menu-3 dropdown-menu-2'>
-                              <div className='row'>
-                                <div className='col-xl-3'>
-                                  <div className='dropdown-column m-0'>
-                                    <h5 className='dropdown-header'>Product Pages </h5>
-                                    <a className='dropdown-item' href='product-left-thumbnail.html'>
-                                      Product Thumbnail
-                                    </a>
-                                    <a className='dropdown-item' href='product-4-image.html'>
-                                      Product Images
-                                    </a>
-                                    <a className='dropdown-item' href='product-slider.html'>
-                                      Product Slider
-                                    </a>
-                                    <a className='dropdown-item' href='product-sticky.html'>
-                                      Product Sticky
-                                    </a>
-                                    <a className='dropdown-item' href='product-accordion.html'>
-                                      Product Accordion
-                                    </a>
-                                    <a className='dropdown-item' href='product-circle.html'>
-                                      Product Tab
-                                    </a>
-                                    <a className='dropdown-item' href='product-digital.html'>
-                                      Product Digital
-                                    </a>
-
-                                    <h5 className='custom-mt dropdown-header'>Product Features</h5>
-                                    <a className='dropdown-item' href='product-circle.html'>
-                                      Bundle (Cross Sale)
-                                    </a>
-                                    <a className='dropdown-item' href='product-left-thumbnail.html'>
-                                      Hot Stock Progress <label className='menu-label'>New</label>
-                                    </a>
-                                    <a className='dropdown-item' href='product-sold-out.html'>
-                                      SOLD OUT
-                                    </a>
-                                    <a className='dropdown-item' href='product-circle.html'>
-                                      Sale Countdown
-                                    </a>
-                                  </div>
-                                </div>
-                                <div className='col-xl-3'>
-                                  <div className='dropdown-column m-0'>
-                                    <h5 className='dropdown-header'>Product Variants Style </h5>
-                                    <a className='dropdown-item' href='product-rectangle.html'>
-                                      Variant Rectangle
-                                    </a>
-                                    <a className='dropdown-item' href='product-circle.html'>
-                                      Variant Circle <label className='menu-label'>New</label>
-                                    </a>
-                                    <a className='dropdown-item' href='product-color-image.html'>
-                                      Variant Image Swatch
-                                    </a>
-                                    <a className='dropdown-item' href='product-color.html'>
-                                      Variant Color
-                                    </a>
-                                    <a className='dropdown-item' href='product-radio.html'>
-                                      Variant Radio Button
-                                    </a>
-                                    <a className='dropdown-item' href='product-dropdown.html'>
-                                      Variant Dropdown
-                                    </a>
-                                    <h5 className='custom-mt dropdown-header'>Product Features</h5>
-                                    <a className='dropdown-item' href='product-left-thumbnail.html'>
-                                      Sticky Checkout
-                                    </a>
-                                    <a className='dropdown-item' href='product-dynamic.html'>
-                                      Dynamic Checkout
-                                    </a>
-                                    <a className='dropdown-item' href='product-sticky.html'>
-                                      Secure Checkout
-                                    </a>
-                                    <a className='dropdown-item' href='product-bundle.html'>
-                                      Active Product view
-                                    </a>
-                                    <a className='dropdown-item' href='product-bundle.html'>
-                                      Active Last Orders
-                                    </a>
-                                  </div>
-                                </div>
-                                <div className='col-xl-3'>
-                                  <div className='dropdown-column m-0'>
-                                    <h5 className='dropdown-header'>Product Features </h5>
-                                    <a className='dropdown-item' href='product-image.html'>
-                                      Product Simple
-                                    </a>
-                                    <a className='dropdown-item' href='product-rectangle.html'>
-                                      Product classNameified{' '}
-                                      <label className='menu-label'>New</label>
-                                    </a>
-                                    <a className='dropdown-item' href='product-size-chart.html'>
-                                      Size Chart <label className='menu-label'>New</label>
-                                    </a>
-                                    <a className='dropdown-item' href='product-size-chart.html'>
-                                      Delivery & Return
-                                    </a>
-                                    <a className='dropdown-item' href='product-size-chart.html'>
-                                      Product Review
-                                    </a>
-                                    <a className='dropdown-item' href='product-expert.html'>
-                                      Ask an Expert
-                                    </a>
-                                    <h5 className='custom-mt dropdown-header'>Product Features</h5>
-                                    <a
-                                      className='dropdown-item'
-                                      href='product-bottom-thumbnail.html'
-                                    >
-                                      Product Tags
-                                    </a>
-                                    <a className='dropdown-item' href='product-image.html'>
-                                      Store Information
-                                    </a>
-                                    <a className='dropdown-item' href='product-image.html'>
-                                      Social Share{' '}
-                                      <label className='menu-label warning-label'>Hot</label>
-                                    </a>
-                                    <a className='dropdown-item' href='product-left-thumbnail.html'>
-                                      Related Products
-                                      <label className='menu-label warning-label'>Hot</label>
-                                    </a>
-                                    <a
-                                      className='dropdown-item'
-                                      href='product-right-thumbnail.html'
-                                    >
-                                      Wishlist & Compare
-                                    </a>
-                                  </div>
-                                </div>
-                                <div className='col-xl-3 d-xl-block d-none'>
-                                  <div className='dropdown-column m-0'>
-                                    <div className='menu-img-banner'>
-                                      <a className='text-title' href='product-circle.html'>
-                                        <img src='/src/assets/images/mega-menu.png' alt='banner' />
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </li>
-
-                          <li className='nav-item dropdown dropdown-mega'>
-                            <a
-                              className='nav-link dropdown-toggle ps-xl-2 ps-0'
-                              href='javascript:void(0)'
-                              data-bs-toggle='dropdown'
-                            >
-                              Mega Menu
-                            </a>
-
-                            <div className='dropdown-menu dropdown-menu-2'>
-                              <div className='row'>
-                                <div className='dropdown-column col-xl-3'>
-                                  <h5 className='dropdown-header'>Daily Vegetables</h5>
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Beans & Brinjals
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Broccoli & Cauliflower
-                                  </a>
-
-                                  <a href='shop-left-sidebar.html' className='dropdown-item'>
-                                    Chilies, Garlic
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Vegetables & Salads
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Gourd, Cucumber
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Herbs & Sprouts
-                                  </a>
-
-                                  <a href='demo-personal-portfolio.html' className='dropdown-item'>
-                                    Lettuce & Leafy
-                                  </a>
-                                </div>
-
-                                <div className='dropdown-column col-xl-3'>
-                                  <h5 className='dropdown-header'>Baby Tender</h5>
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Beans & Brinjals
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Broccoli & Cauliflower
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Chilies, Garlic
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Vegetables & Salads
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Gourd, Cucumber
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Potatoes & Tomatoes
-                                  </a>
-
-                                  <a href='shop-left-sidebar.html' className='dropdown-item'>
-                                    Peas & Corn
-                                  </a>
-                                </div>
-
-                                <div className='dropdown-column col-xl-3'>
-                                  <h5 className='dropdown-header'>Exotic Vegetables</h5>
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Asparagus & Artichokes
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Avocados & Peppers
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Broccoli & Zucchini
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Celery, Fennel & Leeks
-                                  </a>
-
-                                  <a className='dropdown-item' href='shop-left-sidebar.html'>
-                                    Chilies & Lime
-                                  </a>
-                                </div>
-
-                                <div className='dropdown-column dropdown-column-img col-3'></div>
-                              </div>
-                            </div>
-                          </li>
-
-                          <li className='nav-item dropdown'>
-                            <a
-                              className='nav-link dropdown-toggle'
-                              href='javascript:void(0)'
-                              data-bs-toggle='dropdown'
-                            >
-                              Blog
-                            </a>
                             <ul className='dropdown-menu'>
                               <li>
-                                <a className='dropdown-item' href='blog-detail.html'>
-                                  Blog Detail
+                                <a className='dropdown-item' href='shop-category-slider.html'>
+                                  Children
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='blog-grid.html'>
-                                  Blog Grid
+                                <a className='dropdown-item' href='shop-category.html'>
+                                  Education
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='blog-list.html'>
-                                  Blog List
+                                <a className='dropdown-item' href='shop-banner.html'>
+                                  Fiction
+                                </a>
+                              </li>
+                              <li>
+                                <a className='dropdown-item' href='shop-left-sidebar.html'>
+                                  Non-Fiction
+                                </a>
+                              </li>
+                              <li>
+                                <a className='dropdown-item' href='shop-list.html'>
+                                  Poetry
                                 </a>
                               </li>
                             </ul>
                           </li>
 
-                          <li className='nav-item dropdown new-nav-item'>
+                          <li className='nav-item'>
+                            <a
+                              className='nav-link no-dropdown ps-xl-2 ps-0'
+                              href='javascript:void(0)'
+                            >
+                              About Us
+                            </a>
+                          </li>
+
+                          <li className='nav-item dropdown new-nav-item xl:!ml-4'>
                             <label className='new-dropdown'>New</label>
                             <a
-                              className='nav-link dropdown-toggle'
+                              className='nav-link no-dropdown dropdown-toggle'
                               href='javascript:void(0)'
                               data-bs-toggle='dropdown'
                             >
-                              Pages
+                              Contact Us
                             </a>
-                            <ul className='dropdown-menu'>
-                              <li className='sub-dropdown-hover'>
-                                <a className='dropdown-item' href='javascript:void(0)'>
-                                  Email Template{' '}
-                                  <span className='new-text'>
-                                    <i className='fa-solid fa-bolt-lightning'></i>
-                                  </span>
-                                </a>
-                                <ul className='sub-menu'>
-                                  <li>
-                                    <a href='../email-templete/abandonment-email.html'>
-                                      Abandonment
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a href='../email-templete/offer-template.html'>
-                                      Offer Template
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a href='../email-templete/order-success-2.html'>
-                                      Order Success
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a href='../email-templete/reset-password-2.html'>
-                                      Reset Password
-                                    </a>
-                                  </li>
-                                  <li>
-                                    <a href='../email-templete/welcome-2.html'>Welcome template</a>
-                                  </li>
-                                </ul>
-                              </li>
-                              <li className='sub-dropdown-hover'>
-                                <a className='dropdown-item' href='javascript:void(0)'>
-                                  Invoice Template{' '}
-                                  <span className='new-text'>
-                                    <i className='fa-solid fa-bolt-lightning'></i>
-                                  </span>
-                                </a>
-                                <ul className='sub-menu'>
-                                  <li>
-                                    <a href='../invoice/invoice-1.html'>Invoice 1</a>
-                                  </li>
-
-                                  <li>
-                                    <a href='../invoice/invoice-2.html'>Invoice 2</a>
-                                  </li>
-
-                                  <li>
-                                    <a href='../invoice/invoice-3.html'>Invoice 3</a>
-                                  </li>
-                                </ul>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='404.html'>
-                                  404
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='about-us.html'>
-                                  About Us
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='cart.html'>
-                                  Cart
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='contact-us.html'>
-                                  Contact
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='checkout.html'>
-                                  Checkout
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='coming-soon.html'>
-                                  Coming Soon
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='compare.html'>
-                                  Compare
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='faq.html'>
-                                  Faq
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='order-success.html'>
-                                  Order Success
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='order-tracking.html'>
-                                  Order Tracking
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='otp.html'>
-                                  OTP
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='search.html'>
-                                  Search
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='user-dashboard.html'>
-                                  User Dashboard
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='wishlist.html'>
-                                  Wishlist
-                                </a>
-                              </li>
-                            </ul>
-                          </li>
-
-                          <li className='nav-item dropdown'>
-                            <a
-                              className='nav-link dropdown-toggle'
-                              href='javascript:void(0)'
-                              data-bs-toggle='dropdown'
-                            >
-                              Seller
-                            </a>
-                            <ul className='dropdown-menu'>
-                              <li>
-                                <a className='dropdown-item' href='seller-become.html'>
-                                  Become a Seller
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='seller-dashboard.html'>
-                                  Seller Dashboard
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='seller-detail.html'>
-                                  Seller Detail
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='seller-detail-2.html'>
-                                  Seller Detail 2
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='seller-grid.html'>
-                                  Seller Grid
-                                </a>
-                              </li>
-                              <li>
-                                <a className='dropdown-item' href='seller-grid-2.html'>
-                                  Seller Grid 2
-                                </a>
-                              </li>
-                            </ul>
                           </li>
                         </ul>
                       </div>
@@ -755,7 +294,7 @@ const Header = () => {
                               <div className='drop-cart'>
                                 <a href='product-left-thumbnail.html' className='drop-image'>
                                   <img
-                                    src='/src/assets/images/vegetable/product/1.png'
+                                    src='/assets/images/vegetable/product/1.png'
                                     className='blur-up lazyload'
                                     alt=''
                                   />
@@ -779,7 +318,7 @@ const Header = () => {
                               <div className='drop-cart'>
                                 <a href='product-left-thumbnail.html' className='drop-image'>
                                   <img
-                                    src='/src/assets/images/vegetable/product/2.png'
+                                    src='/assets/images/vegetable/product/2.png'
                                     className='blur-up lazyload'
                                     alt=''
                                   />

@@ -191,7 +191,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
       {showSuggestions && filteredSuggestions.length > 0 && (
         <div
           ref={suggestionsRef}
-          className='absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-lg shadow-dropdown z-50 max-h-52 overflow-y-auto'
+          className='absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-lg shadow-dropdown max-h-52 overflow-y-auto'
         >
           <div className='max-h-64 py-2'>
             {filteredSuggestions.map((suggestion, index) => {
