@@ -8,6 +8,7 @@ import BookDetail from './pages/BookDetail';
 import Footer from './components/Footer';
 import Cart from './pages/Cart';
 import WishList from './pages/WishList';
+import Checkout from './pages/Checkout';
 
 const App = () => {
   useEffect(() => {
@@ -22,6 +23,7 @@ const App = () => {
         <Route path='/books/:id' element={<BookDetail />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/wishlist' element={<WishList />} />
+        <Route path='/checkout' element={<Checkout />} />
       </Routes>
       <Footer />
     </>

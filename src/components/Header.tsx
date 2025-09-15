@@ -78,12 +78,12 @@ const Header = () => {
                       id='select-dollar'
                       data-bs-toggle='dropdown'
                     >
-                      <span>USD</span>
+                      <span>INR</span>
                     </button>
                     <ul className='dropdown-menu dropdown-menu-end sm-dropdown-menu'>
                       <li>
                         <a className='dropdown-item' id='aud' href='javascript:void(0)'>
-                          AUD
+                          USD
                         </a>
                       </li>
                       <li>
@@ -93,7 +93,7 @@ const Header = () => {
                       </li>
                       <li>
                         <a className='dropdown-item' id='cny' href='javascript:void(0)'>
-                          CNY
+                          AUD
                         </a>
                       </li>
                     </ul>
@@ -233,7 +233,6 @@ const Header = () => {
                           </li>
 
                           <li className='nav-item dropdown new-nav-item xl:!ml-4'>
-                            <label className='new-dropdown'>New</label>
                             <a
                               className='nav-link no-dropdown dropdown-toggle'
                               href='javascript:void(0)'
