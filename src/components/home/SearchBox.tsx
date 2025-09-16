@@ -11,19 +11,19 @@ const searchTabs = [
     value: 'book',
     label: 'Book',
     placeholder: 'Search for books...',
-    icon: <Book className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />,
+    icon: Book,
   },
   {
     value: 'author',
     label: 'Author',
     placeholder: 'Search for authors...',
-    icon: <Pencil className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />,
+    icon: Pencil,
   },
   {
     value: 'publisher',
     label: 'Publisher',
     placeholder: 'Search for publishers...',
-    icon: <Building2 className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />,
+    icon: Building2,
   },
 ];
 
@@ -211,8 +211,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
         >
           <div className='max-h-64 py-2'>
             {filteredSuggestions.map((suggestion, index) => {
-              
-              const Icon = searchTabs.find((tab) => tab.value === activeTab)?.icon || Search as any;
+              const Icon = searchTabs.find((tab) => tab.value === activeTab)?.icon || Search;
               return (
                 <button
                   key={suggestion}
@@ -224,7 +223,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
                 >
                   <Icon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
                   <span className='truncate'>{suggestion}</span>
-                </button> 
+                </button>
               );
             })}
           </div>
@@ -246,16 +245,19 @@ const SearchBox = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
         {/* Tab List */}
         <TabsList className='flex w-full justify-between mb-4 bg-white/95 backdrop-blur-sm h-11 shadow-subtle shadow-sm !rounded-none overflow-x-scroll sm:overflow-x-hidden '>
-          {searchTabs.map((tab) => (
-            <TabsTrigger
-              key={tab.value}
-              value={tab.value}
-              className={`!text-xs flex-1 md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:bg-teal-600 data-[state=active]:text-primary-foreground data-[state=active]:shadow-emerald transition-all duration-200 px-4`}
-            >
-              {tab.icon}
-              {tab.label}
-            </TabsTrigger>
-          ))}
+          {searchTabs.map((tab) => {
+            const TabIcon = tab.icon;
+            return (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className={`!text-xs flex-1 md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:bg-teal-600 data-[state=active]:text-primary-foreground data-[state=active]:shadow-emerald transition-all duration-200 px-4`}
+              >
+                <TabIcon className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />
+                {tab.label}
+              </TabsTrigger>
+            );
+          })}
         </TabsList>
 
         {/* Tab Contents */}
