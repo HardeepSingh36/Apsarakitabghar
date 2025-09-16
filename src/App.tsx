@@ -13,6 +13,7 @@ import { defineElement } from 'lord-icon-element';
 import Lottie from 'lottie-web';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Dashboard from './pages/dashboard';
 
 // define once globally
 defineElement(Lottie.loadAnimation);
@@ -33,6 +34,7 @@ const App = () => {
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
+        <Route path='/dashboard' element={<Dashboard />} />
         <Route path='*' element={<div>404 Not Found</div>} />
       </Routes>
       <Footer />
