@@ -18,7 +18,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
           <label className='label'>best</label>
         </div>
       )}
-      <div className='product-image h-24 w-24 md:h-48 md:w-48'>
+      <div className='product-image'>
         <ul className='product-option !hidden md:!block'>
           <li data-tip='Add to cart'>
             <Link to='cart.html' data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
@@ -30,7 +30,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
             <Link to='wishlist.html' className='notifi-wishlist'>
               <Heart size={18} className='mx-auto text-gray-600' />
             </Link>
-            <Tooltip id='wishlist-tooltip'/>
+            <Tooltip id='wishlist-tooltip' />
           </li>
           <li data-tooltip-id='view-tooltip' data-tooltip-content='View'>
             <Link to='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#view'>
@@ -39,13 +39,13 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
             <Tooltip id='view-tooltip' />
           </li>
         </ul>
-        <div className='front'>
-          <Link to={`/books/${item.id}`} className='!no-underline'>
-            <img src={item.cover_image_url} className='img-fluid lazyload' alt='' />
+        <div className='front h-28 w-28 md:h-64 md:w-72'>
+          <Link to={`/books/${item.id}`} className='!no-underline block'>
+            <img src={item.cover_image_url} className='img-fluid lazyload h-full w-full' alt='' />
           </Link>
         </div>
       </div>
-      <div className='product-detail position-relative'>
+      <div className='product-detail position-relative md:mt-4'>
         <h6 className='weight'>{item.title}</h6>
         <Link to={`/books/${item.id}`} className='!no-underline'>
           <h5 className='name'>Home Decor Lucky Deer Family Matte Finish Ceramic Figures</h5>

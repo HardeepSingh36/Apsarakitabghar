@@ -41,19 +41,19 @@ const Footer = () => {
               </ul>
             </div>
 
-            <div className='col-xxl-2 col-xl-4 col-sm-6'>
+            <div className='col-xxl-3 col-xl-4 col-sm-6'>
               <div className='footer-title'>
-                <h4 className='text-white'>About</h4>
+                <h4 className='text-white'>Quick Links</h4>
               </div>
               <ul className='footer-list footer-contact footer-list-light'>
                 <li>
-                  <a href='about-us.html' className='light-text'>
+                  <Link to='/about' className='light-text'>
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href='contact-us.html' className='light-text'>
-                    Contact Us
+                    Privacy Policy
                   </a>
                 </li>
                 <li>
@@ -61,10 +61,15 @@ const Footer = () => {
                     Terms & Conditions
                   </a>
                 </li>
+                <li>
+                  <a href='term_condition.html' className='light-text'>
+                    Query Form
+                  </a>
+                </li>
               </ul>
             </div>
 
-            <div className='col-xxl-2 col-xl-4 col-sm-6'>
+            <div className='col-xxl-3 col-xl-4 col-sm-6'>
               <div className='footer-title'>
                 <h4 className='text-white'>Useful Link</h4>
               </div>
@@ -87,11 +92,6 @@ const Footer = () => {
                 <li>
                   <a href='wishlist.html' className='light-text'>
                     Your Wishlist
-                  </a>
-                </li>
-                <li>
-                  <a href='faq.html' className='light-text'>
-                    FAQs
                   </a>
                 </li>
               </ul>

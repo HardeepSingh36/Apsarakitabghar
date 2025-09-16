@@ -211,7 +211,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
         >
           <div className='max-h-64 py-2'>
             {filteredSuggestions.map((suggestion, index) => {
-              // @ts-ignore
+              
               const Icon = searchTabs.find((tab) => tab.value === activeTab)?.icon || Search as any;
               return (
                 <button
@@ -242,10 +242,10 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
 const SearchBox = () => {
   const [activeTab, setActiveTab] = useState('book');
   return (
-    <div className='w-full bg-white/95 px-4 py-6 max-w-3xl rounded-md mx-auto'>
+    <div className='w-full bg-white/95 px-2 sm:!px-6 py-6 max-w-3xl rounded-md mx-auto'>
       <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
         {/* Tab List */}
-        <TabsList className='flex w-full justify-between mb-4 bg-white/95 backdrop-blur-sm h-11 shadow-subtle shadow-sm !rounded-none'>
+        <TabsList className='flex w-full justify-between mb-4 bg-white/95 backdrop-blur-sm h-11 shadow-subtle shadow-sm !rounded-none overflow-x-scroll sm:overflow-x-hidden '>
           {searchTabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
