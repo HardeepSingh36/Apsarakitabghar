@@ -11,6 +11,7 @@ import WishList from './pages/WishList';
 import Checkout from './pages/Checkout';
 import { defineElement } from 'lord-icon-element';
 import Lottie from 'lottie-web';
+import About from './pages/About';
 
 // define once globally
 defineElement(Lottie.loadAnimation);
@@ -29,6 +30,9 @@ const App = () => {
         <Route path='/cart' element={<Cart />} />
         <Route path='/wishlist' element={<WishList />} />
         <Route path='/checkout' element={<Checkout />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<div>Contact Page</div>} />
+        <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
       <Footer />
     </>

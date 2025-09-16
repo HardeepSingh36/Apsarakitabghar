@@ -223,12 +223,12 @@ const Header = () => {
                           </li>
 
                           <li className='nav-item'>
-                            <a
+                            <Link
                               className='nav-link no-dropdown ps-xl-2 ps-0'
-                              href='javascript:void(0)'
+                              to="/about"
                             >
                               About Us
-                            </a>
+                            </Link>
                           </li>
 
                           <li className='nav-item dropdown new-nav-item xl:!ml-4'>
