@@ -15,7 +15,7 @@ const HomeSection = () => {
             </div>
           </div>
           {/* 🔍 Search Bar Overlay */}
-          <div className='absolute inset-0 top-1/5 flex items-start justify-center px-4'>
+          <div className='absolute inset-0 top-1/5 flex items-start justify-center px-4 overflow-hidden'>
             <SearchBox />
           </div>
         </div>

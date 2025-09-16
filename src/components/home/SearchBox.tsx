@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Search } from 'lucide-react';
 import { Book, Pencil, Building2 } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { getAuthors, searchBooks } from '@/services/bookService';
 
 const searchTabs = [
@@ -86,6 +87,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  const [inputRect, setInputRect] = useState<DOMRect | null>(null);
 
   // useEffect(() => {
   //   if (query.length > 0) {
@@ -153,6 +155,10 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
       setFilteredSuggestions([]);
       return;
     }
+    // Get input position for portal dropdown
+    if (inputRef.current) {
+      setInputRect(inputRef.current.getBoundingClientRect());
+    }
     if (activeTab === 'book') {
       try {
         searchBooks({ q: e.target.value }).then(({ data }) => {
@@ -189,7 +195,10 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          onFocus={() => query.length > 0 && setShowSuggestions(filteredSuggestions.length > 0)}
+          onFocus={() => {
+            if (query.length > 0) setShowSuggestions(filteredSuggestions.length > 0);
+            if (inputRef.current) setInputRect(inputRef.current.getBoundingClientRect());
+          }}
           placeholder={placeholder}
           className='h-14 !rounded-none text-lg pr-16 bg-white/95 backdrop-blur-sm border-0 shadow-subtle focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary/20 transition-all duration-200 group-hover:shadow-emerald'
           aria-label={ariaLabel}
@@ -203,37 +212,50 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
           <Search className='h-5 w-5' />
         </Button>
       </form>
-      {/* Suggestions Dropdown */}
-      {showSuggestions && filteredSuggestions.length > 0 && (
-        <div
-          ref={suggestionsRef}
-          className='absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-lg shadow-dropdown max-h-52 overflow-y-auto'
-        >
-          <div className='max-h-64 py-2'>
-            {filteredSuggestions.map((suggestion, index) => {
-              const Icon = searchTabs.find((tab) => tab.value === activeTab)?.icon || Search;
-              return (
-                <button
-                  key={suggestion}
-                  type='button'
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  className={`w-full text-left px-4 py-3 hover:bg-accent transition-colors duration-150 flex items-center gap-3 text-sm ${
-                    index === selectedIndex ? 'bg-accent text-accent-foreground' : 'text-foreground'
-                  }`}
-                >
-                  <Icon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
-                  <span className='truncate'>{suggestion}</span>
-                </button>
-              );
-            })}
-          </div>
-          {filteredSuggestions.length > 8 && (
-            <div className='border-t border-border px-4 py-2 text-xs text-muted-foreground text-center'>
-              Scroll for more results
+      {/* Suggestions Dropdown via Portal */}
+      {showSuggestions &&
+        filteredSuggestions.length > 0 &&
+        inputRect &&
+        createPortal(
+          <div
+            ref={suggestionsRef}
+            style={{
+              position: 'absolute',
+              top: inputRect.bottom + window.scrollY,
+              left: inputRect.left + window.scrollX,
+              width: inputRect.width,
+              zIndex: 100,
+            }}
+            className='mt-2 bg-background border border-border rounded-lg shadow-dropdown max-h-52 overflow-y-auto'
+          >
+            <div className='max-h-64 py-2'>
+              {filteredSuggestions.map((suggestion, index) => {
+                const Icon = searchTabs.find((tab) => tab.value === activeTab)?.icon || Search;
+                return (
+                  <button
+                    key={suggestion}
+                    type='button'
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    className={`w-full text-left px-4 py-3 hover:bg-accent transition-colors duration-150 flex items-center gap-3 text-sm ${
+                      index === selectedIndex
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-foreground'
+                    }`}
+                  >
+                    <Icon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
+                    <span className='truncate'>{suggestion}</span>
+                  </button>
+                );
+              })}
             </div>
-          )}
-        </div>
-      )}
+            {filteredSuggestions.length > 8 && (
+              <div className='border-t border-border px-4 py-2 text-xs text-muted-foreground text-center'>
+                Scroll for more results
+              </div>
+            )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

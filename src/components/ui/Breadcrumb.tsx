@@ -12,7 +12,7 @@ interface BreadcrumbProps {
 }
 
 const Breadcrumb: React.FC<BreadcrumbProps> = ({ title, items }) => (
-  <section className='breadcrumb-section pt-0'>
+  <section className='breadcrumb-section pt-0 mt-4 sm:mt-0'>
     <div className='container-fluid-lg'>
       <div className='row'>
         <div className='col-12'>
