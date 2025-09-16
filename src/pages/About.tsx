@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import Breadcrumb from '@/components/ui/Breadcrumb';
 import Slider from 'react-slick';
 
 const clientsAndTeamsSlideSettings = {
@@ -42,32 +42,13 @@ const reviewsSliderSettings = {
   ],
 };
 
-
 const About = () => {
   return (
     <div>
-      {/* Breadcrumb Section Start */}
-      <section className='breadcrumb-section pt-0'>
-        <div className='container-fluid-lg'>
-          <div className='row'>
-            <div className='col-12'>
-              <div className='breadcrumb-contain'>
-                <h2>About Us</h2>
-                <nav>
-                  <ol className='breadcrumb mb-0'>
-                    <li className='breadcrumb-item'>
-                      <Link to='/'>
-                        <i className='fa-solid fa-house'></i>
-                      </Link>
-                    </li>
-                    <li className='breadcrumb-item active'>About Us</li>
-                  </ol>
-                </nav>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Breadcrumb
+        title='About Us'
+        items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'About Us' }]}
+      />
       <section className='fresh-vegetable-section section-lg-space'>
         <div className='container-fluid-lg'>
           <div className='row gx-xl-5 gy-xl-0 g-3 ratio_148_1'>
@@ -488,7 +469,7 @@ const About = () => {
           <div className='row'>
             <div className='col-12'>
               <div className='slider-4-half product-wrapper overflow-hidden'>
-                <Slider {...reviewsSliderSettings} >
+                <Slider {...reviewsSliderSettings}>
                   <div>
                     <div className='reviewer-box'>
                       <i className='fa-solid fa-quote-right'></i>

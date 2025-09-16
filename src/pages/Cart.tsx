@@ -1,30 +1,12 @@
-import { Link } from 'react-router-dom';
+import Breadcrumb from '@/components/ui/Breadcrumb';
 
 const Cart = () => {
   return (
     <div>
-      {/* Breadcrumb Section Start */}
-      <section className='breadcrumb-section pt-0'>
-        <div className='container-fluid-lg'>
-          <div className='row'>
-            <div className='col-12'>
-              <div className='breadcrumb-contain'>
-                <h2>Cart</h2>
-                <nav>
-                  <ol className='breadcrumb mb-0'>
-                    <li className='breadcrumb-item'>
-                      <Link to='/'>
-                        <i className='fa-solid fa-house'></i>
-                      </Link>
-                    </li>
-                    <li className='breadcrumb-item active'>Cart</li>
-                  </ol>
-                </nav>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Breadcrumb
+        title='Cart'
+        items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'Cart' }]}
+      />
 
       {/* Cart Section Start */}
       <section className='cart-section section-b-space'>
