@@ -1,4 +1,5 @@
 import React from 'react';
+import EditProfileModal from './EditProfileModal';
 
 const DashboardHome: React.FC = () => (
   <div className='dashboard-home'>
@@ -62,9 +63,14 @@ const DashboardHome: React.FC = () => (
         <div className='dashboard-content-title'>
           <h4>
             Contact Information{' '}
-            <a href='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#editProfile'>
+            <button
+              type='button'
+              className='!text-[15px] text-emerald-600'
+              data-bs-toggle='modal'
+              data-bs-target='#editProfile'
+            >
               Edit
-            </a>
+            </button>
           </h4>
         </div>
         <div className='dashboard-detail'>
@@ -73,26 +79,18 @@ const DashboardHome: React.FC = () => (
           <a href='javascript:void(0)'>Change Password</a>
         </div>
       </div>
-      <div className='col-xxl-6'>
-        <div className='dashboard-content-title'>
-          <h4>
-            Newsletters{' '}
-            <a href='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#editProfile'>
-              Edit
-            </a>
-          </h4>
-        </div>
-        <div className='dashboard-detail'>
-          <h6 className='text-content'>You are currently not subscribed to any newsletter</h6>
-        </div>
-      </div>
       <div className='col-12'>
         <div className='dashboard-content-title'>
           <h4>
             Address Book{' '}
-            <a href='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#editProfile'>
+            <button
+              type='button'
+              className='!text-[15px] text-emerald-600'
+              data-bs-toggle='modal'
+              data-bs-target='#editProfile'
+            >
               Edit
-            </a>
+            </button>
           </h4>
         </div>
         <div className='row g-4'>
@@ -100,23 +98,35 @@ const DashboardHome: React.FC = () => (
             <div className='dashboard-detail'>
               <h6 className='text-content'>Default Billing Address</h6>
               <h6 className='text-content'>You have not set a default billing address.</h6>
-              <a href='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#editProfile'>
+              <button
+                type='button'
+                className='!text-[15px] text-emerald-600'
+                data-bs-toggle='modal'
+                data-bs-target='#editProfile'
+              >
                 Edit Address
-              </a>
+              </button>
             </div>
           </div>
           <div className='col-xxl-6'>
             <div className='dashboard-detail'>
               <h6 className='text-content'>Default Shipping Address</h6>
               <h6 className='text-content'>You have not set a default shipping address.</h6>
-              <a href='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#editProfile'>
-                Edit Address
-              </a>
+            <button
+              type='button'
+              className='!text-[15px] text-emerald-600'
+              data-bs-toggle='modal'
+              data-bs-target='#editProfile'
+            >
+              Edit Address
+            </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+    {/* Modal for editing the profile */}
+    <EditProfileModal />
   </div>
 );
 
