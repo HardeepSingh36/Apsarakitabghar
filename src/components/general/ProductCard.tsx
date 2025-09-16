@@ -48,7 +48,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
       <div className='product-detail position-relative md:mt-4'>
         <h6 className='weight'>{item.title}</h6>
         <Link to={`/books/${item.id}`} className='!no-underline'>
-          <h5 className='name'>Home Decor Lucky Deer Family Matte Finish Ceramic Figures</h5>
+          <h5 className='name'>{item.description}</h5>
         </Link>
         <h6 className='byers'>
           <span>By</span> {item.author_names || 'Unknown Author'}
