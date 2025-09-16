@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className='section-t-space footer-section-2 footer-color-3 mt-16'>
@@ -5,9 +7,9 @@ const Footer = () => {
         <div className='main-footer'>
           <div className='row g-md-4 gy-sm-5'>
             <div className='col-xxl-3 col-xl-4 col-sm-6'>
-              <a href='index.html' className='foot-logo theme-logo'>
+              <Link to='/' className='foot-logo theme-logo'>
                 <img src='/assets/logo/apsra.svg' className='img-fluid blur-up lazyload' alt='' />
-              </a>
+              </Link>
               <p className='information-text information-text-2'>
                 it is a long established fact that a reader will be distracted by the readable
                 content.

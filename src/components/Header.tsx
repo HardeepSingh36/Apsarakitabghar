@@ -232,13 +232,12 @@ const Header = () => {
                           </li>
 
                           <li className='nav-item dropdown new-nav-item xl:!ml-4'>
-                            <a
+                            <Link
                               className='nav-link no-dropdown dropdown-toggle'
-                              href='javascript:void(0)'
-                              data-bs-toggle='dropdown'
+                              to="/contact"
                             >
                               Contact Us
-                            </a>
+                            </Link>
                           </li>
                         </ul>
                       </div>

@@ -1,4 +1,5 @@
 import { useCurrency } from "@/context/CurrencyContext";
+import { Link } from "react-router-dom";
 
 // Order summary items as JSON array
 const orderItems = [
@@ -54,9 +55,9 @@ const Checkout = () => {
                 <nav>
                   <ol className='breadcrumb mb-0'>
                     <li className='breadcrumb-item'>
-                      <a href='index.html'>
+                      <Link to='/'>
                         <i className='fa-solid fa-house'></i>
-                      </a>
+                      </Link>
                     </li>
                     <li className='breadcrumb-item active'>Checkout</li>
                   </ol>

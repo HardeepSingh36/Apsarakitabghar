@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 
 const clientsAndTeamsSlideSettings = {
@@ -24,7 +25,6 @@ const reviewsSliderSettings = {
   speed: 500,
   slidesToShow: 4,
   slidesToScroll: 1,
-  centerMode: true,
   responsive: [
     {
       breakpoint: 1200,
@@ -33,13 +33,10 @@ const reviewsSliderSettings = {
     {
       breakpoint: 992,
       settings: { slidesToShow: 3 },
+      centerMode: true,
     },
     {
-      breakpoint: 768,
-      settings: { slidesToShow: 2 },
-    },
-    {
-      breakpoint: 480,
+      breakpoint: 800,
       settings: { slidesToShow: 1 },
     },
   ],
@@ -59,9 +56,9 @@ const About = () => {
                 <nav>
                   <ol className='breadcrumb mb-0'>
                     <li className='breadcrumb-item'>
-                      <a href='index.html'>
+                      <Link to='/'>
                         <i className='fa-solid fa-house'></i>
-                      </a>
+                      </Link>
                     </li>
                     <li className='breadcrumb-item active'>About Us</li>
                   </ol>

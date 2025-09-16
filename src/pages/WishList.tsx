@@ -1,5 +1,5 @@
 import AddProductBox from '@/components/general/AddProductBox';
-
+import { Link } from 'react-router-dom';
 
 const wishlistItems = [
   {
@@ -94,9 +94,9 @@ const WishList = () => {
                 <nav>
                   <ol className='breadcrumb mb-0'>
                     <li className='breadcrumb-item'>
-                      <a href='index.html'>
+                      <Link to='/'>
                         <i className='fa-solid fa-house'></i>
-                      </a>
+                      </Link>
                     </li>
                     <li className='breadcrumb-item active'>Wishlist</li>
                   </ol>
@@ -114,12 +114,7 @@ const WishList = () => {
             {wishlistItems.map((item) => (
               <div key={item.key}>
                 <div className='wishlist-box'>
-                  <AddProductBox
-                    key={item.key}
-                    product={item}
-                    idx={item.key}
-                    removeButton={true}
-                  />
+                  <AddProductBox key={item.key} product={item} idx={item.key} removeButton={true} />
                 </div>
               </div>
             ))}

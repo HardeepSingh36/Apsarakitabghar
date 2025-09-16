@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AllCategories from './AllCategories';
+import { Link } from 'react-router-dom';
 
 const MobileFixMenu = () => {
   const [showCategories, setShowCategories] = useState(false);
@@ -8,10 +9,10 @@ const MobileFixMenu = () => {
       <div className='mobile-menu d-md-none d-block mobile-cart'>
         <ul>
           <li className='active'>
-            <a href='index.html'>
+            <Link to='/'>
               <i className='iconly-Home icli'></i>
               <span>Home</span>
-            </a>
+            </Link>
           </li>
 
           <li className='mobile-category'>

@@ -482,7 +482,7 @@ const Cart = () => {
 
                     <li>
                       <button
-                        onClick={() => (window.location.href = 'index.html')}
+                        onClick={() => (window.location.href = '/')}
                         className='btn btn-light shopping-button text-dark'
                       >
                         <i className='fa-solid fa-arrow-left-long'></i>Return To Shopping
