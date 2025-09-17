@@ -1,6 +1,6 @@
 import Slider from 'react-slick';
 import AddProductBox from '../general/AddProductBox';
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 
 const relatedProducts = [
   {

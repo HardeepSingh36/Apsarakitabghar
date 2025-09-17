@@ -1,7 +1,63 @@
 import RelatedProducts from '@/components/bookdetail/RelatedProducts';
 import Reviews from '@/components/bookdetail/Reviews';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import type { Book } from '@/types/types';
+import { getBooks } from '@/services/bookService';
+
+const fallbackBook: Book = {
+  id: 6,
+  title: 'The Lost Tales',
+  subtitle: 'Adventures Beyond',
+  slug: 'the-lost-tales',
+  description: 'A thrilling collection of stories set in mystical lands.',
+  isbn: '978-1234560006',
+  language: 'English',
+  publisher_id: 1,
+  published_date: '2021-05-10',
+  edition: '1st',
+  pages: 320,
+  format: 'paperback',
+  price: 499,
+  discount: 10,
+  stock: 50,
+  cover_image: '6.jpg',
+  sample_file: '',
+  author_ids: ['5'],
+  category_ids: ['6'],
+  status: 'active',
+  created_by: 1,
+  created_at: '2025-09-16 09:37:42',
+  updated_at: '2025-09-16 11:12:17',
+  trending: 1,
+  top: 0,
+  popular: 1,
+  publisher_name: 'Super Admin',
+  author_names: 'Harbhajan Singh',
+  discounted_price: 449.1,
+  cover_image_url: 'https://apsrakitabghar.com/uploads/covers/6.jpg',
+};
 
 const BookDetail = () => {
+  const { id } = useParams();
+  const [book, setBook] = useState<Book | null>(null);
+
+  useEffect(() => {
+    async function fetchBook() {
+      try {
+        // getBooks returns a list, so we find by id
+        const data = await getBooks({});
+        const found = data?.books?.find((b: Book) => String(b.id) === String(id));
+        setBook(found || fallbackBook);
+      } catch (e) {
+        setBook(fallbackBook);
+      }
+    }
+    fetchBook();
+  }, [id]);
+
+  if (!book) return null;
+
   return (
     <>
       <section className='product-section !max-w-screen'>
@@ -17,11 +73,15 @@ const BookDetail = () => {
                           <div>
                             <div className='slider-image'>
                               <img
-                                src='/assets/images/product/category/1.jpg'
+                                src={
+                                  book.cover_image_url || '/assets/images/product/category/1.jpg'
+                                }
                                 id='img-1'
-                                data-zoom-image='/assets/images/product/category/1.jpg'
+                                data-zoom-image={
+                                  book.cover_image_url || '/assets/images/product/category/1.jpg'
+                                }
                                 className='img-fluid image_zoom_cls-0 blur-up lazyload'
-                                alt=''
+                                alt={book.title || ''}
                               />
                             </div>
                           </div>
@@ -33,12 +93,17 @@ const BookDetail = () => {
 
                 <div className='col-xl-6 wow fadeInUp' data-wow-delay='0.1s'>
                   <div className='right-box-contain'>
-                    <h6 className='offer-top'>30% Off</h6>
-                    <h2 className='name'>Creamy Chocolate Cake</h2>
+                    <h6 className='offer-top'>
+                      {book.discount ? `${book.discount}% Off` : '30% Off'}
+                    </h6>
+                    <h2 className='name'>{book.title || 'Book Title'}</h2>
                     <div className='price-rating'>
                       <h3 className='theme-color price'>
-                        $49.50 <del className='text-content'>$58.46</del>{' '}
-                        <span className='offer theme-color'>(8% off)</span>
+                        ₹{book.discounted_price || book.price}{' '}
+                        <del className='text-content'>₹{book.price}</del>{' '}
+                        <span className='offer theme-color'>
+                          ({book.discount ? `${book.discount}% off` : '8% off'})
+                        </span>
                       </h3>
                       <div className='product-rating custom-rate'>
                         <ul className='rating'>
@@ -63,11 +128,7 @@ const BookDetail = () => {
                     </div>
 
                     <div className='product-contain'>
-                      <p>
-                        Lollipop cake chocolate chocolate cake dessert jujubes. Shortbread sugar
-                        plum dessert powder cookie sweet brownie. Cake cookie apple pie dessert
-                        sugar plum muffin cheesecake.
-                      </p>
+                      <p>{book.description || 'No description available.'}</p>
                     </div>
 
                     {/* Book Formats */}
@@ -77,18 +138,36 @@ const BookDetail = () => {
                       </div>
                       <ul className='select-package'>
                         <li>
-                          <a href='javascript:void(0)' className='active'>
+                          <a
+                            href='javascript:void(0)'
+                            className={book.format === 'hardcover' ? 'active' : ''}
+                          >
                             Hardcover
                           </a>
                         </li>
                         <li>
-                          <a href='javascript:void(0)'>Paperback</a>
+                          <a
+                            href='javascript:void(0)'
+                            className={book.format === 'paperback' ? 'active' : ''}
+                          >
+                            Paperback
+                          </a>
                         </li>
                         <li>
-                          <a href='javascript:void(0)'>eBook</a>
+                          <a
+                            href='javascript:void(0)'
+                            className={book.format === 'ebook' ? 'active' : ''}
+                          >
+                            eBook
+                          </a>
                         </li>
                         <li>
-                          <a href='javascript:void(0)'>Audiobook</a>
+                          <a
+                            href='javascript:void(0)'
+                            className={book.format === 'audiobook' ? 'active' : ''}
+                          >
+                            Audiobook
+                          </a>
                         </li>
                       </ul>
                     </div>
@@ -121,17 +200,18 @@ const BookDetail = () => {
                         </div>
                       </div>
 
-                      <button
-                        // onclick="location.href = 'cart.html';"
-                        className='btn btn-md bg-dark cart-button text-white w-100'
-                      >
+                      <button className='btn btn-md bg-dark cart-button text-white w-100'>
                         Add To Cart
                       </button>
                     </div>
 
                     <div className='progress-sec'>
                       <div className='left-progressbar'>
-                        <h6>Please hurry! Only 5 left in stock</h6>
+                        <h6>
+                          {book.stock
+                            ? `Please hurry! Only ${book.stock} left in stock`
+                            : 'Please hurry! Only 5 left in stock'}
+                        </h6>
                       </div>
                     </div>
 
@@ -149,28 +229,35 @@ const BookDetail = () => {
 
                       <div className='pickup-detail'>
                         <h4 className='text-content'>
-                          Lollipop cake chocolate chocolate cake dessert jujubes. Shortbread sugar
-                          plum dessert powder cookie sweet brownie.
+                          {book.publisher_name ||
+                            'Noodles & Company is an American fast-casual restaurant that offers international and American noodle dishes and pasta.'}
                         </h4>
                       </div>
 
                       <div className='product-info'>
                         <ul className='product-info-list product-info-list-2'>
                           <li>
-                            Type : <a href='javascript:void(0)'>Black Forest</a>
+                            Type : <a href='javascript:void(0)'>{book.format || 'Black Forest'}</a>
                           </li>
                           <li>
-                            SKU : <a href='javascript:void(0)'>SDFVW65467</a>
+                            SKU : <a href='javascript:void(0)'>{book.isbn || 'SDFVW65467'}</a>
                           </li>
                           <li>
-                            MFG : <a href='javascript:void(0)'>Jun 4, 2022</a>
+                            MFG :{' '}
+                            <a href='javascript:void(0)'>{book.published_date || 'Jun 4, 2022'}</a>
                           </li>
                           <li>
-                            Stock : <a href='javascript:void(0)'>2 Items Left</a>
+                            Stock :{' '}
+                            <a href='javascript:void(0)'>
+                              {book.stock ? `${book.stock} Items Left` : '2 Items Left'}
+                            </a>
                           </li>
                           <li>
-                            Tags : <a href='javascript:void(0)'>Cake,</a>{' '}
-                            <a href='javascript:void(0)'>Backery</a>
+                            Tags :{' '}
+                            <a href='javascript:void(0)'>
+                              {book.category_ids?.join(', ') || 'Cake,'}
+                            </a>{' '}
+                            <a href='javascript:void(0)'>{book.language || 'Backery'}</a>
                           </li>
                         </ul>
                       </div>
@@ -278,16 +365,7 @@ const BookDetail = () => {
                       <div className='tab-pane fade show active' id='description' role='tabpanel'>
                         <div className='product-description'>
                           <div className='nav-desh'>
-                            <p>
-                              Jelly beans carrot cake icing biscuit oat cake gummi bears tart. Lemon
-                              drops carrot cake pudding sweet gummi bears. Chocolate cake tart
-                              cupcake donut topping liquorice sugar plum chocolate bar. Jelly beans
-                              tiramisu caramels jujubes biscuit liquorice chocolate. Pudding toffee
-                              jujubes oat cake sweet roll. Lemon drops dessert croissant danish cake
-                              cupcake. Sweet roll candy chocolate toffee jelly sweet roll halvah
-                              brownie topping. Marshmallow powder candy sesame snaps jelly beans
-                              candy canes marshmallow gingerbread pie.
-                            </p>
+                            <p>{book.description || 'No description available.'}</p>
                           </div>
 
                           <div className='nav-desh'>
@@ -368,11 +446,11 @@ const BookDetail = () => {
                               </tr>
                               <tr>
                                 <td>Brand</td>
-                                <td>Lavian Exotique</td>
+                                <td>{book.publisher_name || 'Lavian Exotique'}</td>
                               </tr>
                               <tr>
                                 <td>Form</td>
-                                <td>Bar Brownie</td>
+                                <td>{book.format || 'Bar Brownie'}</td>
                               </tr>
                               <tr>
                                 <td>Package Information</td>
@@ -380,15 +458,15 @@ const BookDetail = () => {
                               </tr>
                               <tr>
                                 <td>Manufacturer</td>
-                                <td>Prayagh Nutri Product Pvt Ltd</td>
+                                <td>{book.publisher_name || 'Prayagh Nutri Product Pvt Ltd'}</td>
                               </tr>
                               <tr>
                                 <td>Item part number</td>
-                                <td>LE 014 - 20pcs Crème Bakes (Pack of 2)</td>
+                                <td>{book.isbn || 'LE 014 - 20pcs Crème Bakes (Pack of 2)'}</td>
                               </tr>
                               <tr>
                                 <td>Net Quantity</td>
-                                <td>40.00 count</td>
+                                <td>{book.pages || '40.00 count'}</td>
                               </tr>
                             </tbody>
                           </table>
@@ -417,7 +495,7 @@ const BookDetail = () => {
                     </div>
 
                     <div className='vendor-name'>
-                      <h5 className='fw-500'>Noodles Co.</h5>
+                      <h5 className='fw-500'>{book.publisher_name || 'Noodles Co.'}</h5>
 
                       <div className='product-rating mt-1'>
                         <ul className='rating'>
@@ -443,8 +521,8 @@ const BookDetail = () => {
                   </div>
 
                   <p className='vendor-detail !border-b-0'>
-                    Noodles & Company is an American fast-casual restaurant that offers
-                    international and American noodle dishes and pasta.
+                    {book.publisher_name ||
+                      'Noodles & Company is an American fast-casual restaurant that offers international and American noodle dishes and pasta.'}
                   </p>
                 </div>
 
@@ -558,10 +636,7 @@ const BookDetail = () => {
                           <span className='theme-color fw-bold'>Freshes</span> Products
                         </h3>
                         <h3 className='fw-light'>every hour</h3>
-                        <button
-                          //  onclick="location.href = 'shop-left-sidebar.html';"
-                          className='btn btn-animation btn-md fw-bold mend-auto'
-                        >
+                        <button className='btn btn-animation btn-md fw-bold mend-auto'>
                           Shop Now <i className='fa-solid fa-arrow-right icon'></i>
                         </button>
                       </div>
@@ -573,7 +648,7 @@ const BookDetail = () => {
           </div>
         </div>
       </section>
-      <section className="product-list-section section-b-space">
+      <section className='product-list-section section-b-space'>
         <RelatedProducts />
       </section>
     </>

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -47,24 +47,40 @@ const Footer = () => {
               </div>
               <ul className='footer-list footer-contact footer-list-light'>
                 <li>
-                  <Link to='/about' className='light-text'>
+                  <Link
+                    to='/about'
+                    className='light-text'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <a href='contact-us.html' className='light-text'>
+                  <Link
+                    to='/privacy-policy'
+                    className='light-text'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href='term_condition.html' className='light-text'>
+                  <Link
+                    to='/term-conditions'
+                    className='light-text'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
                     Terms & Conditions
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href='term_condition.html' className='light-text'>
+                  <Link
+                    to='/query-form'
+                    className='light-text'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
                     Query Form
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
