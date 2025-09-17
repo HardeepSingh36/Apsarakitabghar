@@ -19,15 +19,15 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
         </div>
       )}
       <div className='product-image'>
-        <ul className='product-option !hidden md:!block'>
+        <ul className='product-option !hidden md:!block !px-8'>
           <li data-tip='Add to cart'>
-            <Link to='cart.html' data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
+            <Link to='/cart' data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
               <ShoppingCart size={18} className='mx-auto text-gray-600' />
             </Link>
             <Tooltip id='cart-tooltip' />
           </li>
           <li data-tooltip-id='wishlist-tooltip' data-tooltip-content='Add to wishlist'>
-            <Link to='wishlist.html' className='notifi-wishlist'>
+            <Link to='/wishlist' className='notifi-wishlist'>
               <Heart size={18} className='mx-auto text-gray-600' />
             </Link>
             <Tooltip id='wishlist-tooltip' />

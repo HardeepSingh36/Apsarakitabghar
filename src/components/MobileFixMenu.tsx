@@ -23,21 +23,21 @@ const MobileFixMenu = () => {
           </li>
 
           <li>
-            <a href='search.html' className='search-box'>
+            <a href='/' className='search-box'>
               <i className='iconly-Search icli'></i>
               <span>Search</span>
             </a>
           </li>
 
           <li>
-            <a href='wishlist.html' className='notifi-wishlist'>
+            <a href='/wishlist' className='notifi-wishlist'>
               <i className='iconly-Heart icli'></i>
               <span>My Wish</span>
             </a>
           </li>
 
           <li>
-            <a href='cart.html'>
+            <a href='/cart'>
               <i className='iconly-Bag-2 icli fly-cate'></i>
               <span>Cart</span>
             </a>

@@ -10,7 +10,7 @@ const Header = () => {
         <div className='container-fluid-lg'>
           <div className='flex justify-between'>
             <div className='col-xxl-2 d-xxl-block text-white'>
-              <Link to='/' className='flex text-white gap-2'>
+              <Link to='/' className='flex text-white gap-2 min-w-36'>
                 <Printer size={18} />
                 Publish With Us
               </Link>
@@ -152,32 +152,32 @@ const Header = () => {
 
                             <ul className='dropdown-menu'>
                               <li>
-                                <a className='dropdown-item' href='shop-category-slider.html'>
+                                <a className='dropdown-item' href='/'>
                                   Best Selling Audiobooks
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='shop-category.html'>
+                                <a className='dropdown-item' href='/'>
                                   Best Selling eBooks
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='shop-banner.html'>
+                                <a className='dropdown-item' href='/'>
                                   Best Selling Print Books
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='shop-left-sidebar.html'>
+                                <a className='dropdown-item' href='/'>
                                   Editor’s Picks
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='shop-list.html'>
+                                <a className='dropdown-item' href='/'>
                                   Trending Now
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='shop-right-sidebar.html'>
+                                <a className='dropdown-item' href='/'>
                                   All-Time Best Sellers
                                 </a>
                               </li>
@@ -195,27 +195,27 @@ const Header = () => {
 
                             <ul className='dropdown-menu'>
                               <li>
-                                <a className='dropdown-item' href='shop-category-slider.html'>
+                                <a className='dropdown-item' href='/'>
                                   Children
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='shop-category.html'>
+                                <a className='dropdown-item' href='/'>
                                   Education
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='shop-banner.html'>
+                                <a className='dropdown-item' href='/'>
                                   Fiction
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='shop-left-sidebar.html'>
+                                <a className='dropdown-item' href='/'>
                                   Non-Fiction
                                 </a>
                               </li>
                               <li>
-                                <a className='dropdown-item' href='shop-list.html'>
+                                <a className='dropdown-item' href='/'>
                                   Poetry
                                 </a>
                               </li>
@@ -307,7 +307,7 @@ const Header = () => {
 
                             <li className='product-box-contain !w-full'>
                               <div className='drop-cart'>
-                                <a href='product-left-thumbnail.html' className='drop-image'>
+                                <a href='/cart' className='drop-image'>
                                   <img
                                     src='/assets/images/book/product/33.jpg'
                                     className='blur-up lazyload'
@@ -316,7 +316,7 @@ const Header = () => {
                                 </a>
 
                                 <div className='drop-contain'>
-                                  <a href='product-left-thumbnail.html'>
+                                  <a href='/cart'>
                                     <h5>The Lost Tales</h5>
                                   </a>
                                   <h6>
@@ -366,7 +366,7 @@ const Header = () => {
                           <li className='product-box-contain'>
                             <i></i>
                             <a
-                              href='login.html'
+                              href='/'
                               className='!no-underline
 '
                             >
@@ -376,7 +376,7 @@ const Header = () => {
 
                           <li className='product-box-contain'>
                             <a
-                              href='sign-up.html'
+                              href='/'
                               className='!no-underline
 '
                             >
@@ -386,7 +386,7 @@ const Header = () => {
 
                           <li className='product-box-contain'>
                             <a
-                              href='forgot.html'
+                              href='/'
                               className='!no-underline
 '
                             >

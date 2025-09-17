@@ -8,16 +8,6 @@ import DashboardProfile from './DashboardProfile';
 import DashboardReviews from './DashboardReviews';
 import DashboardSupport from './DashboardSupport';
 
-const tabIcons = {
-  dashboard: 'home',
-  order: 'shopping-bag',
-  wishlist: 'heart',
-  reviews: 'star',
-  address: 'map-pin',
-  payment: 'credit-card',
-  profile: 'user',
-  support: 'help-circle',
-};
 
 const DashboardMain: React.FC = () => (
   <div className='dashboard-right-sidebar'>

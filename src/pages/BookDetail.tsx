@@ -216,7 +216,7 @@ const BookDetail = () => {
                     </div>
 
                     <div className='buy-box'>
-                      <a href='wishlist.html'>
+                      <a href='/wishlist'>
                         <i data-feather='heart'></i>
                         <span>Add To Wishlist</span>
                       </a>

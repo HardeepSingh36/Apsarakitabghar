@@ -10,7 +10,7 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
     >
       <div className='product-header'>
         <div className='product-image'>
-          <a href='product-left-thumbnail.html'>
+          <a href={`/books/50`}>
             <img src={product.img} className='img-fluid blur-up lazyload' alt='' />
           </a>
           {removeButton && (
@@ -23,13 +23,13 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
           {showOptions && (
             <ul className='product-option'>
               <li data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
-                <Link to='cart.html'>
+                <Link to='/cart'>
                   <ShoppingCart size={18} className='mx-auto text-gray-600' />
                 </Link>
                 <Tooltip id='cart-tooltip' />
               </li>
               <li data-tooltip-id='wishlist-tooltip' data-tooltip-content='Add to wishlist'>
-                <Link to='wishlist.html' className='notifi-wishlist'>
+                <Link to='/wishlist' className='notifi-wishlist'>
                   <Heart size={18} className='mx-auto text-gray-600' />
                 </Link>
                 <Tooltip id='wishlist-tooltip' />
@@ -47,7 +47,7 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
       <div className='product-footer'>
         <div className='product-detail'>
           <span className='span-name'>{product.spanName}</span>
-          <a href='product-left-thumbnail.html'>
+          <a href={`/book/50`}>
             <h5 className='name'>{product.name}</h5>
           </a>
           <div className='product-rating mt-2'>

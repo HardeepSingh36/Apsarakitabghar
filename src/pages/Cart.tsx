@@ -240,7 +240,7 @@ const Cart = () => {
                   <ul>
                     <li>
                       <button
-                        onClick={() => (window.location.href = 'checkout.html')}
+                        onClick={() => (window.location.href = '/checkout')}
                         className='btn btn-animation proceed-btn fw-bold'
                       >
                         Process To Checkout

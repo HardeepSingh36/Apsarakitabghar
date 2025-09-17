@@ -4,6 +4,7 @@ import Header from './components/Header';
 import MobileFixMenu from './components/MobileFixMenu';
 import Home from './pages/Home';
 import { Route, Routes } from 'react-router-dom';
+import BooksPage from './pages/BooksPage';
 import BookDetail from './pages/BookDetail';
 import Footer from './components/Footer';
 import Cart from './pages/Cart';
@@ -32,6 +33,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/books/:id' element={<BookDetail />} />
+        <Route path='/books' element={<BooksPage />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/wishlist' element={<WishList />} />
         <Route path='/checkout' element={<Checkout />} />
