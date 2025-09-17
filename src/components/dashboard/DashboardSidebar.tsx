@@ -22,11 +22,11 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
     <>
       <div
         className={`fixed ${
-          !show && 'hidden'
+          !show && 'hidden -z-2'
         } top-0 left-0 w-screen h-screen bg-black/20 z-40 lg:hidden`}
       ></div>
       <div
-        className={`dashboard-left-sidebar ${show && 'show !z-50'}`}
+        className={`dashboard-left-sidebar ${show ? 'show !z-50' : ''}`}
         style={{ scrollbarWidth: 'none' }}
       >
         <div className='close-button d-flex d-lg-none'>
@@ -98,6 +98,18 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               onClick={onClose}
             >
               <i data-feather='heart'></i> Wishlist
+            </button>
+          </li>
+          <li className='nav-item' role='presentation'>
+            <button
+              className='nav-link'
+              id='pills-reviews-tab'
+              data-bs-toggle='pill'
+              data-bs-target='#pills-reviews'
+              type='button'
+              onClick={onClose}
+            >
+              <i data-feather='star'></i> Reviews
             </button>
           </li>
           <li className='nav-item' role='presentation'>

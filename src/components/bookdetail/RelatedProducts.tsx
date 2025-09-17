@@ -1,5 +1,6 @@
 import Slider from 'react-slick';
 import AddProductBox from '../general/AddProductBox';
+import React, { useEffect, useState } from 'react';
 
 const relatedProducts = [
   {
@@ -81,33 +82,37 @@ const relatedProducts = [
   },
 ];
 
-const sliderSettings = {
+const getSlidesToShow = (width: number) => {
+  if (width < 480) return 2;
+  if (width < 768) return 3;
+  if (width < 992) return 4;
+  if (width < 1200) return 6;
+  return 6;
+};
+
+const baseSliderSettings = {
   dots: true,
   infinite: true,
   speed: 500,
-  slidesToShow: 6,
   slidesToScroll: 1,
-  responsive: [
-    {
-      breakpoint: 1200,
-      settings: { slidesToShow: 6 },
-    },
-    {
-      breakpoint: 992,
-      settings: { slidesToShow: 4 },
-    },
-    {
-      breakpoint: 768,
-      settings: { slidesToShow: 3 },
-    },
-    {
-      breakpoint: 480,
-      settings: { slidesToShow: 2 },
-    },
-  ],
 };
 
 const RelatedProducts = () => {
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const sliderSettings = {
+    ...baseSliderSettings,
+    slidesToShow: getSlidesToShow(windowWidth),
+  };
+
   return (
     <div className='container-fluid-lg'>
       <div className='title'>
@@ -121,9 +126,9 @@ const RelatedProducts = () => {
       <div className='row'>
         <div className='col-12'>
           <div className='slider-6_1 product-wrapper'>
-            <Slider {...sliderSettings}>
+            <Slider key={windowWidth} {...sliderSettings}>
               {relatedProducts.map((product, idx) => (
-                <AddProductBox key={product.key} product={product} idx={idx} showOptions={true}/>
+                <AddProductBox key={product.key} product={product} idx={idx} showOptions={true} />
               ))}
             </Slider>
           </div>

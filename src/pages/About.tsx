@@ -1,48 +1,54 @@
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import Slider from 'react-slick';
+import { useEffect, useState } from 'react';
 
-const clientsAndTeamsSlideSettings = {
+const getClientsAndTeamsSlidesToShow = (width: number) => {
+  if (width < 650) return 1;
+  if (width < 992) return 2;
+  return 3;
+};
+
+const getReviewsSlidesToShow = (width: number) => {
+  if (width < 800) return 1;
+  if (width < 992) return 3;
+  if (width < 1200) return 4;
+  return 4;
+};
+
+const baseClientsAndTeamsSettings = {
   dots: true,
   infinite: true,
   speed: 500,
-  slidesToShow: 3,
   slidesToScroll: 1,
-  responsive: [
-    {
-      breakpoint: 992,
-      settings: { slidesToShow: 2 },
-    },
-    {
-      breakpoint: 650,
-      settings: { slidesToShow: 1 },
-    },
-  ],
 };
 
-const reviewsSliderSettings = {
+const baseReviewsSettings = {
   dots: true,
   infinite: true,
   speed: 500,
-  slidesToShow: 4,
   slidesToScroll: 1,
-  responsive: [
-    {
-      breakpoint: 1200,
-      settings: { slidesToShow: 4 },
-    },
-    {
-      breakpoint: 992,
-      settings: { slidesToShow: 3 },
-      centerMode: true,
-    },
-    {
-      breakpoint: 800,
-      settings: { slidesToShow: 1 },
-    },
-  ],
 };
-
 const About = () => {
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const clientsAndTeamsSlideSettings = {
+    ...baseClientsAndTeamsSettings,
+    slidesToShow: getClientsAndTeamsSlidesToShow(windowWidth),
+  };
+
+  const reviewsSliderSettings = {
+    ...baseReviewsSettings,
+    slidesToShow: getReviewsSlidesToShow(windowWidth),
+  };
+
   return (
     <div>
       <Breadcrumb
@@ -65,7 +71,6 @@ const About = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className='col-6'>
                   <div className='fresh-image'>
                     <div>
@@ -79,7 +84,6 @@ const About = () => {
                 </div>
               </div>
             </div>
-
             <div className='col-xl-6 col-12'>
               <div className='fresh-contain p-center-left'>
                 <div>
@@ -87,7 +91,6 @@ const About = () => {
                     <h4>About Us</h4>
                     <h2>We make Organic Food In Market</h2>
                   </div>
-
                   <div className='delivery-list'>
                     <p className='text-content'>
                       Just a few seconds to measure your body temperature. Up to 5 users! The
@@ -97,7 +100,6 @@ const About = () => {
                       with over 100 new products dropping on the monthly, bringing you the latest
                       looks for less.
                     </p>
-
                     <ul className='delivery-box'>
                       <li>
                         <div className='delivery-box'>
@@ -108,25 +110,21 @@ const About = () => {
                               alt=''
                             />
                           </div>
-
                           <div className='delivery-detail'>
                             <h5 className='text'>Free delivery for all orders</h5>
                           </div>
                         </div>
                       </li>
-
                       <li>
                         <div className='delivery-box'>
                           <div className='delivery-icon'>
                             <img src='assets/svg/3/leaf.svg' className='blur-up lazyload' alt='' />
                           </div>
-
                           <div className='delivery-detail'>
                             <h5 className='text'>Only fresh foods</h5>
                           </div>
                         </div>
                       </li>
-
                       <li>
                         <div className='delivery-box'>
                           <div className='delivery-icon'>
@@ -136,19 +134,16 @@ const About = () => {
                               alt=''
                             />
                           </div>
-
                           <div className='delivery-detail'>
                             <h5 className='text'>Free delivery for all orders</h5>
                           </div>
                         </div>
                       </li>
-
                       <li>
                         <div className='delivery-box'>
                           <div className='delivery-icon'>
                             <img src='assets/svg/3/leaf.svg' className='blur-up lazyload' alt='' />
                           </div>
-
                           <div className='delivery-detail'>
                             <h5 className='text'>Only fresh foods</h5>
                           </div>
@@ -170,9 +165,8 @@ const About = () => {
                 <h4>What We Do</h4>
                 <h2 className='center'>We are Trusted by Clients</h2>
               </div>
-
               <div className='slider-3_1 product-wrapper'>
-                <Slider {...clientsAndTeamsSlideSettings}>
+                <Slider key={windowWidth + '-clients'} {...clientsAndTeamsSlideSettings}>
                   <div>
                     <div className='clint-contain'>
                       <div className='client-icon'>
@@ -187,7 +181,6 @@ const About = () => {
                       </p>
                     </div>
                   </div>
-
                   <div>
                     <div className='clint-contain'>
                       <div className='client-icon'>
@@ -201,7 +194,6 @@ const About = () => {
                       </p>
                     </div>
                   </div>
-
                   <div>
                     <div className='clint-contain'>
                       <div className='client-icon'>
@@ -221,7 +213,6 @@ const About = () => {
           </div>
         </div>
       </section>
-
       <section className='team-section section-lg-space'>
         <div className='container-fluid-lg'>
           <div className='about-us-title text-center'>
@@ -231,7 +222,7 @@ const About = () => {
           <div className='row'>
             <div className='col-12'>
               <div className='slider-user product-wrapper'>
-                <Slider {...clientsAndTeamsSlideSettings}>
+                <Slider key={windowWidth + '-team'} {...clientsAndTeamsSlideSettings}>
                   <div>
                     <div className='team-box'>
                       <div className='team-image'>
@@ -241,7 +232,6 @@ const About = () => {
                           alt=''
                         />
                       </div>
-
                       <div className='team-name'>
                         <h3>Anna Baranov</h3>
                         <h5>Marketing</h5>
@@ -252,19 +242,16 @@ const About = () => {
                               <i className='fa-brands fa-facebook-f'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://in.pinterest.com/' className='pint-bg'>
                               <i className='fa-brands fa-pinterest-p'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://twitter.com/' className='twitter-bg'>
                               <i className='fa-brands fa-twitter'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://www.instagram.com/' className='insta-bg'>
                               <i className='fa-brands fa-instagram'></i>
@@ -274,7 +261,6 @@ const About = () => {
                       </div>
                     </div>
                   </div>
-
                   <div>
                     <div className='team-box'>
                       <div className='team-image'>
@@ -284,7 +270,6 @@ const About = () => {
                           alt=''
                         />
                       </div>
-
                       <div className='team-name'>
                         <h3>Anna Baranov</h3>
                         <h5>Marketing</h5>
@@ -297,19 +282,16 @@ const About = () => {
                               <i className='fa-brands fa-facebook-f'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://in.pinterest.com/' className='pint-bg'>
                               <i className='fa-brands fa-pinterest-p'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://twitter.com/' className='twitter-bg'>
                               <i className='fa-brands fa-twitter'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://www.instagram.com/' className='insta-bg'>
                               <i className='fa-brands fa-instagram'></i>
@@ -319,7 +301,6 @@ const About = () => {
                       </div>
                     </div>
                   </div>
-
                   <div>
                     <div className='team-box'>
                       <div className='team-image'>
@@ -329,7 +310,6 @@ const About = () => {
                           alt=''
                         />
                       </div>
-
                       <div className='team-name'>
                         <h3>Anna Baranov</h3>
                         <h5>Marketing</h5>
@@ -342,19 +322,16 @@ const About = () => {
                               <i className='fa-brands fa-facebook-f'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://in.pinterest.com/' className='pint-bg'>
                               <i className='fa-brands fa-pinterest-p'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://twitter.com/' className='twitter-bg'>
                               <i className='fa-brands fa-twitter'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://www.instagram.com/' className='insta-bg'>
                               <i className='fa-brands fa-instagram'></i>
@@ -364,7 +341,6 @@ const About = () => {
                       </div>
                     </div>
                   </div>
-
                   <div>
                     <div className='team-box'>
                       <div className='team-image'>
@@ -374,7 +350,6 @@ const About = () => {
                           alt=''
                         />
                       </div>
-
                       <div className='team-name'>
                         <h3>Anna Baranov</h3>
                         <h5>Marketing</h5>
@@ -388,19 +363,16 @@ const About = () => {
                               <i className='fa-brands fa-facebook-f'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://in.pinterest.com/' className='pint-bg'>
                               <i className='fa-brands fa-pinterest-p'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://twitter.com/' className='twitter-bg'>
                               <i className='fa-brands fa-twitter'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://www.instagram.com/' className='insta-bg'>
                               <i className='fa-brands fa-instagram'></i>
@@ -410,7 +382,6 @@ const About = () => {
                       </div>
                     </div>
                   </div>
-
                   <div>
                     <div className='team-box'>
                       <div className='team-image'>
@@ -420,7 +391,6 @@ const About = () => {
                           alt=''
                         />
                       </div>
-
                       <div className='team-name'>
                         <h3>Anna Baranov</h3>
                         <h5>Marketing</h5>
@@ -431,19 +401,16 @@ const About = () => {
                               <i className='fa-brands fa-facebook-f'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://in.pinterest.com/' className='pint-bg'>
                               <i className='fa-brands fa-pinterest-p'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://twitter.com/' className='twitter-bg'>
                               <i className='fa-brands fa-twitter'></i>
                             </a>
                           </li>
-
                           <li>
                             <a href='https://www.instagram.com/' className='insta-bg'>
                               <i className='fa-brands fa-instagram'></i>
@@ -459,7 +426,6 @@ const About = () => {
           </div>
         </div>
       </section>
-
       <section className='review-section section-lg-space'>
         <div className='container-fluid'>
           <div className='about-us-title text-center'>
@@ -469,7 +435,7 @@ const About = () => {
           <div className='row'>
             <div className='col-12'>
               <div className='slider-4-half product-wrapper overflow-hidden'>
-                <Slider {...reviewsSliderSettings}>
+                <Slider key={windowWidth + '-reviews'} {...reviewsSliderSettings}>
                   <div>
                     <div className='reviewer-box'>
                       <i className='fa-solid fa-quote-right'></i>
@@ -492,15 +458,12 @@ const About = () => {
                           </li>
                         </ul>
                       </div>
-
                       <h3>Top Quality, Beautiful Location</h3>
-
                       <p>
                         "I usually try to keep my sadness pent up inside where it can fester quietly
                         as a mental illness. There, now he's trapped in a book I wrote: a crummy
                         world of plot holes and spelling errors! As an interesting side note."
                       </p>
-
                       <div className='reviewer-profile'>
                         <div className='reviewer-image'>
                           <img
@@ -509,7 +472,6 @@ const About = () => {
                             alt=''
                           />
                         </div>
-
                         <div className='reviewer-name'>
                           <h4>Betty J. Turner</h4>
                           <h6>CTO, Company</h6>
@@ -517,7 +479,6 @@ const About = () => {
                       </div>
                     </div>
                   </div>
-
                   <div>
                     <div className='reviewer-box'>
                       <i className='fa-solid fa-quote-right'></i>
@@ -540,154 +501,11 @@ const About = () => {
                           </li>
                         </ul>
                       </div>
-
                       <h3>Top Quality, Beautiful Location</h3>
-
                       <p>
-                        "My busy schedule leaves little, if any, time for blogging and social media.
-                        The Lorem Ipsum Company has been a huge part of helping me grow my business
-                        through organic search and content marketing."
-                      </p>
-                      <div className='reviewer-profile'>
-                        <div className='reviewer-image'>
-                          <img
-                            src='assets/images/inner-page/user/2.jpg'
-                            className='blur-up lazyload'
-                            alt=''
-                          />
-                        </div>
-
-                        <div className='reviewer-name'>
-                          <h4>Alfredo S. Rocha</h4>
-                          <h6>Project Manager</h6>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className='reviewer-box'>
-                      <i className='fa-solid fa-quote-right'></i>
-                      <div className='product-rating'>
-                        <ul className='rating'>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star'></i>
-                          </li>
-                        </ul>
-                      </div>
-
-                      <h3>Top Quality, Beautiful Location</h3>
-
-                      <p>
-                        "Professional, responsive, and able to keep up with ever-changing demand and
-                        tight deadlines: That's how I would describe Jeramy and his team at The
-                        Lorem Ipsum Company. When it comes to content marketing."
-                      </p>
-                      <div className='reviewer-profile'>
-                        <div className='reviewer-image'>
-                          <img
-                            src='assets/images/inner-page/user/3.jpg'
-                            className='blur-up lazyload'
-                            alt=''
-                          />
-                        </div>
-
-                        <div className='reviewer-name'>
-                          <h4>Donald C. Spurr</h4>
-                          <h6>Sale Agents</h6>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className='reviewer-box'>
-                      <i className='fa-solid fa-quote-right'></i>
-                      <div className='product-rating'>
-                        <ul className='rating'>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star'></i>
-                          </li>
-                        </ul>
-                      </div>
-
-                      <h3>Top Quality, Beautiful Location</h3>
-
-                      <p>
-                        "After being forced to move twice within five years, our customers had a
-                        hard time finding us and our sales plummeted. The Lorem Ipsum Co. not only
-                        revitalized our brand."
-                      </p>
-                      <div className='reviewer-profile'>
-                        <div className='reviewer-image'>
-                          <img
-                            src='assets/images/inner-page/user/4.jpg'
-                            className='blur-up lazyload'
-                            alt=''
-                          />
-                        </div>
-
-                        <div className='reviewer-name'>
-                          <h4>Terry G. Fain</h4>
-                          <h6>Photographer</h6>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className='reviewer-box'>
-                      <i className='fa-solid fa-quote-right'></i>
-                      <div className='product-rating'>
-                        <ul className='rating'>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star' className='fill'></i>
-                          </li>
-                          <li>
-                            <i data-feather='star'></i>
-                          </li>
-                        </ul>
-                      </div>
-
-                      <h3>Top Quality, Beautiful Location</h3>
-
-                      <p>
-                        "I was skeptical of SEO and content marketing at first, but the Lorem Ipsum
-                        Company not only proved itself financially speaking, but the response I have
-                        received from customers is incredible."
+                        "I usually try to keep my sadness pent up inside where it can fester quietly
+                        as a mental illness. There, now he's trapped in a book I wrote: a crummy
+                        world of plot holes and spelling errors! As an interesting side note."
                       </p>
                       <div className='reviewer-profile'>
                         <div className='reviewer-image'>
@@ -697,15 +515,13 @@ const About = () => {
                             alt=''
                           />
                         </div>
-
                         <div className='reviewer-name'>
-                          <h4>Gwen J. Geiger</h4>
-                          <h6>Designer</h6>
+                          <h4>Betty J. Turner</h4>
+                          <h6>CTO, Company</h6>
                         </div>
                       </div>
                     </div>
-                  </div>
-
+                  </div>{' '}
                   <div>
                     <div className='reviewer-box'>
                       <i className='fa-solid fa-quote-right'></i>
@@ -728,32 +544,27 @@ const About = () => {
                           </li>
                         </ul>
                       </div>
-
                       <h3>Top Quality, Beautiful Location</h3>
-
                       <p>
-                        "Jeramy and his team at the Lorem Ipsum Company whipped my website into
-                        shape just in time for tax season. I was excited by the results and am proud
-                        to direct clients to my website once again."
+                        "I usually try to keep my sadness pent up inside where it can fester quietly
+                        as a mental illness. There, now he's trapped in a book I wrote: a crummy
+                        world of plot holes and spelling errors! As an interesting side note."
                       </p>
-
                       <div className='reviewer-profile'>
                         <div className='reviewer-image'>
                           <img
-                            src='assets/images/inner-page/user/2.jpg'
+                            src='assets/images/inner-page/user/1.jpg'
                             className='blur-up lazyload'
                             alt=''
                           />
                         </div>
-
                         <div className='reviewer-name'>
-                          <h4>Constance K. Whang</h4>
-                          <h6>CEO, Company</h6>
+                          <h4>Betty J. Turner</h4>
+                          <h6>CTO, Company</h6>
                         </div>
                       </div>
                     </div>
                   </div>
-
                   <div>
                     <div className='reviewer-box'>
                       <i className='fa-solid fa-quote-right'></i>
@@ -776,31 +587,27 @@ const About = () => {
                           </li>
                         </ul>
                       </div>
-
                       <h3>Top Quality, Beautiful Location</h3>
-
                       <p>
-                        "Yeah, and if you were the pope they'd be all, "Straighten your pope hat."
-                        And "Put on your good vestments." What are their names? Yep, I remember.
-                        They came in last at the Olympics!"
+                        "I usually try to keep my sadness pent up inside where it can fester quietly
+                        as a mental illness. There, now he's trapped in a book I wrote: a crummy
+                        world of plot holes and spelling errors! As an interesting side note."
                       </p>
                       <div className='reviewer-profile'>
                         <div className='reviewer-image'>
                           <img
-                            src='assets/images/inner-page/user/3.jpg'
+                            src='assets/images/inner-page/user/1.jpg'
                             className='blur-up lazyload'
                             alt=''
                           />
                         </div>
-
                         <div className='reviewer-name'>
-                          <h4>Christopher R. Lee</h4>
-                          <h6>Managing Director</h6>
+                          <h4>Betty J. Turner</h4>
+                          <h6>CTO, Company</h6>
                         </div>
                       </div>
                     </div>
                   </div>
-
                   <div>
                     <div className='reviewer-box'>
                       <i className='fa-solid fa-quote-right'></i>
@@ -823,27 +630,23 @@ const About = () => {
                           </li>
                         </ul>
                       </div>
-
                       <h3>Top Quality, Beautiful Location</h3>
-
                       <p>
-                        "Good man. Nixon's pro-war and pro-family. Hey, tell me something. You've
-                        got all this money. How come you always dress like you're doing your
-                        laundry? So, how 'bout them Knicks? What kind of a father would I be if I
-                        said no?."
+                        "I usually try to keep my sadness pent up inside where it can fester quietly
+                        as a mental illness. There, now he's trapped in a book I wrote: a crummy
+                        world of plot holes and spelling errors! As an interesting side note."
                       </p>
                       <div className='reviewer-profile'>
                         <div className='reviewer-image'>
                           <img
-                            src='assets/images/inner-page/user/4.jpg'
+                            src='assets/images/inner-page/user/1.jpg'
                             className='blur-up lazyload'
                             alt=''
                           />
                         </div>
-
                         <div className='reviewer-name'>
-                          <h4>Eileen R. Chu</h4>
-                          <h6>Marketing Director</h6>
+                          <h4>Betty J. Turner</h4>
+                          <h6>CTO, Company</h6>
                         </div>
                       </div>
                     </div>
@@ -854,7 +657,6 @@ const About = () => {
           </div>
         </div>
       </section>
-
       <footer className='section-t-space'>
         <div className='container-fluid-lg'>
           <div className='service-section'>
@@ -865,37 +667,30 @@ const About = () => {
                     <div className='service-image'>
                       <img src='assets/svg/product.svg' className='blur-up lazyload' alt='' />
                     </div>
-
                     <div className='service-detail'>
                       <h5>Every Fresh Products</h5>
                     </div>
                   </div>
-
                   <div className='service-box'>
                     <div className='service-image'>
                       <img src='assets/svg/delivery.svg' className='blur-up lazyload' alt='' />
                     </div>
-
                     <div className='service-detail'>
                       <h5>Free Delivery For Order Over $50</h5>
                     </div>
                   </div>
-
                   <div className='service-box'>
                     <div className='service-image'>
                       <img src='assets/svg/discount.svg' className='blur-up lazyload' alt='' />
                     </div>
-
                     <div className='service-detail'>
                       <h5>Daily Mega Discounts</h5>
                     </div>
                   </div>
-
                   <div className='service-box'>
                     <div className='service-image'>
                       <img src='assets/svg/market.svg' className='blur-up lazyload' alt='' />
                     </div>
-
                     <div className='service-detail'>
                       <h5>Best Price On The Market</h5>
                     </div>
@@ -904,16 +699,13 @@ const About = () => {
               </div>
             </div>
           </div>
-
           <div className='sub-footer section-small-space'>
             <div className='reserve'>
               <h6 className='text-content'>©2024 Apsra Kitab Ghar All rights reserved</h6>
             </div>
-
             <div className='payment'>
               <img src='assets/images/payment/1.png' className='blur-up lazyload' alt='' />
             </div>
-
             <div className='social-link'>
               <h6 className='text-content'>Stay connected :</h6>
               <ul>
@@ -945,5 +737,4 @@ const About = () => {
     </div>
   );
 };
-
 export default About;

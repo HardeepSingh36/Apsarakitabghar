@@ -4,7 +4,7 @@ import Reviews from '@/components/bookdetail/Reviews';
 const BookDetail = () => {
   return (
     <>
-      <section className='product-section'>
+      <section className='product-section !max-w-screen'>
         <div className='container-fluid-lg'>
           <div className='row'>
             <div className='col-xxl-9 col-xl-8 col-lg-7 wow fadeInUp'>
