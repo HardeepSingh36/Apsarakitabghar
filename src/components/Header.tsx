@@ -11,7 +11,7 @@ const Header = () => {
           <div className='flex justify-between'>
             <div className='col-xxl-2 d-xxl-block text-white'>
               <Link to='/' className='flex text-white gap-2'>
-                <Printer size={18}/>
+                <Printer size={18} />
                 Publish With Us
               </Link>
             </div>
@@ -223,19 +223,13 @@ const Header = () => {
                           </li>
 
                           <li className='nav-item'>
-                            <Link
-                              className='nav-link no-dropdown ps-xl-2 ps-0'
-                              to="/about"
-                            >
+                            <Link className='nav-link no-dropdown ps-xl-2 ps-0' to='/about'>
                               About Us
                             </Link>
                           </li>
 
                           <li className='nav-item dropdown new-nav-item xl:!ml-4'>
-                            <Link
-                              className='nav-link no-dropdown dropdown-toggle'
-                              to="/contact"
-                            >
+                            <Link className='nav-link no-dropdown dropdown-toggle' to='/contact'>
                               Contact Us
                             </Link>
                           </li>
@@ -287,20 +281,20 @@ const Header = () => {
 
                         <div className='onhover-div'>
                           <ul className='cart-list'>
-                            <li className='product-box-contain'>
+                            <li className='product-box-contain !w-full'>
                               <div className='drop-cart'>
-                                <a href='product-left-thumbnail.html' className='drop-image'>
+                                <Link to='/cart' className='drop-image'>
                                   <img
-                                    src='/assets/images/vegetable/product/1.png'
+                                    src='/assets/images/book/product/32.jpg'
                                     className='blur-up lazyload'
                                     alt=''
                                   />
-                                </a>
+                                </Link>
 
                                 <div className='drop-contain'>
-                                  <a href='product-left-thumbnail.html'>
-                                    <h5>Fantasy Crunchy Choco Chip Cookies</h5>
-                                  </a>
+                                  <Link to='/cart'>
+                                    <h5>The Lost tales v2</h5>
+                                  </Link>
                                   <h6>
                                     <span>1 x</span> $80.58
                                   </h6>
@@ -311,11 +305,11 @@ const Header = () => {
                               </div>
                             </li>
 
-                            <li className='product-box-contain'>
+                            <li className='product-box-contain !w-full'>
                               <div className='drop-cart'>
                                 <a href='product-left-thumbnail.html' className='drop-image'>
                                   <img
-                                    src='/assets/images/vegetable/product/2.png'
+                                    src='/assets/images/book/product/33.jpg'
                                     className='blur-up lazyload'
                                     alt=''
                                   />
@@ -323,7 +317,7 @@ const Header = () => {
 
                                 <div className='drop-contain'>
                                   <a href='product-left-thumbnail.html'>
-                                    <h5>Peanut Butter Bite Premium Butter Cookies 600 g</h5>
+                                    <h5>The Lost Tales</h5>
                                   </a>
                                   <h6>
                                     <span>1 x</span> $25.68

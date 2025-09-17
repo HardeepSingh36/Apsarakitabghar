@@ -1,6 +1,49 @@
 import Breadcrumb from '@/components/ui/Breadcrumb';
 
 const Cart = () => {
+  // Book-themed cart items
+  const cartItems = [
+    {
+      id: 32,
+      name: 'The Lost Tales',
+      author: 'Harbhajan Singh',
+      img: '/assets/images/book/product/32.jpg',
+      soldBy: 'Super Admin',
+      quantity: 1,
+      pages: 320,
+      price: 449,
+      oldPrice: 499,
+      saving: 50,
+      total: 449,
+    },
+    {
+      id: 33,
+      name: 'Whispers of the Wind',
+      author: 'Amanpreet Kaur',
+      img: '/assets/images/book/product/33.jpg',
+      soldBy: 'Super Admin',
+      quantity: 2,
+      pages: 280,
+      price: 399,
+      oldPrice: 450,
+      saving: 51,
+      total: 798,
+    },
+    {
+      id: 34,
+      name: 'Echoes of Eternity',
+      author: 'Ravinder Singh',
+      img: '/assets/images/book/product/34.jpg',
+      soldBy: 'Super Admin',
+      quantity: 1,
+      pages: 350,
+      price: 499,
+      oldPrice: 550,
+      saving: 51,
+      total: 499,
+    },
+  ];
+
   return (
     <div>
       <Breadcrumb
@@ -17,169 +60,43 @@ const Cart = () => {
                 <div className='table-responsive-xl'>
                   <table className='table'>
                     <tbody>
-                      <tr className='product-box-contain'>
-                        <td className='product-detail'>
-                          <div className='product border-0'>
-                            <a href='product-left-thumbnail.html' className='product-image'>
-                              <img
-                                src='../assets/images/vegetable/product/1.png'
-                                className='img-fluid blur-up lazyload'
-                                alt=''
-                              />
-                            </a>
-                            <div className='product-detail'>
-                              <ul>
-                                <li className='name'>
-                                  <a href='product-left-thumbnail.html'>Bell pepper</a>
-                                </li>
-
-                                <li className='text-content'>
-                                  <span className='text-title'>Sold By:</span> Fresho
-                                </li>
-
-                                <li className='text-content'>
-                                  <span className='text-title'>Quantity</span> - 500 g
-                                </li>
-
-                                <li>
-                                  <h5 className='text-content d-inline-block'>Price :</h5>
-                                  <span>$35.10</span>
-                                  <span className='text-content'>$45.68</span>
-                                </li>
-
-                                <li>
-                                  <h5 className='saving theme-color'>Saving : $20.68</h5>
-                                </li>
-
-                                <li className='quantity-price-box'>
-                                  <div className='cart_qty'>
-                                    <div className='input-group'>
-                                      <button
-                                        type='button'
-                                        className='btn qty-left-minus'
-                                        data-type='minus'
-                                        data-field=''
-                                      >
-                                        <i className='fa fa-minus ms-0'></i>
-                                      </button>
-                                      <input
-                                        className='form-control input-number qty-input'
-                                        type='text'
-                                        name='quantity'
-                                        value='0'
-                                      />
-                                      <button
-                                        type='button'
-                                        className='btn qty-right-plus'
-                                        data-type='plus'
-                                        data-field=''
-                                      >
-                                        <i className='fa fa-plus ms-0'></i>
-                                      </button>
-                                    </div>
-                                  </div>
-                                </li>
-
-                                <li>
-                                  <h5>Total: $35.10</h5>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td className='price'>
-                          <h4 className='table-title text-content'>Price</h4>
-                          <h5>
-                            $35.10 <del className='text-content'>$45.68</del>
-                          </h5>
-                          <h6 className='theme-color'>You Save : $20.68</h6>
-                        </td>
-
-                        <td className='quantity'>
-                          <h4 className='table-title text-content'>Qty</h4>
-                          <div className='quantity-price'>
-                            <div className='cart_qty'>
-                              <div className='input-group'>
-                                <button
-                                  type='button'
-                                  className='btn qty-left-minus'
-                                  data-type='minus'
-                                  data-field=''
-                                >
-                                  <i className='fa fa-minus ms-0'></i>
-                                </button>
-                                <input
-                                  className='form-control input-number qty-input'
-                                  type='text'
-                                  name='quantity'
-                                  value='0'
+                      {cartItems.map((item) => (
+                        <tr className='product-box-contain' key={item.id}>
+                          <td className='product-detail'>
+                            <div className='product border-0'>
+                              <a href={`/books/${item.id}`} className='product-image'>
+                                <img
+                                  src={item.img}
+                                  className='img-fluid blur-up lazyload'
+                                  alt={item.name}
                                 />
-                                <button
-                                  type='button'
-                                  className='btn qty-right-plus'
-                                  data-type='plus'
-                                  data-field=''
-                                >
-                                  <i className='fa fa-plus ms-0'></i>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td className='subtotal'>
-                          <h4 className='table-title text-content'>Total</h4>
-                          <h5>$35.10</h5>
-                        </td>
-
-                        <td className='save-remove'>
-                          <h4 className='table-title text-content'>Action</h4>
-                          <a className='save notifi-wishlist' href='javascript:void(0)'>
-                            Save for later
-                          </a>
-                          <a className='remove close_button' href='javascript:void(0)'>
-                            Remove
-                          </a>
-                        </td>
-                      </tr>
-
-                      <tr className='product-box-contain'>
-                        <td className='product-detail'>
-                          <div className='product border-0'>
-                            <a href='product-left-thumbnail.html' className='product-image'>
-                              <img
-                                src='../assets/images/vegetable/product/2.png'
-                                className='img-fluid blur-up lazyload'
-                                alt=''
-                              />
-                            </a>
-                            <div className='product-detail'>
-                              <ul>
-                                <li className='name'>
-                                  <a href='product-left-thumbnail.html'>Eggplant</a>
-                                </li>
-
-                                <li className='text-content'>
-                                  <span className='text-title'>Sold By:</span> Nesto
-                                </li>
-
-                                <li className='text-content'>
-                                  <span className='text-title'>Quantity</span> - 250 g
-                                </li>
-
-                                <li>
-                                  <h5 className='text-content d-inline-block'>Price :</h5>
-                                  <span>$35.10</span>
-                                  <span className='text-content'>$45.68</span>
-                                </li>
-
-                                <li>
-                                  <h5 className='saving theme-color'>Saving : $20.68</h5>
-                                </li>
-
-                                <li className='quantity'>
-                                  <div className='quantity-price'>
+                              </a>
+                              <div className='product-detail'>
+                                <ul>
+                                  <li className='name'>
+                                    <a href={`/books/${item.id}`}>{item.name}</a>
+                                  </li>
+                                  <li className='text-content'>
+                                    <span className='text-title'>Author:</span> {item.author}
+                                  </li>
+                                  <li className='text-content'>
+                                    <span className='text-title'>Sold By:</span> {item.soldBy}
+                                  </li>
+                                  <li className='text-content'>
+                                    <span className='text-title'>Pages:</span> {item.pages}
+                                  </li>
+                                  <li className='text-content'>
+                                    <span className='text-title'>Quantity:</span> {item.quantity}
+                                  </li>
+                                  <li>
+                                    <h5 className='text-content d-inline-block'>Price :</h5>
+                                    <span>₹{item.price}</span>
+                                    <span className='text-content'>₹{item.oldPrice}</span>
+                                  </li>
+                                  <li>
+                                    <h5 className='saving theme-color'>Saving : ₹{item.saving}</h5>
+                                  </li>
+                                  <li className='quantity-price-box'>
                                     <div className='cart_qty'>
                                       <div className='input-group'>
                                         <button
@@ -194,7 +111,8 @@ const Cart = () => {
                                           className='form-control input-number qty-input'
                                           type='text'
                                           name='quantity'
-                                          value='0'
+                                          value={item.quantity}
+                                          readOnly
                                         />
                                         <button
                                           type='button'
@@ -206,201 +124,68 @@ const Cart = () => {
                                         </button>
                                       </div>
                                     </div>
-                                  </div>
-                                </li>
-
-                                <li>
-                                  <h5>Total: $52.95</h5>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td className='price'>
-                          <h4 className='table-title text-content'>Price</h4>
-                          <h5>
-                            $52.95 <del className='text-content'>$68.49</del>
-                          </h5>
-                          <h6 className='theme-color'>You Save : $15.14</h6>
-                        </td>
-
-                        <td className='quantity'>
-                          <h4 className='table-title text-content'>Qty</h4>
-                          <div className='quantity-price'>
-                            <div className='cart_qty'>
-                              <div className='input-group'>
-                                <button
-                                  type='button'
-                                  className='btn qty-left-minus'
-                                  data-type='minus'
-                                  data-field=''
-                                >
-                                  <i className='fa fa-minus ms-0'></i>
-                                </button>
-                                <input
-                                  className='form-control input-number qty-input'
-                                  type='text'
-                                  name='quantity'
-                                  value='0'
-                                />
-                                <button
-                                  type='button'
-                                  className='btn qty-right-plus'
-                                  data-type='plus'
-                                  data-field=''
-                                >
-                                  <i className='fa fa-plus ms-0'></i>
-                                </button>
+                                  </li>
+                                  <li>
+                                    <h5>Total: ₹{item.total}</h5>
+                                  </li>
+                                </ul>
                               </div>
                             </div>
-                          </div>
-                        </td>
-
-                        <td className='subtotal'>
-                          <h4 className='table-title text-content'>Total</h4>
-                          <h5>$52.95</h5>
-                        </td>
-
-                        <td className='save-remove'>
-                          <h4 className='table-title text-content'>Action</h4>
-                          <a className='save notifi-wishlist' href='javascript:void(0)'>
-                            Save for later
-                          </a>
-                          <a className='remove close_button' href='javascript:void(0)'>
-                            Remove
-                          </a>
-                        </td>
-                      </tr>
-
-                      <tr className='product-box-contain'>
-                        <td className='product-detail'>
-                          <div className='product border-0'>
-                            <a href='product-left-thumbnail.html' className='product-image'>
-                              <img
-                                src='../assets/images/vegetable/product/3.png'
-                                className='img-fluid blur-up lazyload'
-                                alt=''
-                              />
+                          </td>
+                          <td className='price'>
+                            <h4 className='table-title text-content'>Price</h4>
+                            <h5>
+                              ₹{item.price} <del className='text-content'>₹{item.oldPrice}</del>
+                            </h5>
+                            <h6 className='theme-color'>You Save : ₹{item.saving}</h6>
+                          </td>
+                          <td className='quantity'>
+                            <h4 className='table-title text-content'>Qty</h4>
+                            <div className='quantity-price'>
+                              <div className='cart_qty'>
+                                <div className='input-group'>
+                                  <button
+                                    type='button'
+                                    className='btn qty-left-minus'
+                                    data-type='minus'
+                                    data-field=''
+                                  >
+                                    <i className='fa fa-minus ms-0'></i>
+                                  </button>
+                                  <input
+                                    className='form-control input-number qty-input'
+                                    type='text'
+                                    name='quantity'
+                                    value={item.quantity}
+                                    readOnly
+                                  />
+                                  <button
+                                    type='button'
+                                    className='btn qty-right-plus'
+                                    data-type='plus'
+                                    data-field=''
+                                  >
+                                    <i className='fa fa-plus ms-0'></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className='subtotal'>
+                            <h4 className='table-title text-content'>Total</h4>
+                            <h5>₹{item.total}</h5>
+                          </td>
+                          <td className='save-remove'>
+                            <h4 className='table-title text-content'>Action</h4>
+                            <a className='save notifi-wishlist' href='javascript:void(0)'>
+                              Save for later
                             </a>
-                            <div className='product-detail'>
-                              <ul>
-                                <li className='name'>
-                                  <a href='product-left-thumbnail.html'>Onion</a>
-                                </li>
-
-                                <li className='text-content'>
-                                  <span className='text-title'>Sold By:</span> Basket
-                                </li>
-
-                                <li className='text-content'>
-                                  <span className='text-title'>Quantity</span> - 750 g
-                                </li>
-
-                                <li>
-                                  <h5 className='text-content d-inline-block'>Price :</h5>
-                                  <span>$35.10</span>
-                                  <span className='text-content'>$45.68</span>
-                                </li>
-
-                                <li>
-                                  <h5 className='saving theme-color'>Saving : $20.68</h5>
-                                </li>
-
-                                <li className='quantity'>
-                                  <div className='quantity-price'>
-                                    <div className='cart_qty'>
-                                      <div className='input-group'>
-                                        <button
-                                          type='button'
-                                          className='btn qty-left-minus'
-                                          data-type='minus'
-                                          data-field=''
-                                        >
-                                          <i className='fa fa-minus ms-0'></i>
-                                        </button>
-                                        <input
-                                          className='form-control input-number qty-input'
-                                          type='text'
-                                          name='quantity'
-                                          value='0'
-                                        />
-                                        <button
-                                          type='button'
-                                          className='btn qty-right-plus'
-                                          data-type='plus'
-                                          data-field=''
-                                        >
-                                          <i className='fa fa-plus ms-0'></i>
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-
-                                <li>
-                                  <h5>Total: $67.36</h5>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td className='price'>
-                          <h4 className='table-title text-content'>Price</h4>
-                          <h5>
-                            $67.36 <del className='text-content'>$96.58</del>
-                          </h5>
-                          <h6 className='theme-color'>You Save : $29.22</h6>
-                        </td>
-
-                        <td className='quantity'>
-                          <h4 className='table-title text-content'>Qty</h4>
-                          <div className='quantity-price'>
-                            <div className='cart_qty'>
-                              <div className='input-group'>
-                                <button
-                                  type='button'
-                                  className='btn qty-left-minus'
-                                  data-type='minus'
-                                  data-field=''
-                                >
-                                  <i className='fa fa-minus ms-0'></i>
-                                </button>
-                                <input
-                                  className='form-control input-number qty-input'
-                                  type='text'
-                                  name='quantity'
-                                  value='0'
-                                />
-                                <button
-                                  type='button'
-                                  className='btn qty-right-plus'
-                                  data-type='plus'
-                                  data-field=''
-                                >
-                                  <i className='fa fa-plus ms-0'></i>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td className='subtotal'>
-                          <h4 className='table-title text-content'>Total</h4>
-                          <h5>$67.36</h5>
-                        </td>
-
-                        <td className='save-remove'>
-                          <h4 className='table-title text-content'>Action</h4>
-                          <a className='save notifi-wishlist' href='javascript:void(0)'>
-                            Save for later
-                          </a>
-                          <a className='remove close_button' href='javascript:void(0)'>
-                            Remove
-                          </a>
-                        </td>
-                      </tr>
+                            <a className='remove close_button' href='javascript:void(0)'>
+                              Remove
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>

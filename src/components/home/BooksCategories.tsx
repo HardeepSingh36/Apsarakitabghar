@@ -30,11 +30,13 @@ const BooksCategories = () => {
         </div>
         <div className='row'>
           <div className='col-12'>
-            <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 justify-center'>
+            <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 justify-center '>
               {categories.map((category, index) => (
                 <div key={index} className='flex items-center flex-col text-center'>
-                  <BookOpen />
-                  <Heading2 className='category-title'>{category.name}</Heading2>
+                  <BookOpen/>
+                  <p className='category-title !text-[clamp(0.985rem,2vw,1rem)]'>
+                    {category.name}
+                  </p>
                 </div>
               ))}
             </div>

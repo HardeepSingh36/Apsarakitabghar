@@ -11,18 +11,18 @@ const DashboardReviews: React.FC = () => (
       </span>
     </div>
     <div className='row g-sm-4 g-3'>
-      {/* Example review item, replicate as needed */}
+      {/* Book review item example */}
       <div className='col-xxl-4 col-lg-6 col-md-6 col-sm-12'>
         <div className='review-box dashboard-bg-box'>
           <div className='review-header d-flex align-items-center mb-2'>
             <img
-              src='assets/images/vegetable/product/1.png'
+              src='/assets/images/book/product/32.jpg'
               className='img-1 blur-up lazyload me-3'
-              alt=''
+              alt='The Lost Tales'
               style={{ width: 60, height: 60, borderRadius: 8 }}
             />
             <div>
-              <h5 className='mb-1'>Fantasy Crunchy Choco Chip Cookies</h5>
+              <h5 className='mb-1'>The Lost Tales</h5>
               <div className='product-rating'>
                 <ul className='rating'>
                   <li>
@@ -45,7 +45,10 @@ const DashboardReviews: React.FC = () => (
             </div>
           </div>
           <div className='review-content'>
-            <p className='text-content mb-2'>"Great taste and texture! Would buy again."</p>
+            <p className='text-content mb-2'>
+              "A captivating adventure! The storytelling kept me hooked till the end. Highly
+              recommended for all ages."
+            </p>
             <span className='text-muted small'>Reviewed on 15 Sep 2025</span>
           </div>
         </div>

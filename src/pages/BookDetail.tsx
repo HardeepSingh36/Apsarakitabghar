@@ -370,63 +370,53 @@ const BookDetail = () => {
 
                           <div className='nav-desh'>
                             <div className='desh-title'>
-                              <h5>Organic:</h5>
+                              <h5>About the Book:</h5>
                             </div>
                             <p>
-                              vitae et leo duis ut diam quam nulla porttitor massa id neque aliquam
-                              vestibulum morbi blandit cursus risus at ultrices mi tempus imperdiet
-                              nulla malesuada pellentesque elit eget gravida cum sociis natoque
-                              penatibus et magnis dis parturient montes nascetur ridiculus mus
-                              mauris vitae ultricies leo integer malesuada nunc vel risus commodo
-                              viverra maecenas accumsan lacus vel facilisis volutpat est velit
-                              egestas dui id ornare arcu odio ut sem nulla pharetra diam sit amet
-                              nisl suscipit adipiscing bibendum est ultricies integer quis auctor
-                              elit sed vulputate mi sit amet mauris commodo quis imperdiet massa
-                              tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin
-                              libero nunc consequat interdum varius sit amet mattis vulputate enim
-                              nulla aliquet porttitor lacus luctus accumsan.
+                              Dive into a world of adventure and mystery with "The Lost Tales". This
+                              book takes you on a journey through mystical lands, where every
+                              chapter reveals new secrets and challenges. Follow the protagonist as
+                              they unravel ancient puzzles, encounter magical creatures, and
+                              discover the true meaning of courage and friendship. With vivid
+                              storytelling and unforgettable characters, "The Lost Tales" is a
+                              must-read for anyone who loves epic adventures and heartwarming tales.
                             </p>
                           </div>
 
                           <div className='banner-contain nav-desh'>
                             <img
-                              src='/assets/images/vegetable/banner/14.jpg'
+                              src='/assets/images/book/banner/1.jpg'
                               className='bg-img blur-up lazyload'
                               alt=''
                             />
                             <div className='banner-details p-center banner-b-space w-100 text-center'>
                               <div>
-                                <h6 className='ls-expanded theme-color mb-sm-3 mb-1'>SUMMER</h6>
-                                <h2>VEGETABLE</h2>
-                                <p className='mx-auto mt-1'>Save up to 5% OFF</p>
+                                <h6 className='ls-expanded theme-color mb-sm-3 mb-1'>FEATURED</h6>
+                                <h2>THE LOST TALES</h2>
+                                <p className='mx-auto mt-1'>A Journey Beyond Imagination</p>
                               </div>
                             </div>
                           </div>
 
                           <div className='nav-desh'>
                             <div className='desh-title'>
-                              <h5>From The Manufacturer:</h5>
+                              <h5>Publisher's Note:</h5>
                             </div>
                             <p>
-                              Jelly beans shortbread chupa chups carrot cake jelly-o halvah apple
-                              pie pudding gingerbread. Apple pie halvah cake tiramisu shortbread
-                              cotton candy croissant chocolate cake. Tart cupcake caramels gummi
-                              bears macaroon gingerbread fruitcake marzipan wafer. Marzipan dessert
-                              cupcake ice cream tootsie roll. Brownie chocolate cake pudding cake
-                              powder candy ice cream ice cream cake. Jujubes soufflé chupa chups
-                              cake candy halvah donut. Tart tart icing lemon drops fruitcake apple
-                              pie.
+                              "The Lost Tales" is a labor of love from our team and author Harbhajan
+                              Singh. This book was crafted to inspire readers to dream big, embrace
+                              adventure, and cherish the bonds of friendship. We believe every page
+                              will transport you to a world where magic and reality blend
+                              seamlessly, and where every challenge leads to growth and discovery.
+                              Thank you for joining us on this unforgettable journey.
                             </p>
 
                             <p>
-                              Dessert liquorice tart soufflé chocolate bar apple pie pastry danish
-                              soufflé. Gummi bears halvah gingerbread jelly icing. Chocolate cake
-                              chocolate bar pudding chupa chups bear claw pie dragée donut halvah.
-                              Gummi bears cookie ice cream jelly-o jujubes sweet croissant. Marzipan
-                              cotton candy gummi bears lemon drops lollipop lollipop chocolate. Ice
-                              cream cookie dragée cake sweet roll sweet roll.Lemon drops cookie
-                              muffin carrot cake chocolate marzipan gingerbread topping chocolate
-                              bar. Soufflé tiramisu pastry sweet dessert.
+                              About the Author: Harbhajan Singh is known for his vivid imagination
+                              and captivating storytelling. With years of experience weaving tales
+                              that touch the heart, he brings characters and worlds to life in a way
+                              that resonates with readers of all ages. We are proud to present his
+                              latest work and hope it finds a special place in your collection.
                             </p>
                           </div>
                         </div>
@@ -488,12 +478,11 @@ const BookDetail = () => {
                   <div className='vendor-contain'>
                     <div className='vendor-image'>
                       <img
-                        src='/assets/images/product/vendor.png'
+                        src=''
                         className='blur-up lazyload'
                         alt=''
                       />
                     </div>
-
                     <div className='vendor-name'>
                       <h5 className='fw-500'>{book.publisher_name || 'Noodles Co.'}</h5>
 
@@ -528,92 +517,70 @@ const BookDetail = () => {
 
                 <div className='pt-25'>
                   <div className='category-menu'>
-                    <h3>Trending Products</h3>
-
+                    <h3>Trending Books</h3>
                     <ul className='product-list product-right-sidebar border-0 p-0'>
                       <li>
                         <div className='offer-product'>
-                          <a href='product-left-thumbnail.html' className='offer-image'>
+                          <a href={`/books/${fallbackBook.id}`} className='offer-image'>
                             <img
-                              src='/assets/images/vegetable/product/23.png'
+                              src={fallbackBook.cover_image_url}
                               className='img-fluid blur-up lazyload'
-                              alt=''
+                              alt={fallbackBook.title}
                             />
                           </a>
-
                           <div className='offer-detail'>
                             <div>
-                              <a href='product-left-thumbnail.html'>
-                                <h6 className='name'>Meatigo Premium Goat Curry</h6>
+                              <a href={`/books/${fallbackBook.id}`}>
+                                <h6 className='name'>{fallbackBook.title}</h6>
                               </a>
-                              <span>450 G</span>
-                              <h6 className='price theme-color'>$ 70.00</h6>
+                              <span>{fallbackBook.author_names}</span>
+                              <h6 className='price theme-color'>
+                                ₹{fallbackBook.discounted_price}
+                              </h6>
                             </div>
                           </div>
                         </div>
                       </li>
-
                       <li>
                         <div className='offer-product'>
-                          <a href='product-left-thumbnail.html' className='offer-image'>
+                          <a href={`/books/${fallbackBook.id}`} className='offer-image'>
                             <img
-                              src='/assets/images/vegetable/product/24.png'
-                              className='blur-up lazyload'
-                              alt=''
+                              src={fallbackBook.cover_image_url}
+                              className='img-fluid blur-up lazyload'
+                              alt={fallbackBook.title}
                             />
                           </a>
-
                           <div className='offer-detail'>
                             <div>
-                              <a href='product-left-thumbnail.html'>
-                                <h6 className='name'>Dates Medjoul Premium Imported</h6>
+                              <a href={`/books/${fallbackBook.id}`}>
+                                <h6 className='name'>{fallbackBook.title}</h6>
                               </a>
-                              <span>450 G</span>
-                              <h6 className='price theme-color'>$ 40.00</h6>
+                              <span>{fallbackBook.author_names}</span>
+                              <h6 className='price theme-color'>
+                                ₹{fallbackBook.discounted_price}
+                              </h6>
                             </div>
                           </div>
                         </div>
                       </li>
-
                       <li>
                         <div className='offer-product'>
-                          <a href='product-left-thumbnail.html' className='offer-image'>
+                          <a href={`/books/${fallbackBook.id}`} className='offer-image'>
                             <img
-                              src='/assets/images/vegetable/product/25.png'
-                              className='blur-up lazyload'
-                              alt=''
+                              src={fallbackBook.cover_image_url}
+                              className='img-fluid blur-up lazyload'
+                              alt={fallbackBook.title}
                             />
                           </a>
-
                           <div className='offer-detail'>
                             <div>
-                              <a href='product-left-thumbnail.html'>
-                                <h6 className='name'>Good Life Walnut Kernels</h6>
+                              <a href={`/books/${fallbackBook.id}`}>
+                                <h6 className='name'>{fallbackBook.title}</h6>
                               </a>
-                              <span>200 G</span>
-                              <h6 className='price theme-color'>$ 52.00</h6>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className='mb-0'>
-                        <div className='offer-product'>
-                          <a href='product-left-thumbnail.html' className='offer-image'>
-                            <img
-                              src='/assets/images/vegetable/product/26.png'
-                              className='blur-up lazyload'
-                              alt=''
-                            />
-                          </a>
-
-                          <div className='offer-detail'>
-                            <div>
-                              <a href='product-left-thumbnail.html'>
-                                <h6 className='name'>Apple Red Premium Imported</h6>
-                              </a>
-                              <span>1 KG</span>
-                              <h6 className='price theme-color'>$ 80.00</h6>
+                              <span>{fallbackBook.author_names}</span>
+                              <h6 className='price theme-color'>
+                                ₹{fallbackBook.discounted_price}
+                              </h6>
                             </div>
                           </div>
                         </div>
@@ -625,11 +592,11 @@ const BookDetail = () => {
                 <div className='ratio_156 pt-25'>
                   <div className='home-contain'>
                     <img
-                      src='/assets/images/vegetable/banner/8.jpg'
+                      src='/assets/images/book/banner/3.jpg'
                       className='bg-img blur-up lazyload'
                       alt=''
                     />
-                    <div className='home-detail p-top-left home-p-medium'>
+                    {/* <div className='home-detail p-top-left home-p-medium'>
                       <div>
                         <h6 className='text-yellow home-banner'>Seafood</h6>
                         <h3 className='text-uppercase fw-normal'>
@@ -640,7 +607,7 @@ const BookDetail = () => {
                           Shop Now <i className='fa-solid fa-arrow-right icon'></i>
                         </button>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

@@ -91,24 +91,24 @@ const Footer = () => {
               </div>
               <ul className='footer-list footer-list-light footer-contact'>
                 <li>
-                  <a href='order-success.html' className='light-text'>
+                  <Link to='/dashboard' className='light-text'>
                     Your Order
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href='user-dashboard.html' className='light-text'>
+                  <Link to='/dashboard' className='light-text'>
                     Your Account
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href='order-tracking.html' className='light-text'>
+                  <Link to='/dashboard' className='light-text'>
                     Track Orders
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href='wishlist.html' className='light-text'>
+                  <Link to='/dashboard' className='light-text'>
                     Your Wishlist
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

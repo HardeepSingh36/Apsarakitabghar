@@ -200,13 +200,13 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
             if (inputRef.current) setInputRect(inputRef.current.getBoundingClientRect());
           }}
           placeholder={placeholder}
-          className='h-14 !rounded-none text-lg pr-16 bg-white/95 backdrop-blur-sm border-0 shadow-subtle focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary/20 transition-all duration-200 group-hover:shadow-emerald'
+          className='h-11 md:h-14 !rounded-none text-lg pr-16 bg-white/95 backdrop-blur-sm border-0 shadow-subtle focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary/20 transition-all duration-200 group-hover:shadow-emerald'
           aria-label={ariaLabel}
         />
         <Button
           size='icon'
           variant='ghost'
-          className='absolute right-3 top-2 h-10 w-10 rounded-lg transition-all duration-200 hover:scale-105'
+          className='absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg transition-all duration-200 hover:scale-105'
           aria-label={ariaLabel}
         >
           <Search className='h-5 w-5' />
@@ -273,7 +273,7 @@ const SearchBox = () => {
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className={`!text-xs flex-1 md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:bg-teal-600 data-[state=active]:text-primary-foreground data-[state=active]:shadow-emerald transition-all duration-200 px-4`}
+                className={`!text-sm flex-1 md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:bg-teal-600 data-[state=active]:text-primary-foreground data-[state=active]:shadow-emerald transition-all duration-200 px-4`}
               >
                 <TabIcon className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />
                 {tab.label}

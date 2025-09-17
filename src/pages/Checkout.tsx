@@ -4,40 +4,25 @@ import Breadcrumb from '@/components/ui/Breadcrumb';
 // Order summary items as JSON array
 const orderItems = [
   {
-    img: '../assets/images/vegetable/product/1.png',
-    name: 'Bell pepper',
+    img: '/assets/images/book/product/32.jpg',
+    name: 'The Lost Tales',
+    author: 'Harbhajan Singh',
     qty: 1,
-    price: '$32.34',
+    price: 'INR 449',
   },
   {
-    img: '../assets/images/vegetable/product/2.png',
-    name: 'Eggplant',
-    qty: 3,
-    price: '$12.23',
-  },
-  {
-    img: '../assets/images/vegetable/product/3.png',
-    name: 'Onion',
+    img: '/assets/images/book/product/33.jpg',
+    name: 'Whispers of the Wind',
+    author: 'Amanpreet Kaur',
     qty: 2,
-    price: '$18.27',
+    price: 'INR 399',
   },
   {
-    img: '../assets/images/vegetable/product/4.png',
-    name: 'Potato',
+    img: '/assets/images/book/product/34.jpg',
+    name: 'Echoes of Eternity',
+    author: 'Ravinder Singh',
     qty: 1,
-    price: '$26.90',
-  },
-  {
-    img: '../assets/images/vegetable/product/5.png',
-    name: 'Baby Chili',
-    qty: 1,
-    price: '$19.28',
-  },
-  {
-    img: '../assets/images/vegetable/product/6.png',
-    name: 'Broccoli',
-    qty: 2,
-    price: '$29.69',
+    price: 'INR 499',
   },
 ];
 
@@ -708,27 +693,27 @@ const Checkout = () => {
                   <ul className='summery-total'>
                     <li>
                       <h4>Gross Total</h4>
-                      <h4 className='price'>$111.81</h4>
+                      <h4 className='price'>{currency} 111.81</h4>
                     </li>
 
                     <li>
                       <h4>Shipping</h4>
-                      <h4 className='price'>$8.90</h4>
+                      <h4 className='price'>{currency} 8.90</h4>
                     </li>
 
                     <li>
                       <h4>GST/Tax</h4>
-                      <h4 className='price'>$29.498</h4>
+                      <h4 className='price'>{currency} 29.498</h4>
                     </li>
 
                     <li>
                       <h4>Coupon/Code</h4>
-                      <h4 className='price'>$-23.10</h4>
+                      <h4 className='price'>{currency} -23.10</h4>
                     </li>
 
                     <li className='list-total'>
                       <h4>Total ({currency})</h4>
-                      <h4 className='price'>$19.28</h4>
+                      <h4 className='price'>{currency} 19.28</h4>
                     </li>
                   </ul>
                 </div>
@@ -737,7 +722,7 @@ const Checkout = () => {
                   <div className='offer-title'>
                     <div className='offer-icon'>
                       <img
-                        src='../assets/images/inner-page/offer.svg'
+                        src='/assets/images/inner-page/offer.svg'
                         className='img-fluid'
                         alt=''
                       />

@@ -11,38 +11,42 @@ const DashboardOrders: React.FC = () => (
       </span>
     </div>
     <div className='order-contain'>
-      {/* Example order box, replicate as needed */}
+      {/* Book order example */}
       <div className='order-box dashboard-bg-box'>
         <div className='order-container'>
           <div className='order-icon'>
-            <i data-feather='box'></i>
+            <i data-feather='book'></i>
           </div>
           <div className='order-detail'>
             <h4>
-              Delivers <span>Pending</span>
+              Delivery <span>Pending</span>
             </h4>
             <h6 className='text-content'>
-              Gouda parmesan caerphilly mozzarella cottage cheese cauliflower cheese taleggio gouda.
+              "The Lost Tales" by Harbhajan Singh is on its way to you!
             </h6>
           </div>
         </div>
         <div className='product-order-detail'>
-          <a href='product-left-thumbnail.html' className='order-image'>
-            <img src='assets/images/vegetable/product/1.png' className='blur-up lazyload' alt='' />
+          <a href='/books/32' className='order-image h-full w-36'>
+            <img
+              src='/assets/images/book/product/32.jpg'
+              className='blur-up lazyload'
+              alt='The Lost Tales'
+            />
           </a>
           <div className='order-wrap'>
-            <a href='product-left-thumbnail.html'>
-              <h3>Fantasy Crunchy Choco Chip Cookies</h3>
+            <a href='/books/32'>
+              <h3>The Lost Tales</h3>
             </a>
             <p className='text-content'>
-              Cheddar dolcelatte gouda. Macaroni cheese cheese strings feta halloumi cottage cheese
-              jarlsberg cheese triangles say cheese.
+              Dive into adventure and mystery with this bestselling book. 320 pages, paperback
+              edition.
             </p>
             <ul className='product-size'>
               <li>
                 <div className='size-box'>
                   <h6 className='text-content'>Price : </h6>
-                  <h5>$20.68</h5>
+                  <h5>₹449</h5>
                 </div>
               </li>
               <li>
@@ -72,19 +76,20 @@ const DashboardOrders: React.FC = () => (
               <li>
                 <div className='size-box'>
                   <h6 className='text-content'>Sold By : </h6>
-                  <h5>Fresho</h5>
+                  <h5>Super Admin</h5>
                 </div>
               </li>
               <li>
                 <div className='size-box'>
                   <h6 className='text-content'>Quantity : </h6>
-                  <h5>250 G</h5>
+                  <h5>1</h5>
                 </div>
               </li>
             </ul>
           </div>
         </div>
       </div>
+      {/* Add more book orders as needed */}
     </div>
   </div>
 );

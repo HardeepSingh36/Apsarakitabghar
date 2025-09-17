@@ -1,3 +1,7 @@
+import { Link } from 'react-router-dom';
+import { Eye, Heart, ShoppingCart } from 'react-feather';
+import { Tooltip } from 'react-tooltip';
+
 const AddProductBox = ({ product, idx, showOptions = false, removeButton = false }: any) => {
   return (
     <div
@@ -18,20 +22,23 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
           )}
           {showOptions && (
             <ul className='product-option'>
-              <li data-bs-toggle='tooltip' data-bs-placement='top' title='View'>
-                <a href='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#view'>
-                  <i data-feather='eye'></i>
-                </a>
+              <li data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
+                <Link to='cart.html'>
+                  <ShoppingCart size={18} className='mx-auto text-gray-600' />
+                </Link>
+                <Tooltip id='cart-tooltip' />
               </li>
-              <li data-bs-toggle='tooltip' data-bs-placement='top' title='Compare'>
-                <a href='compare.html'>
-                  <i data-feather='refresh-cw'></i>
-                </a>
+              <li data-tooltip-id='wishlist-tooltip' data-tooltip-content='Add to wishlist'>
+                <Link to='wishlist.html' className='notifi-wishlist'>
+                  <Heart size={18} className='mx-auto text-gray-600' />
+                </Link>
+                <Tooltip id='wishlist-tooltip' />
               </li>
-              <li data-bs-toggle='tooltip' data-bs-placement='top' title='Wishlist'>
-                <a href='wishlist.html' className='notifi-wishlist'>
-                  <i data-feather='heart'></i>
-                </a>
+              <li data-tooltip-id='view-tooltip' data-tooltip-content='View'>
+                <Link to='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#view'>
+                  <Eye size={18} className='mx-auto text-gray-600' />
+                </Link>
+                <Tooltip id='view-tooltip' />
               </li>
             </ul>
           )}
