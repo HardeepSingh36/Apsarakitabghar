@@ -1,5 +1,4 @@
 import { BookOpen } from 'lucide-react';
-import Heading2 from '../general/Heading2';
 import { useEffect, useState } from 'react';
 import { BOOKS_CATEGORIES } from '@/services/API';
 import type { Category } from '@/types/types';

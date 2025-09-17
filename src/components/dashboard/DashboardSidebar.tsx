@@ -128,6 +128,19 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
           <li className='nav-item' role='presentation'>
             <button
               className='nav-link'
+              id='pills-support-tab'
+              data-bs-toggle='pill'
+              data-bs-target='#pills-support'
+              type='button'
+              role='tab'
+              onClick={onClose}
+            >
+              <i data-feather='help-circle'></i> Support
+            </button>
+          </li>
+          <li className='nav-item' role='presentation'>
+            <button
+              className='nav-link'
               id='pills-address-tab'
               data-bs-toggle='pill'
               data-bs-target='#pills-address'
