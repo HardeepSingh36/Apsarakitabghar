@@ -7,6 +7,7 @@ import { getBooks } from '@/services/bookService';
 import { Heart, Star } from 'react-feather';
 import { useAppDispatch } from '@/app/hooks';
 import { addToCart } from '@/features/cart/cartSlice';
+import { addToWishlist } from '@/features/wishlist/wishlistSlice';
 
 const fallbackBook: Book = {
   id: 6,
@@ -90,6 +91,25 @@ const BookDetail = () => {
     dispatch(addToCart(cartItem));
 
     navigate('/cart');
+  };
+
+  const handleAddToWishlist = () => {
+    if (!book) return;
+
+    dispatch(
+      addToWishlist({
+        id: book.id,
+        name: book.title,
+        author: book.author_names || 'Unknown',
+        img: book.cover_image_url,
+        price: book.discounted_price || book.price,
+        oldPrice: book.price,
+        rating: 4,
+        pages: book.pages,
+      })
+    );
+
+    navigate('/wishlist');
   };
 
   if (!book) return null;
@@ -238,10 +258,10 @@ const BookDetail = () => {
                     </div>
 
                     <div className='buy-box'>
-                      <a href='/wishlist'>
+                      <button onClick={handleAddToWishlist} className='flex items-center gap-2'>
                         <Heart className='w-5 h-5' />
                         <span>Add To Wishlist</span>
-                      </a>
+                      </button>
                     </div>
 
                     <div className='pickup-box'>

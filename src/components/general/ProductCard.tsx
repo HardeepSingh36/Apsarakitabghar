@@ -1,8 +1,12 @@
-import type { Book } from '@/types/types';
+import type { Book, CartItem, WishlistItem } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Link } from 'react-router-dom';
 import { Eye, Heart, ShoppingCart } from 'react-feather';
 import { Tooltip } from 'react-tooltip';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import type { RootState } from '@/app/store';
+import { addToCart } from '@/features/cart/cartSlice';
+import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistSlice';
 
 interface ProductCardProps {
   item: Book;
@@ -11,6 +15,52 @@ interface ProductCardProps {
 
 const ProductCard = ({ item, className }: ProductCardProps) => {
   const { currency } = useCurrency();
+  const dispatch = useAppDispatch();
+
+  // Check if this book is already in cart or wishlist
+  const cartItem = useAppSelector((state: RootState) =>
+    state.cart.items.find((cartItem) => cartItem.id === item.id)
+  );
+  const wishlistItem = useAppSelector((state: RootState) =>
+    state.wishlist.items.find((wishItem) => wishItem.id === item.id)
+  );
+
+  const handleCartClick = () => {
+    if (!cartItem) {
+      const cartPayload: CartItem = {
+        id: item.id,
+        name: item.title,
+        author: item.author_names || 'Unknown',
+        img: item.cover_image_url,
+        soldBy: item.publisher_name || 'Super Admin',
+        quantity: 1,
+        pages: item.pages,
+        price: item.discounted_price || item.price,
+        oldPrice: item.price,
+        saving: (item.price - (item.discounted_price || item.price)) * 1,
+        total: (item.discounted_price || item.price) * 1,
+      };
+      dispatch(addToCart(cartPayload));
+    }
+  };
+
+  const handleWishlistClick = () => {
+    if (wishlistItem) {
+      dispatch(removeFromWishlist(item.id));
+    } else {
+      const wishlistPayload: WishlistItem = {
+        id: item.id,
+        name: item.title,
+        author: item.author_names || 'Unknown',
+        img: item.cover_image_url,
+        price: item.discounted_price || item.price,
+        oldPrice: item.price,
+        rating: 4,
+        pages: item.pages,
+      };
+      dispatch(addToWishlist(wishlistPayload));
+    }
+  };
   return (
     <div className={`book-product-box wow fadeIn flex md:flex-col gap-2 items-center ${className}`}>
       {item.isBest && (
@@ -21,13 +71,18 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
       <div className='product-image'>
         <ul className='product-option !hidden md:!block !px-8'>
           <li data-tip='Add to cart'>
-            <Link to='/cart' data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
+            <Link
+              to='/cart'
+              data-tooltip-id='cart-tooltip'
+              data-tooltip-content='Add to cart'
+              onClick={handleCartClick}
+            >
               <ShoppingCart size={18} className='mx-auto text-gray-600' />
             </Link>
             <Tooltip id='cart-tooltip' />
           </li>
           <li data-tooltip-id='wishlist-tooltip' data-tooltip-content='Add to wishlist'>
-            <Link to='/wishlist' className='notifi-wishlist'>
+            <Link to='/wishlist' className='notifi-wishlist' onClick={handleWishlistClick}>
               <Heart size={18} className='mx-auto text-gray-600' />
             </Link>
             <Tooltip id='wishlist-tooltip' />
