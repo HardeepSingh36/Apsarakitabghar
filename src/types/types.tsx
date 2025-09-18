@@ -43,3 +43,27 @@ export interface Book {
   isBest?: boolean;
 }
 
+export interface CartItem {
+  id: number | string;
+  name: string;
+  author: string;
+  img: string;
+  soldBy: string;
+  quantity: number;
+  pages: number;
+  price: number;
+  oldPrice: number;
+  saving: number;
+  total: number;
+}
+
+export interface WishlistItem {
+  id: number;
+  name: string;
+  author: string;
+  img: string;
+  price: number;
+  oldPrice: number;
+  rating: number;
+  pages: number;
+}

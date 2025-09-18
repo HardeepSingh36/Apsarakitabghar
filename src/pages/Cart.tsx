@@ -1,48 +1,18 @@
 import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useAppSelector, useAppDispatch } from '@/app/hooks';
+import { type RootState } from '@/app/store'; // store type
+import { addToCart, decreaseQuantity, removeFromCart } from '@/features/cart/cartSlice';
+import { Minus, Plus } from 'react-feather';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const Cart = () => {
-  // Book-themed cart items
-  const cartItems = [
-    {
-      id: 32,
-      name: 'The Lost Tales',
-      author: 'Harbhajan Singh',
-      img: '/assets/images/book/product/32.jpg',
-      soldBy: 'Super Admin',
-      quantity: 1,
-      pages: 320,
-      price: 449,
-      oldPrice: 499,
-      saving: 50,
-      total: 449,
-    },
-    {
-      id: 33,
-      name: 'Whispers of the Wind',
-      author: 'Amanpreet Kaur',
-      img: '/assets/images/book/product/33.jpg',
-      soldBy: 'Super Admin',
-      quantity: 2,
-      pages: 280,
-      price: 399,
-      oldPrice: 450,
-      saving: 51,
-      total: 798,
-    },
-    {
-      id: 34,
-      name: 'Echoes of Eternity',
-      author: 'Ravinder Singh',
-      img: '/assets/images/book/product/34.jpg',
-      soldBy: 'Super Admin',
-      quantity: 1,
-      pages: 350,
-      price: 499,
-      oldPrice: 550,
-      saving: 51,
-      total: 499,
-    },
-  ];
+  const { currency } = useCurrency();
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state: RootState) => state.cart.items);
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+  const shipping = 6.9; // example fixed shipping
+  const total = subtotal + shipping;
 
   return (
     <div>
@@ -102,8 +72,9 @@ const Cart = () => {
                                         <button
                                           type='button'
                                           className='btn qty-left-minus'
-                                          data-type='minus'
-                                          data-field=''
+                                          onClick={() =>
+                                            dispatch(decreaseQuantity(item.id as number))
+                                          }
                                         >
                                           <i className='fa fa-minus ms-0'></i>
                                         </button>
@@ -117,8 +88,7 @@ const Cart = () => {
                                         <button
                                           type='button'
                                           className='btn qty-right-plus'
-                                          data-type='plus'
-                                          data-field=''
+                                          onClick={() => dispatch(addToCart(item))}
                                         >
                                           <i className='fa fa-plus ms-0'></i>
                                         </button>
@@ -137,7 +107,7 @@ const Cart = () => {
                             <h5>
                               ₹{item.price} <del className='text-content'>₹{item.oldPrice}</del>
                             </h5>
-                            <h6 className='theme-color'>You Save : ₹{item.saving}</h6>
+                            <h6 className='theme-color'>You Save : ₹{item.saving.toFixed(2)}</h6>
                           </td>
                           <td className='quantity'>
                             <h4 className='table-title text-content'>Qty</h4>
@@ -146,11 +116,10 @@ const Cart = () => {
                                 <div className='input-group'>
                                   <button
                                     type='button'
-                                    className='btn qty-left-minus'
-                                    data-type='minus'
-                                    data-field=''
+                                    className='btn qty-left-minus !h-6 !w-6'
+                                    onClick={() => dispatch(decreaseQuantity(item.id as number))}
                                   >
-                                    <i className='fa fa-minus ms-0'></i>
+                                    <Minus className='w-4 h-4' />
                                   </button>
                                   <input
                                     className='form-control input-number qty-input'
@@ -161,11 +130,10 @@ const Cart = () => {
                                   />
                                   <button
                                     type='button'
-                                    className='btn qty-right-plus'
-                                    data-type='plus'
-                                    data-field=''
+                                    className='btn qty-right-plus !h-6 !w-6'
+                                    onClick={() => dispatch(addToCart(item))}
                                   >
-                                    <i className='fa fa-plus ms-0'></i>
+                                    <Plus className='w-4 h-4' />
                                   </button>
                                 </div>
                               </div>
@@ -180,7 +148,11 @@ const Cart = () => {
                             <a className='save notifi-wishlist' href='javascript:void(0)'>
                               Save for later
                             </a>
-                            <a className='remove close_button' href='javascript:void(0)'>
+                            <a
+                              className='remove close_button'
+                              href='javascript:void(0)'
+                              onClick={() => dispatch(removeFromCart(item.id as number))}
+                            >
                               Remove
                             </a>
                           </td>
@@ -214,7 +186,10 @@ const Cart = () => {
                   <ul>
                     <li>
                       <h4>Subtotal</h4>
-                      <h4 className='price'>$125.65</h4>
+                      <h4 className='price'>
+                        {currency}
+                        {subtotal.toFixed(2)}
+                      </h4>
                     </li>
 
                     <li>
@@ -224,7 +199,10 @@ const Cart = () => {
 
                     <li className='align-items-start'>
                       <h4>Shipping</h4>
-                      <h4 className='price text-end'>$6.90</h4>
+                      <h4 className='price text-end'>
+                        {currency}
+                        {shipping.toFixed(2)}
+                      </h4>
                     </li>
                   </ul>
                 </div>
@@ -232,7 +210,10 @@ const Cart = () => {
                 <ul className='summery-total'>
                   <li className='list-total border-top-0'>
                     <h4>Total (USD)</h4>
-                    <h4 className='price theme-color'>$132.58</h4>
+                    <h4 className='price theme-color'>
+                      {currency}
+                      {total.toFixed(2)}
+                    </h4>
                   </li>
                 </ul>
 

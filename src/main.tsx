@@ -7,13 +7,17 @@ import { BrowserRouter } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'react-tooltip/dist/react-tooltip.css';
+import { store } from '@/app/store';
+import { Provider } from 'react-redux';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <CurrencyProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </CurrencyProvider>
+    <Provider store={store}>
+      <CurrencyProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </CurrencyProvider>
+    </Provider>
   </StrictMode>
 );

@@ -1,10 +1,12 @@
 import RelatedProducts from '@/components/bookdetail/RelatedProducts';
 import Reviews from '@/components/bookdetail/Reviews';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import type { Book } from '@/types/types';
+import type { Book, CartItem } from '@/types/types';
 import { getBooks } from '@/services/bookService';
 import { Heart, Star } from 'react-feather';
+import { useAppDispatch } from '@/app/hooks';
+import { addToCart } from '@/features/cart/cartSlice';
 
 const fallbackBook: Book = {
   id: 6,
@@ -40,29 +42,55 @@ const fallbackBook: Book = {
 };
 
 const BookDetail = () => {
+  const dispatch = useAppDispatch();
+  const [quantity, setQuantity] = useState(0);
   const { id } = useParams();
   const [book, setBook] = useState<Book | null>(null);
   const [selectedFormat, setSelectedFormat] = useState('hardcover');
   const formats = ['hardcover', 'paperback', 'ebook', 'audiobook'];
+  const location = useLocation();
+  const navigate = useNavigate();
 
+  const passedBook = location.state?.item as Book | undefined;
+  useEffect(() => {
+    if (passedBook) {
+      setBook(passedBook);
+    } else {
+      // fallback: fetch from API if no state (e.g., user refreshed)
+      async function fetchBook() {
+        try {
+          const data = await getBooks({});
+          const found = data?.books?.find((b: Book) => String(b.id) === String(id));
+          setBook(found || null);
+        } catch (e) {
+          setBook(null);
+        }
+      }
+      fetchBook();
+    }
+  }, [id, passedBook]);
 
-  // useEffect(() => {
-  //   if (passedBook) {
-  //     setBook(passedBook);
-  //   } else {
-  //     // fallback: fetch from API if no state (e.g., user refreshed)
-  //     async function fetchBook() {
-  //       try {
-  //         const data = await getBooks({});
-  //         const found = data?.books?.find((b: Book) => String(b.id) === String(id));
-  //         setBook(found || null);
-  //       } catch (e) {
-  //         setBook(null);
-  //       }
-  //     }
-  //     fetchBook();
-  //   }
-  // }, [id, passedBook]);
+  const handleAddToCart = () => {
+    if (!book) return;
+
+    const cartItem: CartItem = {
+      id: book.id,
+      name: book.title,
+      author: book.author_names || 'Unknown',
+      img: book.cover_image_url,
+      soldBy: book.publisher_name || 'Super Admin',
+      quantity,
+      pages: book.pages,
+      price: book.discounted_price || book.price,
+      oldPrice: book.price,
+      saving: book.price - (book.discounted_price || book.price),
+      total: (book.discounted_price || book.price) * quantity,
+    };
+
+    dispatch(addToCart(cartItem));
+
+    navigate('/cart');
+  };
 
   if (!book) return null;
 
@@ -168,6 +196,7 @@ const BookDetail = () => {
                             className='qty-right-plus'
                             data-type='plus'
                             data-field=''
+                            onClick={() => setQuantity((prev) => prev + 1)}
                           >
                             <i className='fa fa-plus'></i>
                           </button>
@@ -175,13 +204,15 @@ const BookDetail = () => {
                             className='form-control input-number qty-input'
                             type='text'
                             name='quantity'
-                            value='0'
+                            readOnly
+                            value={quantity}
                           />
                           <button
                             type='button'
                             className='qty-left-minus'
                             data-type='minus'
                             data-field=''
+                            onClick={() => setQuantity((prev) => Math.max(prev - 1, 0))}
                           >
                             <i className='fa fa-minus'></i>
                           </button>
@@ -190,6 +221,7 @@ const BookDetail = () => {
 
                       <button
                         className='btn btn-md bg-dark cart-button text-white w-100'
+                        onClick={handleAddToCart}
                       >
                         Add To Cart
                       </button>
