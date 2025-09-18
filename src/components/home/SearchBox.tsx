@@ -266,7 +266,10 @@ const SearchBox = () => {
     <div className='w-full bg-white/95 px-2 sm:!px-6 py-6 max-w-3xl rounded-md mx-auto'>
       <Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
         {/* Tab List */}
-        <TabsList className='flex w-full justify-between mb-4 bg-white/95 backdrop-blur-sm h-11 shadow-subtle shadow-sm !rounded-none overflow-x-scroll sm:overflow-x-hidden '>
+        <TabsList
+          className='flex w-full justify-between mb-4 bg-white/95 backdrop-blur-sm h-11 shadow-subtle shadow-sm !rounded-none overflow-x-scroll'
+          style={{ scrollbarWidth: 'none' }}
+        >
           {searchTabs.map((tab) => {
             const TabIcon = tab.icon;
             return (

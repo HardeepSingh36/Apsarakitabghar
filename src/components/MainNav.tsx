@@ -13,7 +13,7 @@ const navItems = [
   {
     type: 'dropdown',
     label: 'Books By Genre',
-    className: 'dropdown mx-2 !ml-4',
+    className: 'dropdown lg:mx-2 lg:!ml-4',
     dropdownContent: [
       {
         header: 'Agriculture and Industry',
