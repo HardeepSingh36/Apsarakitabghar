@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
+import { User } from 'react-feather';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 
 const RightSideBox = () => {
-  const { openSignIn, openSignUp, openForgot } = useAuthDialog();
+  const { openSignIn, openSignUp, openForgot, isAuthenticated, user, logout } = useAuthDialog();
   return (
   <div className='rightside-box'>
     <div className='search-full'>
@@ -104,31 +105,56 @@ const RightSideBox = () => {
       <li className='right-side onhover-dropdown'>
         <div className='delivery-login-box'>
           <div className='delivery-icon'>
-            <i data-feather='user'></i>
+            {isAuthenticated ? (
+              <div
+                className='rounded-circle bg-dark text-white d-flex align-items-center justify-content-center'
+                style={{ width: 28, height: 28, fontSize: 12 }}
+                title={user?.email || ''}
+              >
+                {(user?.name || 'U').charAt(0).toUpperCase()}
+              </div>
+            ) : (
+              <User size={18} />
+            )}
           </div>
           <div className='delivery-detail'>
-            <h6>Hello,</h6>
-            <h5>My Account</h5>
+            <h6>{isAuthenticated ? `Hello, ${user?.name}` : 'Hello,'}</h6>
+            <h5>{isAuthenticated ? 'Account' : 'My Account'}</h5>
           </div>
         </div>
         <div className='onhover-div onhover-div-login '>
           <ul className='user-box-name !pl-0'>
-            <li className='product-box-contain'>
-              <i></i>
-              <a href='javascript:void(0)' className='!no-underline' onClick={openSignIn}>
-                Log In
-              </a>
-            </li>
-            <li className='product-box-contain'>
-              <a href='javascript:void(0)' className='!no-underline' onClick={openSignUp}>
-                Register
-              </a>
-            </li>
-            <li className='product-box-contain'>
-              <a href='javascript:void(0)' className='!no-underline' onClick={openForgot}>
-                Forgot Password
-              </a>
-            </li>
+            {isAuthenticated ? (
+              <>
+                <li className='product-box-contain'>
+                  <span className='!no-underline'>Signed in as {user?.email}</span>
+                </li>
+                <li className='product-box-contain'>
+                  <a href='javascript:void(0)' className='!no-underline' onClick={logout}>
+                    Logout
+                  </a>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className='product-box-contain'>
+                  <i></i>
+                  <a href='javascript:void(0)' className='!no-underline' onClick={openSignIn}>
+                    Log In
+                  </a>
+                </li>
+                <li className='product-box-contain'>
+                  <a href='javascript:void(0)' className='!no-underline' onClick={openSignUp}>
+                    Register
+                  </a>
+                </li>
+                <li className='product-box-contain'>
+                  <a href='javascript:void(0)' className='!no-underline' onClick={openForgot}>
+                    Forgot Password
+                  </a>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </li>

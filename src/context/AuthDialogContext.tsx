@@ -8,6 +8,9 @@ type AuthDialogContextValue = {
   openSignIn: () => void;
   openSignUp: () => void;
   openForgot: () => void;
+  isAuthenticated: boolean;
+  user: { name: string; email: string } | null;
+  logout: () => void;
 };
 
 const AuthDialogContext = React.createContext<AuthDialogContextValue | undefined>(undefined);
@@ -25,6 +28,14 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [fullName, setFullName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [user, setUser] = React.useState<{ name: string; email: string } | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem('auth_user');
+      if (raw) setUser(JSON.parse(raw));
+    } catch {}
+  }, []);
 
   const resetForm = () => {
     setFullName('');
@@ -64,10 +75,41 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ mode: authView, role: selectedRole, fullName, email });
+    if (authView === 'signin') {
+      const valid = email === 'demo@demo.com' && password === 'Password@123';
+      if (valid) {
+        const u = { name: 'Demo User', email };
+        setUser(u);
+        localStorage.setItem('auth_user', JSON.stringify(u));
+        setDialogOpen(false);
+      } else {
+        alert('Invalid credentials. Use demo@demo.com / Password@123');
+      }
+    } else if (authView === 'signup') {
+      const u = { name: fullName || 'New User', email };
+      setUser(u);
+      localStorage.setItem('auth_user', JSON.stringify(u));
+      setDialogOpen(false);
+    } else if (authView === 'forgot') {
+      alert('Reset link sent (dummy).');
+      setAuthView('signin');
+    }
   };
 
-  const ctxValue: AuthDialogContextValue = { openChoice, openSignIn, openSignUp, openForgot };
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('auth_user');
+  };
+
+  const ctxValue: AuthDialogContextValue = {
+    openChoice,
+    openSignIn,
+    openSignUp,
+    openForgot,
+    isAuthenticated: Boolean(user),
+    user,
+    logout,
+  };
 
   return (
     <AuthDialogContext.Provider value={ctxValue}>
