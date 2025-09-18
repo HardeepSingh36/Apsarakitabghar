@@ -7,6 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import BooksPage from './pages/BooksPage';
 import BookDetail from './pages/BookDetail';
 import Footer from './components/Footer';
+import { AuthDialogProvider } from './context/AuthDialogContext';
 import Cart from './pages/Cart';
 import WishList from './pages/WishList';
 import Checkout from './pages/Checkout';
@@ -27,7 +28,7 @@ const App = () => {
     feather.replace();
   }, []);
   return (
-    <>
+    <AuthDialogProvider>
       <Header />
       <MobileFixMenu />
       <Routes>
@@ -46,7 +47,7 @@ const App = () => {
         <Route path='*' element={<div>404 Not Found</div>} />
       </Routes>
       <Footer />
-    </>
+    </AuthDialogProvider>
   );
 };
 

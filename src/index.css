@@ -135,3 +135,16 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;     /* Firefox */
 }
+
+/* Fullscreen auth dialog on small screens */
+@media (max-width: 576px) {
+  .auth-dialog-content {
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    padding: 16px !important;
+    overflow: auto;
+  }
+}
