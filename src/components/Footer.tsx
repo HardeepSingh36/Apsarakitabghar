@@ -91,22 +91,38 @@ const Footer = () => {
               </div>
               <ul className='footer-list footer-list-light footer-contact'>
                 <li>
-                  <Link to='/dashboard' className='light-text'>
+                  <Link
+                    to='/dashboard'
+                    className='light-text'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
                     Your Order
                   </Link>
                 </li>
                 <li>
-                  <Link to='/dashboard' className='light-text'>
+                  <Link
+                    to='/dashboard'
+                    className='light-text'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
                     Your Account
                   </Link>
                 </li>
                 <li>
-                  <Link to='/dashboard' className='light-text'>
+                  <Link
+                    to='/dashboard'
+                    className='light-text'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
                     Track Orders
                   </Link>
                 </li>
                 <li>
-                  <Link to='/dashboard' className='light-text'>
+                  <Link
+                    to='/dashboard'
+                    className='light-text'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
                     Your Wishlist
                   </Link>
                 </li>

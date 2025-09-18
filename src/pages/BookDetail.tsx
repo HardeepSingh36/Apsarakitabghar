@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import type { Book } from '@/types/types';
 import { getBooks } from '@/services/bookService';
+import { Heart, Star } from 'react-feather';
 
 const fallbackBook: Book = {
   id: 6,
@@ -41,20 +42,27 @@ const fallbackBook: Book = {
 const BookDetail = () => {
   const { id } = useParams();
   const [book, setBook] = useState<Book | null>(null);
+  const [selectedFormat, setSelectedFormat] = useState('hardcover');
+  const formats = ['hardcover', 'paperback', 'ebook', 'audiobook'];
 
-  useEffect(() => {
-    async function fetchBook() {
-      try {
-        // getBooks returns a list, so we find by id
-        const data = await getBooks({});
-        const found = data?.books?.find((b: Book) => String(b.id) === String(id));
-        setBook(found || fallbackBook);
-      } catch (e) {
-        setBook(fallbackBook);
-      }
-    }
-    fetchBook();
-  }, [id]);
+
+  // useEffect(() => {
+  //   if (passedBook) {
+  //     setBook(passedBook);
+  //   } else {
+  //     // fallback: fetch from API if no state (e.g., user refreshed)
+  //     async function fetchBook() {
+  //       try {
+  //         const data = await getBooks({});
+  //         const found = data?.books?.find((b: Book) => String(b.id) === String(id));
+  //         setBook(found || null);
+  //       } catch (e) {
+  //         setBook(null);
+  //       }
+  //     }
+  //     fetchBook();
+  //   }
+  // }, [id, passedBook]);
 
   if (!book) return null;
 
@@ -108,19 +116,19 @@ const BookDetail = () => {
                       <div className='product-rating custom-rate'>
                         <ul className='rating'>
                           <li>
-                            <i data-feather='star' className='fill'></i>
+                            <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
                           </li>
                           <li>
-                            <i data-feather='star' className='fill'></i>
+                            <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
                           </li>
                           <li>
-                            <i data-feather='star' className='fill'></i>
+                            <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
                           </li>
                           <li>
-                            <i data-feather='star' className='fill'></i>
+                            <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
                           </li>
                           <li>
-                            <i data-feather='star'></i>
+                            <Star className='w-4 h-4 text-yellow-500' />
                           </li>
                         </ul>
                         <span className='review'>23 Customer Review</span>
@@ -137,38 +145,18 @@ const BookDetail = () => {
                         <h4>Format</h4>
                       </div>
                       <ul className='select-package'>
-                        <li>
-                          <a
-                            href='javascript:void(0)'
-                            className={book.format === 'hardcover' ? 'active' : ''}
-                          >
-                            Hardcover
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href='javascript:void(0)'
-                            className={book.format === 'paperback' ? 'active' : ''}
-                          >
-                            Paperback
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href='javascript:void(0)'
-                            className={book.format === 'ebook' ? 'active' : ''}
-                          >
-                            eBook
-                          </a>
-                        </li>
-                        <li>
-                          <a
-                            href='javascript:void(0)'
-                            className={book.format === 'audiobook' ? 'active' : ''}
-                          >
-                            Audiobook
-                          </a>
-                        </li>
+                        {formats.map((format) => (
+                          <li key={format}>
+                            <a
+                              type='button'
+                              href='javascript:void(0)'
+                              onClick={() => setSelectedFormat(format)}
+                              className={`capitalize ${selectedFormat === format ? 'active' : ''}`}
+                            >
+                              {format}
+                            </a>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                     {/* Quantity */}
@@ -200,7 +188,9 @@ const BookDetail = () => {
                         </div>
                       </div>
 
-                      <button className='btn btn-md bg-dark cart-button text-white w-100'>
+                      <button
+                        className='btn btn-md bg-dark cart-button text-white w-100'
+                      >
                         Add To Cart
                       </button>
                     </div>
@@ -217,7 +207,7 @@ const BookDetail = () => {
 
                     <div className='buy-box'>
                       <a href='/wishlist'>
-                        <i data-feather='heart'></i>
+                        <Heart className='w-5 h-5' />
                         <span>Add To Wishlist</span>
                       </a>
                     </div>
@@ -477,11 +467,7 @@ const BookDetail = () => {
                 <div className='vendor-box'>
                   <div className='vendor-contain'>
                     <div className='vendor-image'>
-                      <img
-                        src=''
-                        className='blur-up lazyload'
-                        alt=''
-                      />
+                      <img src='' className='blur-up lazyload' alt='' />
                     </div>
                     <div className='vendor-name'>
                       <h5 className='fw-500'>{book.publisher_name || 'Noodles Co.'}</h5>
@@ -489,19 +475,19 @@ const BookDetail = () => {
                       <div className='product-rating mt-1'>
                         <ul className='rating'>
                           <li>
-                            <i data-feather='star' className='fill'></i>
+                            <Star className='w-3 h-3 text-yellow-500 fill-yellow-500' />
                           </li>
                           <li>
-                            <i data-feather='star' className='fill'></i>
+                            <Star className='w-3 h-3 text-yellow-500 fill-yellow-500' />
                           </li>
                           <li>
-                            <i data-feather='star' className='fill'></i>
+                            <Star className='w-3 h-3 text-yellow-500 fill-yellow-500' />
                           </li>
                           <li>
-                            <i data-feather='star' className='fill'></i>
+                            <Star className='w-3 h-3 text-yellow-500 fill-yellow-500' />
                           </li>
                           <li>
-                            <i data-feather='star'></i>
+                            <Star className='w-3 h-3 text-yellow-500' />
                           </li>
                         </ul>
                         <span>(36 Reviews)</span>

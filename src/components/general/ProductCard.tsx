@@ -40,7 +40,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
           </li>
         </ul>
         <div className='front h-28 w-28 md:h-64 md:w-72'>
-          <Link to={`/books/${item.id}`} className='!no-underline block'>
+          <Link to={`/books/${item.id}`} className='!no-underline block' state={{ item }}>
             <img src={item.cover_image_url} className='img-fluid lazyload h-full w-full' alt='' />
           </Link>
         </div>
