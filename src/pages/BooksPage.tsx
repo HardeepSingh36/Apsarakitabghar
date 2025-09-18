@@ -39,14 +39,44 @@ const BooksPage = () => {
   const max = 1000000;
   const [value, setValue] = useState([550000]);
   return (
-    <section className='section-b-space shop-section -mt-10'>
+    <section className='section-b-space shop-section -mt-8 md:-mt-16'>
       <Breadcrumb
         title='Shop Books'
         items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'Books' }]}
       />
       <div className='container-fluid-lg'>
-        <div className='row !mt-10'>
+        <div className='row !mt-6'>
           <div className='col-12'>
+            {/* Search Bar Section Start */}
+            <section className='search-section pt-0 mb-4'>
+              <div className='container-fluid-lg'>
+                <div className='row'>
+                  <div className=' mx-auto'>
+                    <div className='title d-block text-center mb-0'>
+                      <h2>Search for books</h2>
+                      <span className='title-leaf'>
+                        <svg className='icon-width'>
+                          <use xlinkHref='/assets/svg/leaf.svg#leaf'></use>
+                        </svg>
+                      </span>
+                    </div>
+
+                    <div className='search-box'>
+                      <div className='input-group'>
+                        <input type='text' className='form-control' placeholder='' />
+                        <button
+                          className='btn theme-bg-color text-white m-0'
+                          type='button'
+                          id='button-addon1'
+                        >
+                          Search
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
             {/* Top Filter Menu */}
             <div className='show-button'>
               <div className='top-filter-menu-2'>
@@ -465,7 +495,7 @@ const BooksPage = () => {
               </div>
             </div>
             {/* Product List Section */}
-            <div className='row g-sm-4 g-3 row-cols-xxl-5 row-cols-xl-3 row-cols-lg-2 row-cols-md-3 row-cols-2 product-list-section mt-4'>
+            <div className='row g-sm-4 g-3 row-cols-xxl-5 row-cols-xl-3 row-cols-lg-2 row-cols-md-3 row-cols-2 product-list-section mt-2'>
               {books.map((book) => (
                 <div key={book.id} className='col'>
                   <AddProductBox
