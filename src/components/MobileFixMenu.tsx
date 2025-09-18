@@ -16,14 +16,17 @@ const MobileFixMenu = () => {
           </li>
 
           <li className='mobile-category'>
-            <button className='text-white flex items-center flex-col gap-1.5 justify-center mx-auto' onClick={() => setShowCategories(true)}>
+            <button
+              className='text-white flex items-center flex-col gap-1.5 justify-center mx-auto'
+              onClick={() => setShowCategories(true)}
+            >
               <i className='iconly-Category icli js-link text-xl'></i>
               <span>Category</span>
             </button>
           </li>
 
           <li>
-            <a href='/' className='search-box'>
+            <a href='/books' className='search-box'>
               <i className='iconly-Search icli'></i>
               <span>Search</span>
             </a>

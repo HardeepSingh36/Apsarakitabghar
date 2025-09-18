@@ -209,10 +209,8 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
                     <a href='javascript:void(0)' onClick={() => setAuthView('signup')}>
                       Create an account
                     </a>
-                    {' '}·{' '}
-                    <a href='javascript:void(0)' onClick={() => setAuthView('forgot')}>
-                      Forgot password?
-                    </a>
+                    {' '}
+
                   </span>
                 ) : (
                   <span className='small'>

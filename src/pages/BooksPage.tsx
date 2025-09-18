@@ -40,7 +40,10 @@ const BooksPage = () => {
   const [value, setValue] = useState([550000]);
   return (
     <section className='section-b-space shop-section -mt-10'>
-      <Breadcrumb title='Shop Books' items={[{ label: 'Home', href: '/' }, { label: 'Books' }]} />
+      <Breadcrumb
+        title='Shop Books'
+        items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'Books' }]}
+      />
       <div className='container-fluid-lg'>
         <div className='row !mt-10'>
           <div className='col-12'>
