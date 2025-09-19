@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Bookmark, ShoppingCart, User } from 'react-feather';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';

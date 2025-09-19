@@ -1,9 +1,22 @@
 import { useState } from 'react';
 import AllCategories from './AllCategories';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuthDialog } from '@/context/AuthDialogContext';
 
 const MobileFixMenu = () => {
   const [showCategories, setShowCategories] = useState(false);
+  const navigate = useNavigate();
+  const { openSignIn, isAuthenticated } = useAuthDialog();
+
+  // handle protected routes (Wishlist & Cart)
+  const handleProtectedRoute = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    if (isAuthenticated) {
+      navigate(path);
+    } else {
+      e.preventDefault();
+      openSignIn();
+    }
+  };
   return (
     <>
       <div className='mobile-menu d-md-none d-block mobile-cart'>
@@ -33,17 +46,21 @@ const MobileFixMenu = () => {
           </li>
 
           <li>
-            <a href='/wishlist' className='notifi-wishlist'>
+            <Link
+              to='/wishlist'
+              className='notifi-wishlist'
+              onClick={(e) => handleProtectedRoute(e, '/wishlist')}
+            >
               <i className='iconly-Heart icli'></i>
               <span>My Wish</span>
-            </a>
+            </Link>
           </li>
 
           <li>
-            <a href='/cart'>
+            <Link to='/cart' onClick={(e) => handleProtectedRoute(e, '/cart')}>
               <i className='iconly-Bag-2 icli fly-cate'></i>
               <span>Cart</span>
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
