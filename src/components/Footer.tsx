@@ -5,7 +5,7 @@ const Footer = () => {
   const { isAuthenticated, openSignIn } = useAuthDialog();
 
   // Wrapper handler for protected links
-  const handleProtectedClick = (e: React.MouseEvent, path: string) => {
+  const handleProtectedClick = (e: React.MouseEvent) => {
     if (!isAuthenticated) {
       e.preventDefault(); // stop navigation
       openSignIn(); // open login/signup dialog
@@ -108,7 +108,7 @@ const Footer = () => {
                   <Link
                     to='/dashboard'
                     className='light-text'
-                    onClick={(e) => handleProtectedClick(e, '/dashboard')}
+                    onClick={(e) => handleProtectedClick(e)}
                   >
                     Your Order
                   </Link>
@@ -117,7 +117,7 @@ const Footer = () => {
                   <Link
                     to='/dashboard'
                     className='light-text'
-                    onClick={(e) => handleProtectedClick(e, '/dashboard')}
+                    onClick={(e) => handleProtectedClick(e)}
                   >
                     Your Account
                   </Link>
@@ -126,7 +126,7 @@ const Footer = () => {
                   <Link
                     to='/dashboard'
                     className='light-text'
-                    onClick={(e) => handleProtectedClick(e, '/dashboard')}
+                    onClick={(e) => handleProtectedClick(e)}
                   >
                     Track Orders
                   </Link>
@@ -135,7 +135,7 @@ const Footer = () => {
                   <Link
                     to='/dashboard'
                     className='light-text'
-                    onClick={(e) => handleProtectedClick(e, '/dashboard')}
+                    onClick={(e) => handleProtectedClick(e)}
                   >
                     Your Wishlist
                   </Link>

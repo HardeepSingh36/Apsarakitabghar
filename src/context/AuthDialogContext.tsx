@@ -6,6 +6,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
+import { useNavigate } from 'react-router-dom';
 
 type AuthView = 'choice' | 'signin' | 'signup' | 'forgot';
 
@@ -49,6 +50,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [role, setRole] = React.useState<UserRole>('customer');
   const [user, setUser] = React.useState<User | null>(null);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     try {
@@ -121,7 +123,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
         alert('Passwords do not match. Please try again.');
         return;
       }
-      
+
       const u: User = {
         username,
         email,
@@ -141,6 +143,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const logout = () => {
     setUser(null);
     localStorage.removeItem('auth_user');
+    navigate('/');
   };
 
   const ctxValue: AuthDialogContextValue = {
