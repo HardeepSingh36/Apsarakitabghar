@@ -1,11 +1,23 @@
 import { Link } from 'react-router-dom';
+import { useAuthDialog } from '@/context/AuthDialogContext';
 
 const Footer = () => {
+  const { isAuthenticated, openSignIn } = useAuthDialog();
+
+  // Wrapper handler for protected links
+  const handleProtectedClick = (e: React.MouseEvent, path: string) => {
+    if (!isAuthenticated) {
+      e.preventDefault(); // stop navigation
+      openSignIn(); // open login/signup dialog
+    }
+  };
+
   return (
     <footer className='section-t-space footer-section-2 footer-color-3 mt-16'>
       <div className='container-fluid-lg'>
         <div className='main-footer'>
           <div className='row g-md-4 gy-sm-5'>
+            {/* Logo & Social */}
             <div className='col-xxl-3 col-xl-4 col-sm-6'>
               <Link to='/' className='foot-logo theme-logo'>
                 <img src='/assets/logo/apsra.svg' className='img-fluid blur-up lazyload' alt='' />
@@ -22,7 +34,7 @@ const Footer = () => {
                 </li>
                 <li className='light-bg'>
                   <a
-                    href='https://accounts.google.com/signin/v2/identifier?flowName=GlifWebSignIn&amp;flowEntry=ServiceLogin'
+                    href='https://accounts.google.com/signin/v2/identifier'
                     className='footer-link-color'
                   >
                     <i className='fab fa-google'></i>
@@ -41,6 +53,7 @@ const Footer = () => {
               </ul>
             </div>
 
+            {/* Quick Links (Public) */}
             <div className='col-xxl-3 col-xl-4 col-sm-6'>
               <div className='footer-title'>
                 <h4 className='text-white'>Quick Links</h4>
@@ -85,6 +98,7 @@ const Footer = () => {
               </ul>
             </div>
 
+            {/* Useful Links (Protected) */}
             <div className='col-xxl-3 col-xl-4 col-sm-6'>
               <div className='footer-title'>
                 <h4 className='text-white'>Useful Link</h4>
@@ -94,7 +108,7 @@ const Footer = () => {
                   <Link
                     to='/dashboard'
                     className='light-text'
-                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    onClick={(e) => handleProtectedClick(e, '/dashboard')}
                   >
                     Your Order
                   </Link>
@@ -103,7 +117,7 @@ const Footer = () => {
                   <Link
                     to='/dashboard'
                     className='light-text'
-                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    onClick={(e) => handleProtectedClick(e, '/dashboard')}
                   >
                     Your Account
                   </Link>
@@ -112,7 +126,7 @@ const Footer = () => {
                   <Link
                     to='/dashboard'
                     className='light-text'
-                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    onClick={(e) => handleProtectedClick(e, '/dashboard')}
                   >
                     Track Orders
                   </Link>
@@ -121,7 +135,7 @@ const Footer = () => {
                   <Link
                     to='/dashboard'
                     className='light-text'
-                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    onClick={(e) => handleProtectedClick(e, '/dashboard')}
                   >
                     Your Wishlist
                   </Link>
@@ -129,6 +143,7 @@ const Footer = () => {
               </ul>
             </div>
 
+            {/* Store Information */}
             <div className='col-xxl-3 col-xl-4 col-sm-6'>
               <div className='footer-title'>
                 <h4 className='text-white'>Store information</h4>
@@ -142,7 +157,6 @@ const Footer = () => {
                     </div>
                   </a>
                 </li>
-
                 <li>
                   <a href='javascript:void(0)' className='light-text'>
                     <div className='inform-box'>
@@ -151,7 +165,6 @@ const Footer = () => {
                     </div>
                   </a>
                 </li>
-
                 <li>
                   <a href='javascript:void(0)' className='light-text'>
                     <div className='inform-box'>
@@ -160,7 +173,6 @@ const Footer = () => {
                     </div>
                   </a>
                 </li>
-
                 <li>
                   <a href='javascript:void(0)' className='light-text'>
                     <div className='inform-box'>
@@ -174,11 +186,11 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Sub Footer */}
         <div className='sub-footer sub-footer-lite section-b-space section-t-space'>
           <div className='left-footer'>
             <p className='light-text'>2024 Copyright By Apsra Kitab Ghar</p>
           </div>
-
           <ul className='payment-box'>
             <li>
               <img src='/assets/images/icon/paymant/visa.png' className='blur-up lazyload' alt='' />

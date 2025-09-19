@@ -1,6 +1,6 @@
 import type { Book, CartItem, WishlistItem } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, Heart, ShoppingCart } from 'react-feather';
 import { Tooltip } from 'react-tooltip';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
@@ -18,6 +18,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
   const { currency } = useCurrency();
   const dispatch = useAppDispatch();
   const { isAuthenticated, openSignIn } = useAuthDialog();
+  const navigate = useNavigate();
 
   // Check if this book is already in cart or wishlist
   const cartItem = useAppSelector((state: RootState) =>
@@ -32,7 +33,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
       openSignIn();
       return;
     }
-    
+
     if (!cartItem) {
       const cartPayload: CartItem = {
         id: item.id,
@@ -48,6 +49,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
         total: (item.discounted_price || item.price) * 1,
       };
       dispatch(addToCart(cartPayload));
+      navigate('/cart');
     }
   };
 
@@ -56,7 +58,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
       openSignIn();
       return;
     }
-    
+
     if (wishlistItem) {
       dispatch(removeFromWishlist(item.id));
     } else {
@@ -72,6 +74,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
       };
       dispatch(addToWishlist(wishlistPayload));
     }
+    navigate('/wishlist');
   };
   return (
     <div className={`book-product-box wow fadeIn flex md:flex-col gap-2 items-center ${className}`}>
@@ -83,20 +86,19 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
       <div className='product-image'>
         <ul className='product-option !hidden md:!block !px-8'>
           <li data-tip='Add to cart'>
-            <Link
-              to='/cart'
+            <button
               data-tooltip-id='cart-tooltip'
               data-tooltip-content='Add to cart'
               onClick={handleCartClick}
             >
               <ShoppingCart size={18} className='mx-auto text-gray-600' />
-            </Link>
+            </button>
             <Tooltip id='cart-tooltip' />
           </li>
           <li data-tooltip-id='wishlist-tooltip' data-tooltip-content='Add to wishlist'>
-            <Link to='/wishlist' className='notifi-wishlist' onClick={handleWishlistClick}>
+            <button className='notifi-wishlist' onClick={handleWishlistClick}>
               <Heart size={18} className='mx-auto text-gray-600' />
-            </Link>
+            </button>
             <Tooltip id='wishlist-tooltip' />
           </li>
           <li data-tooltip-id='view-tooltip' data-tooltip-content='View'>
