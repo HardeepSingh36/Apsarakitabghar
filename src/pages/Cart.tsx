@@ -2,8 +2,9 @@ import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import { type RootState } from '@/app/store'; // store type
 import { addToCart, decreaseQuantity, removeFromCart } from '@/features/cart/cartSlice';
-import { Minus, Plus } from 'react-feather';
+import { Bookmark, Minus, Plus, X } from 'react-feather';
 import { useCurrency } from '@/context/CurrencyContext';
+import { Tooltip } from 'react-tooltip';
 
 const Cart = () => {
   const { currency } = useCurrency();
@@ -96,7 +97,7 @@ const Cart = () => {
                                     </div>
                                   </li>
                                   <li>
-                                    <h5>Total: ₹{item.total}</h5>
+                                    <h5>Total: ₹{item.total.toFixed(2)}</h5>
                                   </li>
                                 </ul>
                               </div>
@@ -141,20 +142,26 @@ const Cart = () => {
                           </td>
                           <td className='subtotal'>
                             <h4 className='table-title text-content'>Total</h4>
-                            <h5>₹{item.total}</h5>
+                            <h5>₹{item.total.toFixed(2)}</h5>
                           </td>
                           <td className='save-remove'>
                             <h4 className='table-title text-content'>Action</h4>
-                            <a className='save notifi-wishlist' href='javascript:void(0)'>
-                              Save for later
+                              <div className='flex items-center gap-2'>
+                              <a className='save notifi-wishlist' href='javascript:void(0)' data-tooltip-id="save-tooltip">
+                              <Bookmark className='w-5 h-5' />
                             </a>
                             <a
                               className='remove close_button'
                               href='javascript:void(0)'
                               onClick={() => dispatch(removeFromCart(item.id as number))}
+                              data-tooltip-id="remove-tooltip"
                             >
-                              Remove
+                              <X className='w-5 h-5' />
                             </a>
+                              </div>
+                                {/* Tooltips */}
+  <Tooltip id="save-tooltip" place="top" content="Save for later" />
+  <Tooltip id="remove-tooltip" place="top" content="Remove" />
                           </td>
                         </tr>
                       ))}

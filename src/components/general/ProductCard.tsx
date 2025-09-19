@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import { addToCart } from '@/features/cart/cartSlice';
 import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistSlice';
+import { useAuthDialog } from '@/context/AuthDialogContext';
 
 interface ProductCardProps {
   item: Book;
@@ -16,6 +17,7 @@ interface ProductCardProps {
 const ProductCard = ({ item, className }: ProductCardProps) => {
   const { currency } = useCurrency();
   const dispatch = useAppDispatch();
+  const { isAuthenticated, openSignIn } = useAuthDialog();
 
   // Check if this book is already in cart or wishlist
   const cartItem = useAppSelector((state: RootState) =>
@@ -26,6 +28,11 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
   );
 
   const handleCartClick = () => {
+    if (!isAuthenticated) {
+      openSignIn();
+      return;
+    }
+    
     if (!cartItem) {
       const cartPayload: CartItem = {
         id: item.id,
@@ -45,6 +52,11 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
   };
 
   const handleWishlistClick = () => {
+    if (!isAuthenticated) {
+      openSignIn();
+      return;
+    }
+    
     if (wishlistItem) {
       dispatch(removeFromWishlist(item.id));
     } else {
@@ -88,7 +100,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
             <Tooltip id='wishlist-tooltip' />
           </li>
           <li data-tooltip-id='view-tooltip' data-tooltip-content='View'>
-            <Link to='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#view'>
+            <Link to={`/books/${item.id}`} state={{ item }}>
               <Eye size={18} className='mx-auto text-gray-600' />
             </Link>
             <Tooltip id='view-tooltip' />

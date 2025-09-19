@@ -8,6 +8,7 @@ import { Heart, Star } from 'react-feather';
 import { useAppDispatch } from '@/app/hooks';
 import { addToCart } from '@/features/cart/cartSlice';
 import { addToWishlist } from '@/features/wishlist/wishlistSlice';
+import { useAuthDialog } from '@/context/AuthDialogContext';
 
 const fallbackBook: Book = {
   id: 6,
@@ -44,6 +45,7 @@ const fallbackBook: Book = {
 
 const BookDetail = () => {
   const dispatch = useAppDispatch();
+  const { isAuthenticated, openSignIn } = useAuthDialog();
   const [quantity, setQuantity] = useState(0);
   const { id } = useParams();
   const [book, setBook] = useState<Book | null>(null);
@@ -72,6 +74,11 @@ const BookDetail = () => {
   }, [id, passedBook]);
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      openSignIn();
+      return;
+    }
+    
     if (!book) return;
 
     const cartItem: CartItem = {
@@ -94,6 +101,11 @@ const BookDetail = () => {
   };
 
   const handleAddToWishlist = () => {
+    if (!isAuthenticated) {
+      openSignIn();
+      return;
+    }
+    
     if (!book) return;
 
     dispatch(

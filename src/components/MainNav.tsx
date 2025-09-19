@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useAuthDialog } from '@/context/AuthDialogContext';
+import { useAuthDialog, type UserRole } from '@/context/AuthDialogContext';
 
 const navItems = [
   {
@@ -91,7 +91,6 @@ const navItems = [
     dropdownMenu: [
       { label: 'As Customer', to: '/' },
       { label: 'As Publisher', to: '/' },
-      { label: 'As Admin', to: '/' },
       { label: 'As Reseller', to: '/' },
     ],
   },
@@ -112,66 +111,74 @@ const NavItem = ({ label, to, href, className }: any) =>
     </li>
   );
 
-const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJoinClick }: any) => (
-  <li className={`nav-item ${className || ''}`}>
-    {dropdownContent ? (
-      <>
-        <a className='nav-link dropdown-toggle' href='javascript:void(0)' data-bs-toggle='dropdown'>
-          {label}
-        </a>
-        <div className='dropdown-menu dropdown-menu-3 dropdown-menu-2'>
-          <div className='row'>
-            {dropdownContent.map((col: any, idx: number) => (
-              <div className='col-xl-3' key={idx}>
-                <div className='dropdown-column m-0'>
-                  <h5 className='dropdown-header'>{col.header}</h5>
-                  {col.items.map((item: string, i: number) => (
-                    <a className='dropdown-item' href='/' key={i}>
-                      {item}
-                    </a>
-                  ))}
-                  {col.subHeader && <h5 className='custom-mt dropdown-header'>{col.subHeader}</h5>}
-                  {col.subItems &&
-                    col.subItems.map((item: any, i: number) =>
-                      typeof item === 'string' ? (
-                        <a className='dropdown-item' href='/' key={i}>
-                          {item}
-                        </a>
-                      ) : (
-                        <a className='dropdown-item' href={item.href} key={i}>
-                          {item.label}
-                          {item.hot && <label className='menu-label warning-label'>Hot</label>}
-                        </a>
-                      )
+const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJoinClick }: any) => {
+  return (
+    <li className={`nav-item ${className || ''}`}>
+      {dropdownContent ? (
+        <>
+          <a
+            className='nav-link dropdown-toggle'
+            href='javascript:void(0)'
+            data-bs-toggle='dropdown'
+          >
+            {label}
+          </a>
+          <div className='dropdown-menu dropdown-menu-3 dropdown-menu-2'>
+            <div className='row'>
+              {dropdownContent.map((col: any, idx: number) => (
+                <div className='col-xl-3' key={idx}>
+                  <div className='dropdown-column m-0'>
+                    <h5 className='dropdown-header'>{col.header}</h5>
+                    {col.items.map((item: string, i: number) => (
+                      <a className='dropdown-item' href='/' key={i}>
+                        {item}
+                      </a>
+                    ))}
+                    {col.subHeader && (
+                      <h5 className='custom-mt dropdown-header'>{col.subHeader}</h5>
                     )}
+                    {col.subItems &&
+                      col.subItems.map((item: any, i: number) =>
+                        typeof item === 'string' ? (
+                          <a className='dropdown-item' href='/' key={i}>
+                            {item}
+                          </a>
+                        ) : (
+                          <a className='dropdown-item' href={item.href} key={i}>
+                            {item.label}
+                            {item.hot && <label className='menu-label warning-label'>Hot</label>}
+                          </a>
+                        )
+                      )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </>
-    ) : (
-      <>
-        <Link className='nav-link dropdown-toggle ps-xl-2 ps-0' to='/' data-bs-toggle='dropdown'>
-          {label}
-        </Link>
-        <ul className='dropdown-menu'>
-          {dropdownMenu.map((item: any, idx: number) => (
-            <li key={idx}>
-              <a
-                className='dropdown-item'
-                href='javascript:void(0)'
-                onClick={() => onJoinClick && onJoinClick(item.label)}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </>
-    )}
-  </li>
-);
+        </>
+      ) : (
+        <>
+          <Link className='nav-link dropdown-toggle ps-xl-2 ps-0' to='/' data-bs-toggle='dropdown'>
+            {label}
+          </Link>
+          <ul className='dropdown-menu'>
+            {dropdownMenu.map((item: any, idx: number) => (
+              <li key={idx}>
+                <a
+                  className='dropdown-item'
+                  href='javascript:void(0)'
+                  onClick={() => onJoinClick && onJoinClick(item.label)}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </li>
+  );
+};
 
 const MainNav = ({
   showMenu,
@@ -180,9 +187,24 @@ const MainNav = ({
   showMenu: boolean;
   setShowMenu: (v: boolean) => void;
 }) => {
-  const { openChoice } = useAuthDialog();
+  const { openChoice, isAuthenticated } = useAuthDialog();
 
-  const handleJoinClick = (role: string) => {
+  const handleJoinClick = (label: string) => {
+    // Map the label to the correct UserRole
+    let role: UserRole;
+    switch (label) {
+      case 'As Customer':
+        role = 'customer';
+        break;
+      case 'As Publisher':
+        role = 'publisher';
+        break;
+      case 'As Reseller':
+        role = 'reseller';
+        break;
+      default:
+        role = 'customer';
+    }
     openChoice(role);
   };
 
@@ -200,21 +222,20 @@ const MainNav = ({
             ></button>
           </div>
           <div className='offcanvas-body'>
-            <ul className='navbar-nav'>
-              {navItems.map((item, idx) =>
-                item.type === 'dropdown' && item.label === 'Join Apsra' ? (
-                  <DropdownNavItem key={idx} {...item} onJoinClick={handleJoinClick} />
-                ) : item.type === 'dropdown' ? (
-                  <DropdownNavItem key={idx} {...item} />
-                ) : (
-                  <NavItem key={idx} {...item} />
-                )
-              )}
-            </ul>
+             <ul className='navbar-nav'>
+               {navItems.map((item, idx) =>
+                 item.type === 'dropdown' && item.label === 'Join Apsra' && !isAuthenticated ? (
+                   <DropdownNavItem key={idx} {...item} onJoinClick={handleJoinClick} />
+                 ) : item.type === 'dropdown' && item.label !== 'Join Apsra' ? (
+                   <DropdownNavItem key={idx} {...item} />
+                 ) : item.type !== 'dropdown' ? (
+                   <NavItem key={idx} {...item} />
+                 ) : null
+               )}
+             </ul>
           </div>
         </div>
       </div>
-      {/* Join menu uses shared auth dialog via context */}
     </>
   );
 };

@@ -111,14 +111,14 @@ const RightSideBox = () => {
                 style={{ width: 28, height: 28, fontSize: 12 }}
                 title={user?.email || ''}
               >
-                {(user?.name || 'U').charAt(0).toUpperCase()}
+                {(user?.full_name || 'U').charAt(0).toUpperCase()}
               </div>
             ) : (
               <User size={18} />
             )}
           </div>
           <div className='delivery-detail'>
-            <h6>{isAuthenticated ? `Hello, ${user?.name}` : 'Hello,'}</h6>
+            <h6>{isAuthenticated ? `Hello, ${user?.full_name}` : 'Hello,'}</h6>
             <h5>{isAuthenticated ? 'Account' : 'My Account'}</h5>
           </div>
         </div>

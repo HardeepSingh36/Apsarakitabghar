@@ -5,9 +5,11 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import { addToCart, decreaseQuantity } from '@/features/cart/cartSlice';
 import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistSlice';
+import { useAuthDialog } from '@/context/AuthDialogContext';
 
 const AddProductBox = ({ product, idx, showOptions = false, removeButton = false }: any) => {
   const dispatch = useAppDispatch();
+  const { isAuthenticated, openSignIn } = useAuthDialog();
 
   // Get cart state for this product
   const cartItem = useAppSelector((state: RootState) =>
@@ -21,11 +23,25 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
   };
 
   const handleWishlistToggle = () => {
+    if (!isAuthenticated) {
+      openSignIn();
+      return;
+    }
+    
     if (removeButton) {
       dispatch(removeFromWishlist(product.id));
     } else {
       dispatch(addToWishlist(product));
     }
+  };
+
+  const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      openSignIn();
+      return;
+    }
+    
+    dispatch(addToCart(product));
   };
   return (
     <div
@@ -47,7 +63,7 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
           {showOptions && (
             <ul className='product-option'>
               <li data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
-                <Link to='/cart' onClick={() => dispatch(addToCart(product))}>
+                <Link to='/cart' onClick={handleAddToCart}>
                   <ShoppingCart size={18} className='mx-auto text-gray-600' />
                 </Link>
                 <Tooltip id='cart-tooltip' />
@@ -59,7 +75,7 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
                 <Tooltip id='wishlist-tooltip' />
               </li>
               <li data-tooltip-id='view-tooltip' data-tooltip-content='View'>
-                <Link to='javascript:void(0)' data-bs-toggle='modal' data-bs-target='#view'>
+                <Link to={`/books/${product.id}`} state={{ item: product }}>
                   <Eye size={18} className='mx-auto text-gray-600' />
                 </Link>
                 <Tooltip id='view-tooltip' />
@@ -105,7 +121,7 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
                   <button
                     type='button'
                     className='qty-right-plus bg-gray'
-                    onClick={() => dispatch(addToCart(product))}
+                    onClick={handleAddToCart}
                   >
                     <Plus className='w-4 h-4 text-emerald-500' />
                   </button>
@@ -114,7 +130,7 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
             ) : (
               <button
                 className='btn btn-add-cart addcart-button'
-                onClick={() => dispatch(addToCart(product))}
+                onClick={handleAddToCart}
               >
                 Add
                 <span className='add-icon bg-light-gray'>

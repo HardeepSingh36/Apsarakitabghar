@@ -19,6 +19,7 @@ import Dashboard from './pages/dashboard';
 import QueryForm from './pages/QueryForm';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermConditions from './pages/TermConditions';
+import ScrollToTop from './components/scrollToTop';
 
 // define once globally
 defineElement(Lottie.loadAnimation);
@@ -31,6 +32,7 @@ const App = () => {
     <AuthDialogProvider>
       <Header />
       <MobileFixMenu />
+      <ScrollToTop />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/books/:id' element={<BookDetail />} />

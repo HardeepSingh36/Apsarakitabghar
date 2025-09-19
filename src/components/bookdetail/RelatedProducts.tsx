@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 const relatedProducts = [
   {
-    key: 1,
+    id: 1,
     spanName: 'Book',
     img: 'https://apsrakitabghar.com/uploads/covers/6.jpg',
     name: 'The Lost Tales',
@@ -16,7 +16,7 @@ const relatedProducts = [
     oldPrice: '₹499',
   },
   {
-    key: 2,
+    id: 2,
     spanName: 'Book',
     img: 'https://apsrakitabghar.com/uploads/covers/2.jpg',
     name: 'Whispers of the Wind',
@@ -28,7 +28,7 @@ const relatedProducts = [
     oldPrice: '₹450',
   },
   {
-    key: 3,
+    id: 3,
     spanName: 'Book',
     img: 'https://apsrakitabghar.com/uploads/covers/3.jpg',
     name: 'Echoes of Eternity',
@@ -40,7 +40,7 @@ const relatedProducts = [
     oldPrice: '₹550',
   },
   {
-    key: 4,
+    id: 4,
     spanName: 'Book',
     img: 'https://apsrakitabghar.com/uploads/covers/4.jpg',
     name: 'Shadows and Light',
@@ -52,7 +52,7 @@ const relatedProducts = [
     oldPrice: '₹650',
   },
   {
-    key: 5,
+    id: 5,
     spanName: 'Book',
     img: 'https://apsrakitabghar.com/uploads/covers/5.jpg',
     name: 'Journey to the Stars',
@@ -64,7 +64,7 @@ const relatedProducts = [
     oldPrice: '₹450',
   },
   {
-    key: 6,
+    id: 6,
     spanName: 'Book',
     img: 'https://apsrakitabghar.com/uploads/covers/7.jpg',
     name: 'Mystic Realms',
@@ -76,7 +76,7 @@ const relatedProducts = [
     oldPrice: '₹600',
   },
   {
-    key: 7,
+    id: 7,
     spanName: 'Book',
     img: 'https://apsrakitabghar.com/uploads/covers/8.jpg',
     name: 'Legends Unfold',
@@ -135,7 +135,7 @@ const RelatedProducts = () => {
           <div className='slider-6_1 product-wrapper'>
             <Slider key={windowWidth} {...sliderSettings}>
               {relatedProducts.map((product, idx) => (
-                <AddProductBox key={product.key} product={product} idx={idx} showOptions={true} />
+                <AddProductBox key={product.id} product={product} idx={idx} showOptions={true} />
               ))}
             </Slider>
           </div>
