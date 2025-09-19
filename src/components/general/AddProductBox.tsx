@@ -22,12 +22,13 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
     }
   };
 
-  const handleWishlistToggle = () => {
+  const handleWishlistToggle = (e?: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     if (!isAuthenticated) {
+      e?.preventDefault();
       openSignIn();
       return;
     }
-    
+
     if (removeButton) {
       dispatch(removeFromWishlist(product.id));
     } else {
@@ -35,12 +36,13 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
     }
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e?: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     if (!isAuthenticated) {
+      e?.preventDefault();
       openSignIn();
       return;
     }
-    
+
     dispatch(addToCart(product));
   };
   return (
@@ -63,13 +65,17 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
           {showOptions && (
             <ul className='product-option'>
               <li data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
-                <Link to='/cart' onClick={handleAddToCart}>
+                <Link to='/cart' onClick={(e) => handleAddToCart(e)}>
                   <ShoppingCart size={18} className='mx-auto text-gray-600' />
                 </Link>
                 <Tooltip id='cart-tooltip' />
               </li>
               <li data-tooltip-id='wishlist-tooltip' data-tooltip-content='Add to wishlist'>
-                <Link to='/wishlist' className='notifi-wishlist' onClick={handleWishlistToggle}>
+                <Link
+                  to='/wishlist'
+                  className='notifi-wishlist'
+                  onClick={(e) => handleWishlistToggle(e)}
+                >
                   <Heart size={18} className='mx-auto text-gray-600' />
                 </Link>
                 <Tooltip id='wishlist-tooltip' />
@@ -87,9 +93,9 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
       <div className='product-footer'>
         <div className='product-detail'>
           <span className='span-name'>Book</span>
-          <a href={`/book/50`}>
+          <Link to={`/books/50`} state={{ item: product }}>
             <h5 className='name'>{product.name}</h5>
-          </a>
+          </Link>
           <div className='product-rating mt-2'>
             <ul className='rating'>
               {[...Array(5)].map((_, i) => (
@@ -128,10 +134,7 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
                 </div>
               </div>
             ) : (
-              <button
-                className='btn btn-add-cart addcart-button'
-                onClick={handleAddToCart}
-              >
+              <button className='btn btn-add-cart addcart-button' onClick={handleAddToCart}>
                 Add
                 <span className='add-icon bg-light-gray'>
                   <Plus className='w-4 h-4 text-emerald-500' />
