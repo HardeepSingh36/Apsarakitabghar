@@ -13,6 +13,7 @@ interface AddProductBoxProps {
   idx: number;
   showOptions?: boolean;
   removeButton?: boolean;
+  className?: string;
 }
 
 const AddProductBox = ({
@@ -20,6 +21,7 @@ const AddProductBox = ({
   idx,
   showOptions = false,
   removeButton = false,
+  className = '',
 }: AddProductBoxProps) => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, openSignIn } = useAuthDialog();
@@ -76,7 +78,7 @@ const AddProductBox = ({
 
   return (
     <div
-      className='product-box-3 wow fadeInUp'
+      className={`product-box-3 wow fadeInUp' ${className}`}
       data-wow-delay={idx ? `0.${(idx * 5).toString().padStart(2, '0')}s` : undefined}
     >
       <div className='product-header'>

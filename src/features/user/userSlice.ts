@@ -5,12 +5,15 @@ export type UserRole = 'customer' | 'publisher' | 'reseller';
 export interface Address {
   id: string;
   type: 'home' | 'work' | 'billing' | 'shipping' | string;
-  fullName: string;
-  street: string;
+  firstName: string;
+  lastName: string;
+  addressLine1: string;
+  addressLine2: string;
   city: string;
   state: string;
   postalCode: string;
   phone: string;
+  country: string;
   isDefault?: boolean;
 }
 
@@ -47,7 +50,8 @@ const userSlice = createSlice({
       }
     },
     addAddress: (state, action: PayloadAction<Address>) => {
-      state.addresses.push(action.payload);
+      const newAddress = { ...action.payload, id: `${Date.now()}` }; // Ensure unique ID
+      state.addresses.push(newAddress);
     },
     updateAddress: (state, action: PayloadAction<Address>) => {
       const idx = state.addresses.findIndex((a) => a.id === action.payload.id);
@@ -75,3 +79,4 @@ export const {
 } = userSlice.actions;
 
 export default userSlice.reducer;
+export type { UserState };

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addAddress } from '../../features/user/userSlice';
 
 interface AddAddressModalProps {
   isOpen: boolean;
@@ -6,6 +8,33 @@ interface AddAddressModalProps {
 }
 
 const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    phone: '',
+    type: 'home',
+    country: 'India',
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = () => {
+    const addressWithId = { ...formData, id: `${Date.now()}` }; // Add unique ID
+    dispatch(addAddress(addressWithId));
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -32,10 +61,12 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                     <input
                       type='text'
                       className='form-control'
-                      id='fname'
+                      id='firstName'
                       placeholder='Enter First Name'
+                      value={formData.firstName}
+                      onChange={handleChange}
                     />
-                    <label htmlFor='fname'>First Name</label>
+                    <label htmlFor='fullName'>Full Name</label>
                   </div>
                 </div>
                 <div className='col-xxl-6'>
@@ -43,73 +74,38 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                     <input
                       type='text'
                       className='form-control'
-                      id='lname'
+                      id='lastName'
                       placeholder='Enter Last Name'
+                      value={formData.lastName}
+                      onChange={handleChange}
                     />
-                    <label htmlFor='lname'>Last Name</label>
-                  </div>
-                </div>
-                <div className='col-xxl-6'>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='phone'
-                      className='form-control'
-                      id='phone'
-                      placeholder='Enter Phone Number'
-                    />
-                    <label htmlFor='phone'>Phone Number</label>
-                  </div>
-                </div>
-                <div className='col-xxl-6'>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='email'
-                      className='form-control'
-                      id='email'
-                      placeholder='Enter Email Address'
-                    />
-                    <label htmlFor='email'>Email Address</label>
+                    <label htmlFor='fullName'>Full Name</label>
                   </div>
                 </div>
                 <div className='col-xxl-12'>
                   <div className='form-floating theme-form-floating'>
                     <textarea
                       className='form-control'
-                      placeholder='Leave a comment here'
-                      id='address1'
+                      placeholder='Enter Street Address'
+                      id='addressLine1'
                       style={{ height: '80px' }}
+                      value={formData.addressLine1}
+                      onChange={handleChange}
                     ></textarea>
-                    <label htmlFor='address1'>Enter Address Line 1</label>
+                    <label htmlFor='street'>Street Address</label>
                   </div>
                 </div>
                 <div className='col-xxl-12'>
                   <div className='form-floating theme-form-floating'>
                     <textarea
                       className='form-control'
-                      placeholder='Leave a comment here'
-                      id='address2'
+                      placeholder='Enter Apartment, suite, unit etc. (optional)'
+                      id='addressLine2'
                       style={{ height: '80px' }}
+                      value={formData.addressLine2}
+                      onChange={handleChange}
                     ></textarea>
-                    <label htmlFor='address2'>Enter Address Line 2</label>
-                  </div>
-                </div>
-                <div className='col-xxl-6'>
-                  <div className='form-floating theme-form-floating'>
-                    <select className='form-select' id='country' defaultValue='India'>
-                      <option value='India'>India</option>
-                    </select>
-                    <label htmlFor='country'>Country</label>
-                  </div>
-                </div>
-                <div className='col-xxl-6'>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='text'
-                      className='form-control'
-                      id='state'
-                      placeholder='Enter State'
-                    />
-                    <label htmlFor='state'>State</label>
+                    <label htmlFor='addressLine2'>Address Line 2</label>
                   </div>
                 </div>
                 <div className='col-xxl-6'>
@@ -119,6 +115,8 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                       className='form-control'
                       id='city'
                       placeholder='Enter City'
+                      value={formData.city}
+                      onChange={handleChange}
                     />
                     <label htmlFor='city'>City</label>
                   </div>
@@ -128,10 +126,67 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                     <input
                       type='text'
                       className='form-control'
-                      id='pin'
-                      placeholder='Enter Pin Code'
+                      id='state'
+                      placeholder='Enter State'
+                      value={formData.state}
+                      onChange={handleChange}
                     />
-                    <label htmlFor='pin'>Pin Code</label>
+                    <label htmlFor='state'>State</label>
+                  </div>
+                </div>
+                <div className='col-xxl-6'>
+                  <div className='form-floating theme-form-floating'>
+                    <input
+                      type='text'
+                      className='form-control'
+                      id='postalCode'
+                      placeholder='Enter Postal Code'
+                      value={formData.postalCode}
+                      onChange={handleChange}
+                    />
+                    <label htmlFor='postalCode'>Postal Code</label>
+                  </div>
+                </div>
+                <div className='col-xxl-6'>
+                  <div className='form-floating theme-form-floating'>
+                    <input
+                      type='text'
+                      className='form-control'
+                      id='phone'
+                      placeholder='Enter Phone Number'
+                      value={formData.phone}
+                      onChange={handleChange}
+                    />
+                    <label htmlFor='phone'>Phone Number</label>
+                  </div>
+                </div>
+                <div className='col-xxl-6'>
+                  <div className='form-floating theme-form-floating'>
+                    <select
+                      className='form-select'
+                      id='type'
+                      value={formData.type}
+                      onChange={handleChange}
+                    >
+                      <option value='home'>Home</option>
+                      <option value='work'>Work</option>
+                      <option value='billing'>Billing</option>
+                      <option value='shipping'>Shipping</option>
+                    </select>
+                    <label htmlFor='type'>Address Type</label>
+                  </div>
+                </div>
+                <div className='col-xxl-6'>
+                  <div className='form-floating theme-form-floating'>
+                    <input
+                      type='text'
+                      className='form-control'
+                      id='country'
+                      placeholder='Enter Country'
+                      value={formData.country}
+                      onChange={handleChange}
+                    />
+                    <label htmlFor='country'>Country</label>
                   </div>
                 </div>
               </div>
@@ -143,7 +198,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
               <button
                 type='button'
                 className='btn theme-bg-color btn-md fw-bold text-light'
-                onClick={onClose}
+                onClick={handleSubmit}
               >
                 Save changes
               </button>

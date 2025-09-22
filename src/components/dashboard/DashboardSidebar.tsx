@@ -100,7 +100,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               <i data-feather='heart'></i> Wishlist
             </button>
           </li>
-          <li className='nav-item' role='presentation'>
+          {/* <li className='nav-item' role='presentation'>
             <button
               className='nav-link'
               id='pills-reviews-tab'
@@ -111,7 +111,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
             >
               <i data-feather='star'></i> Reviews
             </button>
-          </li>
+          </li> */}
           <li className='nav-item' role='presentation'>
             <button
               className='nav-link'
