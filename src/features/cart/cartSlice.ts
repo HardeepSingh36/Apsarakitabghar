@@ -18,14 +18,14 @@ const cartSlice = createSlice({
 
       if (existingItem) {
         existingItem.quantity += 1;
-        existingItem.total = existingItem.price * existingItem.quantity;
-        existingItem.saving = existingItem.oldPrice * existingItem.quantity - existingItem.total;
+        existingItem.total = existingItem.discounted_price * existingItem.quantity;
+        existingItem.saving = existingItem.price * existingItem.quantity - existingItem.total;
       } else {
         state.items.push({
           ...action.payload,
           quantity: action.payload.quantity || 1,
-          total: action.payload.price * (action.payload.quantity || 1),
-          saving: (action.payload.oldPrice - action.payload.price) * (action.payload.quantity || 1),
+          total: action.payload.discounted_price * (action.payload.quantity || 1),
+          saving: (action.payload.price - action.payload.discounted_price) * (action.payload.quantity || 1),
         });
       }
     },
@@ -40,7 +40,7 @@ const cartSlice = createSlice({
 
         if (existingItem.quantity > 1) {
           existingItem.quantity -= 1;
-          existingItem.total = existingItem.price * existingItem.quantity;
+          existingItem.total = existingItem.discounted_price * existingItem.quantity;
         }
       }
     },

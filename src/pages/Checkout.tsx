@@ -662,12 +662,12 @@ const Checkout = () => {
                     {cartItems.map((item) => (
                       <li key={item.id}>
                         <img
-                          src={item.img}
+                          src={item.cover_image_url}
                           className='img-fluid blur-up lazyloaded checkout-image'
-                          alt={item.name}
+                          alt={item.title}
                         />
                         <h4>
-                          {item.name} <span>X {item.quantity}</span>
+                          {item.title} <span>X {item.quantity}</span>
                         </h4>
                         <h4 className='price'>
                           {currency} {item.total.toFixed(2)}
