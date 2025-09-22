@@ -1,0 +1,77 @@
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+export type UserRole = 'customer' | 'publisher' | 'reseller';
+
+export interface Address {
+  id: string;
+  type: 'home' | 'work' | 'billing' | 'shipping' | string;
+  fullName: string;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  phone: string;
+  isDefault?: boolean;
+}
+
+export interface Profile {
+  username: string;
+  email: string;
+  full_name: string;
+  phone_number: string;
+  role: UserRole;
+}
+
+interface UserState {
+  profile: Profile | null;
+  addresses: Address[];
+  selectedAddressId: string | null;
+}
+
+const initialState: UserState = {
+  profile: null,
+  addresses: [],
+  selectedAddressId: null,
+};
+
+const userSlice = createSlice({
+  name: 'user',
+  initialState,
+  reducers: {
+    setProfile: (state, action: PayloadAction<Profile | null>) => {
+      state.profile = action.payload;
+    },
+    updateProfile: (state, action: PayloadAction<Partial<Profile>>) => {
+      if (state.profile) {
+        state.profile = { ...state.profile, ...action.payload };
+      }
+    },
+    addAddress: (state, action: PayloadAction<Address>) => {
+      state.addresses.push(action.payload);
+    },
+    updateAddress: (state, action: PayloadAction<Address>) => {
+      const idx = state.addresses.findIndex((a) => a.id === action.payload.id);
+      if (idx > -1) state.addresses[idx] = action.payload;
+    },
+    removeAddress: (state, action: PayloadAction<string>) => {
+      state.addresses = state.addresses.filter((a) => a.id !== action.payload);
+      if (state.selectedAddressId === action.payload) {
+        state.selectedAddressId = null;
+      }
+    },
+    setSelectedAddress: (state, action: PayloadAction<string | null>) => {
+      state.selectedAddressId = action.payload;
+    },
+  },
+});
+
+export const {
+  setProfile,
+  updateProfile,
+  addAddress,
+  updateAddress,
+  removeAddress,
+  setSelectedAddress,
+} = userSlice.actions;
+
+export default userSlice.reducer;
