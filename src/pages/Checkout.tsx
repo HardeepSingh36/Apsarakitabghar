@@ -3,31 +3,6 @@ import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 
-// Order summary items as JSON array
-const orderItems = [
-  {
-    img: '/assets/images/book/product/32.jpg',
-    name: 'The Lost Tales',
-    author: 'Harbhajan Singh',
-    qty: 1,
-    price: 'INR 449',
-  },
-  {
-    img: '/assets/images/book/product/33.jpg',
-    name: 'Whispers of the Wind',
-    author: 'Amanpreet Kaur',
-    qty: 2,
-    price: 'INR 399',
-  },
-  {
-    img: '/assets/images/book/product/34.jpg',
-    name: 'Echoes of Eternity',
-    author: 'Ravinder Singh',
-    qty: 1,
-    price: 'INR 499',
-  },
-];
-
 const Checkout = () => {
   const { currency } = useCurrency();
 

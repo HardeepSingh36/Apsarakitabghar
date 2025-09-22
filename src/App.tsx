@@ -20,6 +20,7 @@ import QueryForm from './pages/QueryForm';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermConditions from './pages/TermConditions';
 import ScrollToTop from './components/scrollToTop';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // define once globally
 defineElement(Lottie.loadAnimation);
@@ -37,12 +38,41 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path='/books/:id' element={<BookDetail />} />
         <Route path='/books' element={<BooksPage />} />
-        <Route path='/cart' element={<Cart />} />
-        <Route path='/wishlist' element={<WishList />} />
-        <Route path='/checkout' element={<Checkout />} />
+        {/* Protected routes */}
+        <Route
+          path='/cart'
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/checkout'
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/wishlist'
+          element={
+            <ProtectedRoute>
+              <WishList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/dashboard'
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
-        <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/query-form' element={<QueryForm />} />
         <Route path='/privacy-policy' element={<PrivacyPolicy />} />
         <Route path='/term-conditions' element={<TermConditions />} />
