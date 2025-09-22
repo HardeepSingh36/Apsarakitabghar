@@ -28,6 +28,7 @@ type AuthDialogContextValue = {
   isAuthenticated: boolean;
   user: User | null;
   logout: () => void;
+  loading: boolean;
 };
 
 const AuthDialogContext = React.createContext<AuthDialogContextValue | undefined>(undefined);
@@ -50,6 +51,8 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [role, setRole] = React.useState<UserRole>('customer');
   const [user, setUser] = React.useState<User | null>(null);
+  const [loading, setLoading] = React.useState(true);
+
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -57,6 +60,14 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
       const raw = localStorage.getItem('auth_user');
       if (raw) setUser(JSON.parse(raw));
     } catch {}
+  }, []);
+
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem('auth_user');
+      if (raw) setUser(JSON.parse(raw));
+    } catch {}
+    setLoading(false); // auth state is resolved
   }, []);
 
   const resetForm = () => {
@@ -154,6 +165,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     isAuthenticated: Boolean(user),
     user,
     logout,
+    loading,
   };
 
   return (

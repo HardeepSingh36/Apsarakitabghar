@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 
 interface ProtectedRouteProps {
@@ -7,20 +7,25 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isAuthenticated, openSignIn } = useAuthDialog();
+  const { isAuthenticated, openSignIn, loading } = useAuthDialog();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       // Open login dialog
       openSignIn();
-      // Redirect to home page
-      navigate('/');
+      // Redirect to home
+      navigate('/', { replace: true, state: { from: location } });
     }
-  }, [isAuthenticated, openSignIn, navigate]);
+  }, [isAuthenticated, loading, openSignIn, navigate, location]);
+
+  if (loading) {
+    return <div>Loading...</div>; // or spinner placeholder
+  }
 
   if (!isAuthenticated) {
-    return null; // don’t render the protected page until authenticated
+    return null;
   }
 
   return <>{children}</>;
