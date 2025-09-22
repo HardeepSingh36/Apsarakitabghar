@@ -41,8 +41,6 @@ const cartSlice = createSlice({
         if (existingItem.quantity > 1) {
           existingItem.quantity -= 1;
           existingItem.total = existingItem.price * existingItem.quantity;
-        } else {
-          state.items.splice(existingItemIndex, 1);
         }
       }
     },

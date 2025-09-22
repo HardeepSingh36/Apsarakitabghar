@@ -5,6 +5,7 @@ import { addToCart, decreaseQuantity, removeFromCart } from '@/features/cart/car
 import { Bookmark, Minus, Plus, X } from 'react-feather';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Tooltip } from 'react-tooltip';
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
   const { currency } = useCurrency();
@@ -28,146 +29,170 @@ const Cart = () => {
           <div className='row g-sm-5 g-3'>
             <div className='col-xxl-9'>
               <div className='cart-table'>
-                <div className='table-responsive-xl'>
-                  <table className='table'>
-                    <tbody>
-                      {cartItems.map((item) => (
-                        <tr className='product-box-contain' key={item.id}>
-                          <td className='product-detail'>
-                            <div className='product border-0'>
-                              <a href={`/books/${item.id}`} className='product-image'>
-                                <img
-                                  src={item.img}
-                                  className='img-fluid blur-up lazyload'
-                                  alt={item.name}
-                                />
-                              </a>
-                              <div className='product-detail'>
-                                <ul>
-                                  <li className='name'>
-                                    <a href={`/books/${item.id}`}>{item.name}</a>
-                                  </li>
-                                  <li className='text-content'>
-                                    <span className='text-title'>Author:</span> {item.author}
-                                  </li>
-                                  <li className='text-content'>
-                                    <span className='text-title'>Sold By:</span> {item.soldBy}
-                                  </li>
-                                  <li className='text-content'>
-                                    <span className='text-title'>Pages:</span> {item.pages}
-                                  </li>
-                                  <li className='text-content'>
-                                    <span className='text-title'>Quantity:</span> {item.quantity}
-                                  </li>
-                                  <li>
-                                    <h5 className='text-content d-inline-block'>Price :</h5>
-                                    <span>₹{item.price}</span>
-                                    <span className='text-content'>₹{item.oldPrice}</span>
-                                  </li>
-                                  <li>
-                                    <h5 className='saving theme-color'>Saving : ₹{item.saving}</h5>
-                                  </li>
-                                  <li className='quantity-price-box'>
-                                    <div className='cart_qty'>
-                                      <div className='input-group'>
-                                        <button
-                                          type='button'
-                                          className='btn qty-left-minus'
-                                          onClick={() =>
-                                            dispatch(decreaseQuantity(item.id as number))
-                                          }
-                                        >
-                                          <i className='fa fa-minus ms-0'></i>
-                                        </button>
-                                        <input
-                                          className='form-control input-number qty-input'
-                                          type='text'
-                                          name='quantity'
-                                          value={item.quantity}
-                                          readOnly
-                                        />
-                                        <button
-                                          type='button'
-                                          className='btn qty-right-plus'
-                                          onClick={() => dispatch(addToCart(item))}
-                                        >
-                                          <i className='fa fa-plus ms-0'></i>
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <h5>Total: ₹{item.total.toFixed(2)}</h5>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </td>
-                          <td className='price'>
-                            <h4 className='table-title text-content'>Price</h4>
-                            <h5>
-                              ₹{item.price} <del className='text-content'>₹{item.oldPrice}</del>
-                            </h5>
-                            <h6 className='theme-color'>You Save : ₹{item.saving.toFixed(2)}</h6>
-                          </td>
-                          <td className='quantity'>
-                            <h4 className='table-title text-content'>Qty</h4>
-                            <div className='quantity-price'>
-                              <div className='cart_qty'>
-                                <div className='input-group'>
-                                  <button
-                                    type='button'
-                                    className='btn qty-left-minus !h-6 !w-6'
-                                    onClick={() => dispatch(decreaseQuantity(item.id as number))}
-                                  >
-                                    <Minus className='w-4 h-4' />
-                                  </button>
-                                  <input
-                                    className='form-control input-number qty-input'
-                                    type='text'
-                                    name='quantity'
-                                    value={item.quantity}
-                                    readOnly
+                {cartItems.length === 0 ? (
+                  <div className='flex flex-col items-center py-5'>
+                    {/* <img
+                      src='/assets/images/inner-page/empty-cart.png'
+                      alt='Empty Cart'
+                      className='mx-auto mb-4 w-52 h-auto'
+                    /> */}
+                    <h3 className='mb-2'>Your Cart is Empty</h3>
+                    <p className='text-content mb-4'>
+                      Looks like you haven’t added anything to your cart yet.
+                    </p>
+                    <Link to={'/books'} className='btn btn-animation fw-bold'>
+                      Continue Shopping
+                      <i className='fa-solid fa-arrow-right-long ms-2'></i>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className='table-responsive-xl'>
+                    <table className='table'>
+                      <tbody>
+                        {cartItems.map((item) => (
+                          <tr className='product-box-contain' key={item.id}>
+                            <td className='product-detail'>
+                              <div className='product border-0'>
+                                <a href={`/books/${item.id}`} className='product-image'>
+                                  <img
+                                    src={item.img}
+                                    className='img-fluid blur-up lazyload'
+                                    alt={item.name}
                                   />
-                                  <button
-                                    type='button'
-                                    className='btn qty-right-plus !h-6 !w-6'
-                                    onClick={() => dispatch(addToCart(item))}
-                                  >
-                                    <Plus className='w-4 h-4' />
-                                  </button>
+                                </a>
+                                <div className='product-detail'>
+                                  <ul>
+                                    <li className='name'>
+                                      <a href={`/books/${item.id}`}>{item.name}</a>
+                                    </li>
+                                    <li className='text-content'>
+                                      <span className='text-title'>Author:</span> {item.author}
+                                    </li>
+                                    <li className='text-content'>
+                                      <span className='text-title'>Sold By:</span> {item.soldBy}
+                                    </li>
+                                    <li className='text-content'>
+                                      <span className='text-title'>Pages:</span> {item.pages}
+                                    </li>
+                                    <li className='text-content'>
+                                      <span className='text-title'>Quantity:</span> {item.quantity}
+                                    </li>
+                                    <li>
+                                      <h5 className='text-content d-inline-block'>Price :</h5>
+                                      <span>₹{item.price}</span>
+                                      <span className='text-content'>₹{item.oldPrice}</span>
+                                    </li>
+                                    <li>
+                                      <h5 className='saving theme-color'>
+                                        Saving : ₹{item.saving}
+                                      </h5>
+                                    </li>
+                                    <li className='quantity-price-box'>
+                                      <div className='cart_qty'>
+                                        <div className='input-group'>
+                                          <button
+                                            type='button'
+                                            className='btn qty-left-minus'
+                                            onClick={() =>
+                                              dispatch(decreaseQuantity(item.id as number))
+                                            }
+                                          >
+                                            <i className='fa fa-minus ms-0'></i>
+                                          </button>
+                                          <input
+                                            className='form-control input-number qty-input'
+                                            type='text'
+                                            name='quantity'
+                                            value={item.quantity}
+                                            readOnly
+                                          />
+                                          <button
+                                            type='button'
+                                            className='btn qty-right-plus'
+                                            onClick={() => dispatch(addToCart(item))}
+                                          >
+                                            <i className='fa fa-plus ms-0'></i>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </li>
+                                    <li>
+                                      <h5>Total: ₹{item.total.toFixed(2)}</h5>
+                                    </li>
+                                  </ul>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className='subtotal'>
-                            <h4 className='table-title text-content'>Total</h4>
-                            <h5>₹{item.total.toFixed(2)}</h5>
-                          </td>
-                          <td className='save-remove'>
-                            <h4 className='table-title text-content'>Action</h4>
-                              <div className='flex items-center gap-2'>
-                              <a className='save notifi-wishlist' href='javascript:void(0)' data-tooltip-id="save-tooltip">
-                              <Bookmark className='w-5 h-5' />
-                            </a>
-                            <a
-                              className='remove close_button'
-                              href='javascript:void(0)'
-                              onClick={() => dispatch(removeFromCart(item.id as number))}
-                              data-tooltip-id="remove-tooltip"
-                            >
-                              <X className='w-5 h-5' />
-                            </a>
+                            </td>
+                            <td className='price'>
+                              <h4 className='table-title text-content'>Price</h4>
+                              <h5>
+                                ₹{item.price} <del className='text-content'>₹{item.oldPrice}</del>
+                              </h5>
+                              <h6 className='theme-color'>You Save : ₹{item.saving.toFixed(2)}</h6>
+                            </td>
+                            <td className='quantity'>
+                              <h4 className='table-title text-content'>Qty</h4>
+                              <div className='quantity-price'>
+                                <div className='cart_qty'>
+                                  <div className='input-group'>
+                                    <button
+                                      type='button'
+                                      className='btn qty-left-minus !h-6 !w-6'
+                                      onClick={() => dispatch(decreaseQuantity(item.id as number))}
+                                    >
+                                      <Minus className='w-4 h-4' />
+                                    </button>
+                                    <input
+                                      className='form-control input-number qty-input'
+                                      type='text'
+                                      name='quantity'
+                                      value={item.quantity}
+                                      readOnly
+                                    />
+                                    <button
+                                      type='button'
+                                      className='btn qty-right-plus !h-6 !w-6'
+                                      onClick={() => dispatch(addToCart(item))}
+                                    >
+                                      <Plus className='w-4 h-4' />
+                                    </button>
+                                  </div>
+                                </div>
                               </div>
-                                {/* Tooltips */}
-  <Tooltip id="save-tooltip" place="top" content="Save for later" />
-  <Tooltip id="remove-tooltip" place="top" content="Remove" />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                            </td>
+                            <td className='subtotal'>
+                              <h4 className='table-title text-content'>Total</h4>
+                              <h5>₹{item.total.toFixed(2)}</h5>
+                            </td>
+                            <td className='save-remove'>
+                              <h4 className='table-title text-content'>Action</h4>
+                              <div className='flex items-center gap-2'>
+                                <a
+                                  className='save notifi-wishlist'
+                                  href='javascript:void(0)'
+                                  data-tooltip-id='save-tooltip'
+                                >
+                                  <Bookmark className='w-5 h-5' />
+                                </a>
+                                <a
+                                  className='remove close_button'
+                                  href='javascript:void(0)'
+                                  onClick={() => dispatch(removeFromCart(item.id as number))}
+                                  data-tooltip-id='remove-tooltip'
+                                >
+                                  <X className='w-5 h-5' />
+                                </a>
+                              </div>
+                              {/* Tooltips */}
+                              <Tooltip id='save-tooltip' place='top' content='Save for later' />
+                              <Tooltip id='remove-tooltip' place='top' content='Remove' />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -227,12 +252,12 @@ const Cart = () => {
                 <div className='button-group cart-button'>
                   <ul>
                     <li>
-                      <button
-                        onClick={() => (window.location.href = '/checkout')}
-                        className='btn btn-animation proceed-btn fw-bold'
+                      <Link
+                        to={'/checkout'}
+                        className='btn btn-animation proceed-btn fw-bold !text-sm'
                       >
                         Process To Checkout
-                      </button>
+                      </Link>
                     </li>
 
                     <li>

@@ -1,5 +1,7 @@
 import { useCurrency } from '@/context/CurrencyContext';
 import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useAppSelector } from '@/app/hooks';
+import type { RootState } from '@/app/store';
 
 // Order summary items as JSON array
 const orderItems = [
@@ -28,6 +30,13 @@ const orderItems = [
 
 const Checkout = () => {
   const { currency } = useCurrency();
+
+  const cartItems = useAppSelector((state: RootState) => state.cart.items);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+  const shipping = 6.9; // static or calculate based on rules
+  const tax = subtotal * 0.1; // example 10% GST
+  const coupon = 20; // example static coupon discount
+  const total = subtotal + shipping + tax - coupon;
   return (
     <div>
       <Breadcrumb
@@ -157,9 +166,9 @@ const Checkout = () => {
                       </div>
                     </li>
 
-                    <li>
+                    {/* <li>
                       <div className='checkout-icon'>
-                        {/* @ts-ignore */}
+                        
                         <lord-icon
                           target='.nav-item'
                           src='https://cdn.lordicon.com/oaflahpk.json'
@@ -253,7 +262,7 @@ const Checkout = () => {
                           </div>
                         </div>
                       </div>
-                    </li>
+                    </li> */}
 
                     <li>
                       <div className='checkout-icon'>
@@ -675,17 +684,19 @@ const Checkout = () => {
                   </div>
 
                   <ul className='summery-contain'>
-                    {orderItems.map((item, idx) => (
-                      <li key={idx}>
+                    {cartItems.map((item) => (
+                      <li key={item.id}>
                         <img
                           src={item.img}
                           className='img-fluid blur-up lazyloaded checkout-image'
-                          alt=''
+                          alt={item.name}
                         />
                         <h4>
-                          {item.name} <span>X {item.qty}</span>
+                          {item.name} <span>X {item.quantity}</span>
                         </h4>
-                        <h4 className='price'>{item.price}</h4>
+                        <h4 className='price'>
+                          {currency} {item.total.toFixed(2)}
+                        </h4>
                       </li>
                     ))}
                   </ul>
@@ -693,27 +704,37 @@ const Checkout = () => {
                   <ul className='summery-total'>
                     <li>
                       <h4>Gross Total</h4>
-                      <h4 className='price'>{currency} 111.81</h4>
+                      <h4 className='price'>
+                        {currency} {subtotal.toFixed(2)}
+                      </h4>
                     </li>
 
                     <li>
                       <h4>Shipping</h4>
-                      <h4 className='price'>{currency} 8.90</h4>
+                      <h4 className='price'>
+                        {currency} {shipping.toFixed(2)}
+                      </h4>
                     </li>
 
                     <li>
                       <h4>GST/Tax</h4>
-                      <h4 className='price'>{currency} 29.498</h4>
+                      <h4 className='price'>
+                        {currency} {tax.toFixed(2)}
+                      </h4>
                     </li>
 
                     <li>
                       <h4>Coupon/Code</h4>
-                      <h4 className='price'>{currency} -23.10</h4>
+                      <h4 className='price'>
+                        {currency} -{coupon.toFixed(2)}
+                      </h4>
                     </li>
 
                     <li className='list-total'>
                       <h4>Total ({currency})</h4>
-                      <h4 className='price'>{currency} 19.28</h4>
+                      <h4 className='price'>
+                        {currency} {total.toFixed(2)}
+                      </h4>
                     </li>
                   </ul>
                 </div>
@@ -721,11 +742,7 @@ const Checkout = () => {
                 <div className='checkout-offer'>
                   <div className='offer-title'>
                     <div className='offer-icon'>
-                      <img
-                        src='/assets/images/inner-page/offer.svg'
-                        className='img-fluid'
-                        alt=''
-                      />
+                      <img src='/assets/images/inner-page/offer.svg' className='img-fluid' alt='' />
                     </div>
                     <div className='offer-name'>
                       <h6>Available Offers</h6>
