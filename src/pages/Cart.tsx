@@ -81,14 +81,14 @@ const Cart = () => {
                                     </li>
                                     <li>
                                       <h5 className='text-content d-inline-block'>Price :</h5>
-                                      <span>₹{item.discounted_price}</span>
+                                      <span>{currency}{item.discounted_price}</span>
                                       <span className='text-content'>
-                                        ${currency} {item.price}
+                                        {currency} {item.price}
                                       </span>
                                     </li>
                                     <li>
                                       <h5 className='saving theme-color'>
-                                        Saving : ₹{item.saving}
+                                        Saving : {currency}{item.saving}
                                       </h5>
                                     </li>
                                     <li className='quantity-price-box'>
@@ -127,7 +127,7 @@ const Cart = () => {
                                       </div>
                                     </li>
                                     <li>
-                                      <h5>Total: ₹{item.total.toFixed(2)}</h5>
+                                      <h5>Total: {currency}{item.total.toFixed(2)}</h5>
                                     </li>
                                   </ul>
                                 </div>
@@ -135,9 +135,14 @@ const Cart = () => {
                             </td>
                             <td className='price'>
                               <h4 className='table-title text-content'>Price</h4>
-                              <h5>₹{item.price}</h5>
+                              <h5>
+                                {currency}{item.discounted_price}{' '}
+                                <del className='text-center'>
+                                  {currency} {item.price}
+                                </del>
+                              </h5>
                               <h6 className='theme-color'>
-                                You Save : ₹{(item.price - item.discounted_price).toFixed(2)}
+                                You Save : {currency}{(item.price - item.discounted_price).toFixed(2)}
                               </h6>
                             </td>
                             <td className='quantity'>
@@ -180,7 +185,7 @@ const Cart = () => {
                             </td>
                             <td className='subtotal'>
                               <h4 className='table-title text-content'>Total</h4>
-                              <h5>₹{item.total.toFixed(2)}</h5>
+                              <h5>{currency}{item.total.toFixed(2)}</h5>
                             </td>
                             <td className='save-remove'>
                               <h4 className='table-title text-content'>Action</h4>
