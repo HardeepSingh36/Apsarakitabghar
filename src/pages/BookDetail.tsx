@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import type { Book, CartItem } from '@/types/types';
 import { getBooks } from '@/services/bookService';
-import { Heart, Star } from 'react-feather';
+import { Heart} from 'react-feather';
 import { useAppDispatch } from '@/app/hooks';
 import { addToCart } from '@/features/cart/cartSlice';
 import { addToWishlist } from '@/features/wishlist/wishlistSlice';
@@ -50,7 +50,7 @@ const BookDetail = () => {
   const { id } = useParams();
   const [book, setBook] = useState<Book | null>(null);
   const [selectedFormat, setSelectedFormat] = useState('hardcover');
-  const formats = ['hardcover', 'paperback', 'ebook', 'audiobook'];
+  const tags = ['BookLover', 'Bookworm', 'MustRead', 'Bookstagram'];
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -160,7 +160,7 @@ const BookDetail = () => {
                           ({book.discount ? `${book.discount}% off` : '8% off'})
                         </span>
                       </h3>
-                      <div className='product-rating custom-rate'>
+                      {/* <div className='product-rating custom-rate'>
                         <ul className='rating'>
                           <li>
                             <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
@@ -179,7 +179,7 @@ const BookDetail = () => {
                           </li>
                         </ul>
                         <span className='review'>23 Customer Review</span>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className='product-contain'>
@@ -189,18 +189,19 @@ const BookDetail = () => {
                     {/* Book Formats */}
                     <div className='product-package'>
                       <div className='product-title'>
-                        <h4>Format</h4>
+                        <h4>Tags</h4>
                       </div>
                       <ul className='select-package'>
-                        {formats.map((format) => (
-                          <li key={format}>
+                        {tags.map((tag) => (
+                          <li key={tag}>
                             <a
                               type='button'
                               href='javascript:void(0)'
-                              onClick={() => setSelectedFormat(format)}
-                              className={`capitalize ${selectedFormat === format ? 'active' : ''}`}
+                              // onClick={() => setSelectedFormat(format)}
+                              // className={`capitalize ${selectedFormat === format ? 'active' : ''}`}
+                              className='capitalize'
                             >
-                              {format}
+                              {tag}
                             </a>
                           </li>
                         ))}
@@ -212,12 +213,12 @@ const BookDetail = () => {
                         <div className='input-group'>
                           <button
                             type='button'
-                            className='qty-right-plus'
-                            data-type='plus'
+                            className='qty-left-minus'
+                            data-type='minus'
                             data-field=''
-                            onClick={() => setQuantity((prev) => prev + 1)}
+                            onClick={() => setQuantity((prev) => Math.max(prev - 1, 0))}
                           >
-                            <i className='fa fa-plus'></i>
+                            <i className='fa fa-minus'></i>
                           </button>
                           <input
                             className='form-control input-number qty-input'
@@ -228,12 +229,12 @@ const BookDetail = () => {
                           />
                           <button
                             type='button'
-                            className='qty-left-minus'
-                            data-type='minus'
+                            className='qty-right-plus'
+                            data-type='plus'
                             data-field=''
-                            onClick={() => setQuantity((prev) => Math.max(prev - 1, 0))}
+                            onClick={() => setQuantity((prev) => prev + 1)}
                           >
-                            <i className='fa fa-minus'></i>
+                            <i className='fa fa-plus'></i>
                           </button>
                         </div>
                       </div>
@@ -269,17 +270,17 @@ const BookDetail = () => {
                       </div>
 
                       <div className='pickup-detail'>
-                        <h4 className='text-content'>
+                        {/* <h4 className='text-content'>
                           {book.publisher_name ||
                             'Noodles & Company is an American fast-casual restaurant that offers international and American noodle dishes and pasta.'}
-                        </h4>
+                        </h4> */}
                       </div>
 
                       <div className='product-info'>
                         <ul className='product-info-list product-info-list-2'>
-                          <li>
+                          {/* <li>
                             Type : <a href='javascript:void(0)'>{book.format || 'Black Forest'}</a>
-                          </li>
+                          </li> */}
                           <li>
                             SKU : <a href='javascript:void(0)'>{book.isbn || 'SDFVW65467'}</a>
                           </li>
@@ -294,11 +295,12 @@ const BookDetail = () => {
                             </a>
                           </li>
                           <li>
-                            Tags :{' '}
+                            Category :{' '}
                             <a href='javascript:void(0)'>
-                              {book.category_ids?.join(', ') || 'Cake,'}
+                              {/* {book.category_ids?.join(', ') || 'Cake,'} */}
+                              Mystery
                             </a>{' '}
-                            <a href='javascript:void(0)'>{book.language || 'Backery'}</a>
+                            {/* <a href='javascript:void(0)'>{book.language || 'Backery'}</a> */}
                           </li>
                         </ul>
                       </div>
@@ -477,7 +479,7 @@ const BookDetail = () => {
                               </tr>
                               <tr>
                                 <td>Brand</td>
-                                <td>{book.publisher_name || 'Lavian Exotique'}</td>
+                                {/* <td>{book.publisher_name || 'Lavian Exotique'}</td> */}
                               </tr>
                               <tr>
                                 <td>Form</td>
@@ -487,10 +489,10 @@ const BookDetail = () => {
                                 <td>Package Information</td>
                                 <td>Box</td>
                               </tr>
-                              <tr>
+                              {/* <tr>
                                 <td>Manufacturer</td>
                                 <td>{book.publisher_name || 'Prayagh Nutri Product Pvt Ltd'}</td>
-                              </tr>
+                              </tr> */}
                               <tr>
                                 <td>Item part number</td>
                                 <td>{book.isbn || 'LE 014 - 20pcs Crème Bakes (Pack of 2)'}</td>
@@ -515,7 +517,7 @@ const BookDetail = () => {
 
             <div className='col-xxl-3 col-xl-4 col-lg-5 d-none d-lg-block wow fadeInUp'>
               <div className='right-sidebar-box'>
-                <div className='vendor-box'>
+                {/* <div className='vendor-box'>
                   <div className='vendor-contain'>
                     <div className='vendor-image'>
                       <img src='' className='blur-up lazyload' alt='' />
@@ -550,7 +552,7 @@ const BookDetail = () => {
                     {book.publisher_name ||
                       'Noodles & Company is an American fast-casual restaurant that offers international and American noodle dishes and pasta.'}
                   </p>
-                </div>
+                </div> */}
 
                 <div className='pt-25'>
                   <div className='category-menu'>

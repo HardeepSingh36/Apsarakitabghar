@@ -126,7 +126,7 @@ const AddProductBox = ({
           <Link to={`/books/${product.id}`} state={{ item: product }}>
             <h5 className='name'>{product.title}</h5>
           </Link>
-          <div className='product-rating mt-2'>
+          {/* <div className='product-rating mt-2'>
             <ul className='rating'>
               {[...Array(5)].map((_, i) => (
                 <li key={i}>
@@ -135,7 +135,7 @@ const AddProductBox = ({
               ))}
             </ul>
             <span>(5)</span>
-          </div>
+          </div> */}
           <h6 className='unit'>{product.pages} pages</h6>
           <h5 className='price'>
             <span className='theme-color'>{product.price}</span>{' '}

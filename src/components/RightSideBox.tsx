@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Bookmark, ShoppingCart, User } from 'react-feather';
+import { Heart, ShoppingCart, User } from 'react-feather';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
@@ -61,7 +61,7 @@ const RightSideBox = () => {
             className='btn p-0 position-relative header-wishlist'
             onClick={() => handleProtectedNav('/wishlist')}
           >
-            <Bookmark size={22} />
+            <Heart size={22} />
           </button>
         </li>
 
