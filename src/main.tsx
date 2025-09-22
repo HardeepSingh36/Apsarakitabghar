@@ -9,6 +9,14 @@ import 'slick-carousel/slick/slick-theme.css';
 import 'react-tooltip/dist/react-tooltip.css';
 import { store } from '@/app/store';
 import { Provider } from 'react-redux';
+import { setUser, finishLoading } from '@/features/auth/authSlice';
+
+// Initialize auth before rendering the app
+const raw = localStorage.getItem('auth_user');
+if (raw) {
+  store.dispatch(setUser(JSON.parse(raw)));
+}
+store.dispatch(finishLoading());
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

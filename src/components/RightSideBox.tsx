@@ -4,12 +4,19 @@ import { useAuthDialog } from '@/context/AuthDialogContext';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import { removeFromCart } from '@/features/cart/cartSlice';
+import { logout } from '@/features/auth/authSlice';
 
 const RightSideBox = () => {
-  const { openSignIn, openSignUp, openForgot, isAuthenticated, user, logout } = useAuthDialog();
-  const navigate = useNavigate();
+  // ✅ Auth UI actions (from dialog context)
+  const { openSignIn, openSignUp, openForgot } = useAuthDialog();
+
+  // ✅ Redux state for user + auth
+  const { isAuthenticated, user } = useAppSelector((state: RootState) => state.auth);
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
+
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const cartTotal = cartItems.reduce((acc, item) => acc + item.total, 0);
 
   // Handle protected navigation
@@ -34,7 +41,9 @@ const RightSideBox = () => {
           </span>
         </div>
       </div>
+
       <ul className='right-side-menu !mb-0'>
+        {/* Search */}
         <li className='right-side'>
           <div className='delivery-login-box'>
             <div className='delivery-icon'>
@@ -85,13 +94,13 @@ const RightSideBox = () => {
                   </button>
                 </div>
               ) : cartItems.length === 0 ? (
-                // ⬇️ If no cart items
+                // Empty cart message
                 <div className='p-3 text-center'>
                   <p>Your cart is empty</p>
                 </div>
               ) : (
                 <>
-                  {/* ⬇️ Cart items from Redux */}
+                  {/* Cart items */}
                   <ul className='cart-list'>
                     {cartItems.map((item) => (
                       <li className='product-box-contain !w-full' key={item.id}>
@@ -114,7 +123,7 @@ const RightSideBox = () => {
                             <h6>
                               <span>{item.quantity} x</span> ${item.price.toFixed(2)}
                             </h6>
-                            {/* ⬇️ Remove item from cart */}
+                            {/* Remove item */}
                             <button
                               className='close-button close_button'
                               onClick={() => dispatch(removeFromCart(item.id as number))}
@@ -127,13 +136,13 @@ const RightSideBox = () => {
                     ))}
                   </ul>
 
-                  {/* ⬇️ Cart total */}
+                  {/* Cart total */}
                   <div className='price-box'>
                     <h5>Total :</h5>
                     <h4 className='theme-color fw-bold'>${cartTotal.toFixed(2)}</h4>
                   </div>
 
-                  {/* ⬇️ Buttons */}
+                  {/* Buttons */}
                   <div className='button-group'>
                     <button
                       className='btn btn-sm cart-button'
@@ -187,7 +196,7 @@ const RightSideBox = () => {
                     <button
                       type='button'
                       className='!no-underline bg-transparent border-0 p-0'
-                      onClick={logout}
+                      onClick={() => dispatch(logout())}
                     >
                       Logout
                     </button>

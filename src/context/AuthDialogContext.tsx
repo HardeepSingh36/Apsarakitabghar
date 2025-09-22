@@ -1,4 +1,7 @@
 import * as React from 'react';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { login, logout } from '@/features/auth/authSlice';
+
 import {
   Dialog,
   DialogContent,
@@ -6,7 +9,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import type { RootState } from '@/app/store';
 
 type AuthView = 'choice' | 'signin' | 'signup' | 'forgot';
 
@@ -26,7 +30,6 @@ type AuthDialogContextValue = {
   openSignUp: () => void;
   openForgot: () => void;
   isAuthenticated: boolean;
-  user: User | null;
   logout: () => void;
   loading: boolean;
 };
@@ -51,24 +54,9 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [role, setRole] = React.useState<UserRole>('customer');
   const [user, setUser] = React.useState<User | null>(null);
-  const [loading, setLoading] = React.useState(true);
 
-  const navigate = useNavigate();
-
-  React.useEffect(() => {
-    try {
-      const raw = localStorage.getItem('auth_user');
-      if (raw) setUser(JSON.parse(raw));
-    } catch {}
-  }, []);
-
-  React.useEffect(() => {
-    try {
-      const raw = localStorage.getItem('auth_user');
-      if (raw) setUser(JSON.parse(raw));
-    } catch {}
-    setLoading(false); // auth state is resolved
-  }, []);
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, loading } = useAppSelector((s: RootState) => s.auth);
 
   const resetForm = () => {
     setUsername('');
@@ -115,15 +103,15 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     if (authView === 'signin') {
       const valid = email === 'demo@demo.com' && password === 'Password@123';
       if (valid) {
-        const u: User = {
-          username: 'demo_user',
-          email,
-          full_name: 'Demo User',
-          phone_number: '+1234567890',
-          role: 'customer',
-        };
-        setUser(u);
-        localStorage.setItem('auth_user', JSON.stringify(u));
+        dispatch(
+          login({
+            username: 'demo_user',
+            email,
+            full_name: 'Demo User',
+            phone_number: '+1234567890',
+            role: 'customer',
+          })
+        );
         setDialogOpen(false);
       } else {
         alert('Invalid credentials. Use demo@demo.com / Password@123');
@@ -135,15 +123,15 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
         return;
       }
 
-      const u: User = {
-        username,
-        email,
-        full_name: fullName || 'New User',
-        phone_number: phoneNumber,
-        role,
-      };
-      setUser(u);
-      localStorage.setItem('auth_user', JSON.stringify(u));
+      dispatch(
+        login({
+          username,
+          email,
+          full_name: fullName || 'New User',
+          phone_number: phoneNumber,
+          role,
+        })
+      );
       setDialogOpen(false);
     } else if (authView === 'forgot') {
       alert('Reset link sent (dummy).');
@@ -151,20 +139,13 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('auth_user');
-    navigate('/');
-  };
-
   const ctxValue: AuthDialogContextValue = {
     openChoice,
     openSignIn,
     openSignUp,
     openForgot,
-    isAuthenticated: Boolean(user),
-    user,
-    logout,
+    isAuthenticated,
+    logout: () => dispatch(logout()),
     loading,
   };
 
