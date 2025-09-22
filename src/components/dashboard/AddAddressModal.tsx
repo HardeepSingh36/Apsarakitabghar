@@ -1,26 +1,67 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addAddress } from '../../features/user/userSlice';
+import React, { useState, useEffect } from 'react';
+
+interface Address {
+  id: string;
+  firstName: string;
+  lastName: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  phone: string;
+  type: 'billing' | 'shipping';
+  country: string;
+}
 
 interface AddAddressModalProps {
   isOpen: boolean;
   onClose: () => void;
+  address?: Address | null;
+  onSave: (updatedAddress: Address) => void;
 }
 
-const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) => {
-  const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    postalCode: '',
-    phone: '',
-    type: 'home',
-    country: 'India',
-  });
+const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, address, onSave }) => {
+  const [formData, setFormData] = useState<Address>(
+    address || {
+      id: `${Date.now()}`,
+      firstName: '',
+      lastName: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      phone: '',
+      type: 'shipping',
+      country: 'India',
+    }
+  );
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isEdit, setIsEdit] = useState(false); // New edit flag
+
+  useEffect(() => {
+    if (address) {
+      setFormData(address); // Initialize formData with the address prop when editing
+      setIsEdit(true); // Set edit flag to true
+    } else {
+      setFormData({
+        id: `${Date.now()}`,
+        firstName: '',
+        lastName: '',
+        addressLine1: '',
+        addressLine2: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        phone: '',
+        type: 'shipping',
+        country: 'India',
+      });
+      setIsEdit(false); // Set edit flag to false
+    }
+  }, [address]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -29,10 +70,46 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = () => {
-    const addressWithId = { ...formData, id: `${Date.now()}` }; // Add unique ID
-    dispatch(addAddress(addressWithId));
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.firstName.trim()) newErrors.firstName = 'First Name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last Name is required';
+    if (!formData.addressLine1.trim()) newErrors.addressLine1 = 'Street Address is required';
+    if (!formData.city.trim()) newErrors.city = 'City is required';
+    if (!formData.state.trim()) newErrors.state = 'State is required';
+    if (!formData.postalCode.trim()) newErrors.postalCode = 'Postal Code is required';
+    if (!formData.phone.trim()) newErrors.phone = 'Phone Number is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleClose = () => {
+    if (!isEdit) {
+      setFormData({
+        id: `${Date.now()}`,
+        firstName: '',
+        lastName: '',
+        addressLine1: '',
+        addressLine2: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        phone: '',
+        type: 'shipping',
+        country: 'India',
+      });
+    }
     onClose();
+  };
+
+  const handleSubmit = () => {
+    if (!validateForm()) return; // Prevent submission if validation fails
+
+    const addressWithId = { ...formData, id: formData.id || `${Date.now()}` }; // Add unique ID if not present
+    onSave(addressWithId);
+    handleClose();
   };
 
   if (!isOpen) return null;
@@ -47,9 +124,9 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
         <div className='modal-content'>
           <div className='modal-header'>
             <h5 className='modal-title' id='exampleModalLabel'>
-              Add a new address
+              {isEdit ? 'Edit Address' : 'Add a new address'}
             </h5>
-            <button type='button' className='btn-close' onClick={onClose}>
+            <button type='button' className='btn-close' onClick={handleClose}>
               <i className='fa-solid fa-xmark'></i>
             </button>
           </div>
@@ -66,7 +143,8 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                       value={formData.firstName}
                       onChange={handleChange}
                     />
-                    <label htmlFor='fullName'>Full Name</label>
+                    <label htmlFor='firstName'>First Name</label>
+                    {errors.firstName && <div className='text-danger'>{errors.firstName}</div>}
                   </div>
                 </div>
                 <div className='col-xxl-6'>
@@ -79,7 +157,8 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                       value={formData.lastName}
                       onChange={handleChange}
                     />
-                    <label htmlFor='fullName'>Full Name</label>
+                    <label htmlFor='lastName'>Last Name</label>
+                    {errors.lastName && <div className='text-danger'>{errors.lastName}</div>}
                   </div>
                 </div>
                 <div className='col-xxl-12'>
@@ -93,6 +172,9 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                       onChange={handleChange}
                     ></textarea>
                     <label htmlFor='street'>Street Address</label>
+                    {errors.addressLine1 && (
+                      <div className='text-danger'>{errors.addressLine1}</div>
+                    )}
                   </div>
                 </div>
                 <div className='col-xxl-12'>
@@ -110,6 +192,19 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                 </div>
                 <div className='col-xxl-6'>
                   <div className='form-floating theme-form-floating'>
+                    <select
+                      className='form-select'
+                      id='country'
+                      value={formData.country}
+                      onChange={handleChange}
+                    >
+                      <option value='india'>India</option>
+                    </select>
+                    <label htmlFor='country'>Country</label>
+                  </div>
+                </div>
+                <div className='col-xxl-6'>
+                  <div className='form-floating theme-form-floating'>
                     <input
                       type='text'
                       className='form-control'
@@ -119,6 +214,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                       onChange={handleChange}
                     />
                     <label htmlFor='city'>City</label>
+                    {errors.city && <div className='text-danger'>{errors.city}</div>}
                   </div>
                 </div>
                 <div className='col-xxl-6'>
@@ -132,12 +228,13 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                       onChange={handleChange}
                     />
                     <label htmlFor='state'>State</label>
+                    {errors.state && <div className='text-danger'>{errors.state}</div>}
                   </div>
                 </div>
                 <div className='col-xxl-6'>
                   <div className='form-floating theme-form-floating'>
                     <input
-                      type='text'
+                      type='number'
                       className='form-control'
                       id='postalCode'
                       placeholder='Enter Postal Code'
@@ -145,12 +242,13 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                       onChange={handleChange}
                     />
                     <label htmlFor='postalCode'>Postal Code</label>
+                    {errors.postalCode && <div className='text-danger'>{errors.postalCode}</div>}
                   </div>
                 </div>
                 <div className='col-xxl-6'>
                   <div className='form-floating theme-form-floating'>
                     <input
-                      type='text'
+                      type='phone'
                       className='form-control'
                       id='phone'
                       placeholder='Enter Phone Number'
@@ -158,6 +256,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                       onChange={handleChange}
                     />
                     <label htmlFor='phone'>Phone Number</label>
+                    {errors.phone && <div className='text-danger'>{errors.phone}</div>}
                   </div>
                 </div>
                 <div className='col-xxl-6'>
@@ -168,31 +267,20 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose }) =>
                       value={formData.type}
                       onChange={handleChange}
                     >
-                      <option value='home'>Home</option>
-                      <option value='work'>Work</option>
-                      <option value='billing'>Billing</option>
                       <option value='shipping'>Shipping</option>
+                      <option value='billing'>Billing</option>
                     </select>
                     <label htmlFor='type'>Address Type</label>
-                  </div>
-                </div>
-                <div className='col-xxl-6'>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='text'
-                      className='form-control'
-                      id='country'
-                      placeholder='Enter Country'
-                      value={formData.country}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor='country'>Country</label>
                   </div>
                 </div>
               </div>
             </div>
             <div className='modal-footer'>
-              <button type='button' className='btn btn-animation btn-md fw-bold' onClick={onClose}>
+              <button
+                type='button'
+                className='btn btn-animation btn-md fw-bold'
+                onClick={handleClose}
+              >
                 Close
               </button>
               <button

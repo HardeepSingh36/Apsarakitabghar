@@ -4,11 +4,11 @@ export type UserRole = 'customer' | 'publisher' | 'reseller';
 
 export interface Address {
   id: string;
-  type: 'home' | 'work' | 'billing' | 'shipping' | string;
+  type: 'billing' | 'shipping';
   firstName: string;
   lastName: string;
   addressLine1: string;
-  addressLine2: string;
+  addressLine2?: string; // Made optional
   city: string;
   state: string;
   postalCode: string;
@@ -54,8 +54,9 @@ const userSlice = createSlice({
       state.addresses.push(newAddress);
     },
     updateAddress: (state, action: PayloadAction<Address>) => {
-      const idx = state.addresses.findIndex((a) => a.id === action.payload.id);
-      if (idx > -1) state.addresses[idx] = action.payload;
+      state.addresses = state.addresses.map((a) =>
+        a.id === action.payload.id ? action.payload : a
+      );
     },
     removeAddress: (state, action: PayloadAction<string>) => {
       state.addresses = state.addresses.filter((a) => a.id !== action.payload);
