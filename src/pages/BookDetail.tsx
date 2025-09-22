@@ -49,7 +49,7 @@ const BookDetail = () => {
   const [quantity, setQuantity] = useState(0);
   const { id } = useParams();
   const [book, setBook] = useState<Book | null>(null);
-  const [selectedFormat, setSelectedFormat] = useState('hardcover');
+  // const [selectedFormat, setSelectedFormat] = useState('hardcover');
   const tags = ['BookLover', 'Bookworm', 'MustRead', 'Bookstagram'];
   const location = useLocation();
   const navigate = useNavigate();

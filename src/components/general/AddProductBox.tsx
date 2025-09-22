@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Eye, Heart, Minus, Plus, ShoppingCart, Star, X } from 'react-feather';
+import { Eye, Heart, Minus, Plus, ShoppingCart, X } from 'react-feather';
 import { Tooltip } from 'react-tooltip';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
-import { addToCart, decreaseQuantity } from '@/features/cart/cartSlice';
+import { addToCart, decreaseQuantity, removeFromCart } from '@/features/cart/cartSlice';
 import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
@@ -32,6 +32,9 @@ const AddProductBox = ({
   const handleDecrease = () => {
     if (cartItem) {
       dispatch(decreaseQuantity(product.id));
+      if (cartItem.quantity === 1) {
+        dispatch(removeFromCart(product.id));
+      }
     }
   };
 
