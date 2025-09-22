@@ -84,16 +84,16 @@ const navItems = [
     isDropdown: false,
   },
   { type: 'link', label: 'Reading Lists', to: '/about', className: 'lg:!ml-4', isDropdown: false },
-  {
-    type: 'dropdown',
-    label: 'Join Apsra',
-    className: 'dropdown dropdown-mega lg:!ml-4',
-    dropdownMenu: [
-      { label: 'As Customer', to: '/' },
-      { label: 'As Publisher', to: '/' },
-      { label: 'As Reseller', to: '/' },
-    ],
-  },
+  // {
+  //   type: 'dropdown',
+  //   label: 'Join Apsra',
+  //   className: 'dropdown dropdown-mega lg:!ml-4',
+  //   dropdownMenu: [
+  //     { label: 'As Customer', to: '/' },
+  //     // { label: 'As Publisher', to: '/' },
+  //     // { label: 'As Reseller', to: '/' },
+  //   ],
+  // },
 ];
 
 const NavItem = ({ label, to, href, className }: any) =>
@@ -222,17 +222,17 @@ const MainNav = ({
             ></button>
           </div>
           <div className='offcanvas-body'>
-             <ul className='navbar-nav'>
-               {navItems.map((item, idx) =>
-                 item.type === 'dropdown' && item.label === 'Join Apsra' && !isAuthenticated ? (
-                   <DropdownNavItem key={idx} {...item} onJoinClick={handleJoinClick} />
-                 ) : item.type === 'dropdown' && item.label !== 'Join Apsra' ? (
-                   <DropdownNavItem key={idx} {...item} />
-                 ) : item.type !== 'dropdown' ? (
-                   <NavItem key={idx} {...item} />
-                 ) : null
-               )}
-             </ul>
+            <ul className='navbar-nav'>
+              {navItems.map((item, idx) =>
+                item.type === 'dropdown' && item.label === 'Join Apsra' && !isAuthenticated ? (
+                  <DropdownNavItem key={idx} {...item} onJoinClick={handleJoinClick} />
+                ) : item.type === 'dropdown' && item.label !== 'Join Apsra' ? (
+                  <DropdownNavItem key={idx} {...item} />
+                ) : item.type !== 'dropdown' ? (
+                  <NavItem key={idx} {...item} />
+                ) : null
+              )}
+            </ul>
           </div>
         </div>
       </div>

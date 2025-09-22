@@ -78,7 +78,7 @@ const BookDetail = () => {
       openSignIn();
       return;
     }
-    
+
     if (!book) return;
 
     const cartItem: CartItem = {
@@ -105,7 +105,7 @@ const BookDetail = () => {
       openSignIn();
       return;
     }
-    
+
     if (!book) return;
 
     dispatch(
@@ -377,7 +377,7 @@ const BookDetail = () => {
                     <ul className='nav nav-tabs custom-nav' id='myTab' role='tablist'>
                       <li className='nav-item' role='presentation'>
                         <button
-                          className='nav-link active'
+                          className='nav-link'
                           id='description-tab'
                           data-bs-toggle='tab'
                           data-bs-target='#description'
@@ -388,7 +388,7 @@ const BookDetail = () => {
                         </button>
                       </li>
 
-                      <li className='nav-item' role='presentation'>
+                      {/* <li className='nav-item' role='presentation'>
                         <button
                           className='nav-link'
                           id='info-tab'
@@ -412,7 +412,7 @@ const BookDetail = () => {
                         >
                           Review
                         </button>
-                      </li>
+                      </li> */}
                     </ul>
 
                     <div className='tab-content custom-tab' id='myTabContent'>
