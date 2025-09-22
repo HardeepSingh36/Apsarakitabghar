@@ -22,7 +22,7 @@ const WishList = () => {
                   <div className='wishlist-box'>
                     <AddProductBox
                       key={item.id}
-                      product={item} // Pass item directly as it matches Book type
+                      product={item}
                       idx={item.id}
                       removeButton={true}
                     />

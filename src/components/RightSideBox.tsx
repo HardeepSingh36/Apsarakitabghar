@@ -110,7 +110,11 @@ const RightSideBox = () => {
                             className='drop-image'
                             onClick={() => handleProtectedNav('/cart')}
                           >
-                            <img src={item.img} className='blur-up lazyload' alt={item.name} />
+                            <img
+                              src={item.cover_image_url}
+                              className='blur-up lazyload'
+                              alt={item.title}
+                            />
                           </button>
                           <div className='drop-contain'>
                             <button
@@ -118,7 +122,7 @@ const RightSideBox = () => {
                               className='!no-underline bg-transparent border-0 p-0'
                               onClick={() => handleProtectedNav('/cart')}
                             >
-                              <h5>{item.name}</h5>
+                              <h5>{item.title}</h5>
                             </button>
                             <h6>
                               <span>{item.quantity} x</span> ${item.price.toFixed(2)}

@@ -66,7 +66,7 @@ const AddProductBox = ({
         ...product,
         quantity: 1,
         total: product.price,
-        saving: product.discounted_price - product.price, // Calculate saving for CartItem
+        saving: product.discounted_price - product.price,
       })
     );
   };
