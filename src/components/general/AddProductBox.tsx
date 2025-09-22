@@ -6,8 +6,21 @@ import type { RootState } from '@/app/store';
 import { addToCart, decreaseQuantity } from '@/features/cart/cartSlice';
 import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
+import type { Book } from '@/types/types';
 
-const AddProductBox = ({ product, idx, showOptions = false, removeButton = false }: any) => {
+interface AddProductBoxProps {
+  product: Book;
+  idx: number;
+  showOptions?: boolean;
+  removeButton?: boolean;
+}
+
+const AddProductBox = ({
+  product,
+  idx,
+  showOptions = false,
+  removeButton = false,
+}: AddProductBoxProps) => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, openSignIn } = useAuthDialog();
 
@@ -32,7 +45,12 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
     if (removeButton) {
       dispatch(removeFromWishlist(product.id));
     } else {
-      dispatch(addToWishlist(product));
+      dispatch(
+        addToWishlist({
+          ...product,
+          rating: 5, // Default rating for WishlistItem
+        })
+      );
     }
   };
 
@@ -43,8 +61,16 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
       return;
     }
 
-    dispatch(addToCart(product));
+    dispatch(
+      addToCart({
+        ...product,
+        quantity: 1,
+        total: product.price,
+        saving: product.discounted_price - product.price, // Calculate saving for CartItem
+      })
+    );
   };
+
   return (
     <div
       className='product-box-3 wow fadeInUp'
@@ -52,8 +78,12 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
     >
       <div className='product-header'>
         <div className='product-image'>
-          <a href={`/books/50`}>
-            <img src={product.img} className='img-fluid blur-up lazyload' alt='' />
+          <a href={`/books/${product.id}`}>
+            <img
+              src={product.cover_image_url || ''}
+              className='img-fluid blur-up lazyload'
+              alt=''
+            />
           </a>
           {removeButton && (
             <div className='product-header-top'>
@@ -93,8 +123,8 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
       <div className='product-footer'>
         <div className='product-detail'>
           <span className='span-name'>Book</span>
-          <Link to={`/books/50`} state={{ item: product }}>
-            <h5 className='name'>{product.name}</h5>
+          <Link to={`/books/${product.id}`} state={{ item: product }}>
+            <h5 className='name'>{product.title}</h5>
           </Link>
           <div className='product-rating mt-2'>
             <ul className='rating'>
@@ -108,7 +138,8 @@ const AddProductBox = ({ product, idx, showOptions = false, removeButton = false
           </div>
           <h6 className='unit'>{product.pages} pages</h6>
           <h5 className='price'>
-            <span className='theme-color'>{product.price}</span> <del>{product.oldPrice}</del>
+            <span className='theme-color'>{product.price}</span>{' '}
+            <del>{product.discounted_price}</del>
           </h5>
           <div className='add-to-cart-box bg-white'>
             {cartItem ? (

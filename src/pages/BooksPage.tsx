@@ -1,43 +1,23 @@
 import Breadcrumb from '../components/ui/Breadcrumb';
 import AddProductBox from '../components/general/AddProductBox';
 
-// Dummy book data for demonstration
-const books = [
-  {
-    id: 1,
-    title: 'The Great Gatsby',
-    author: 'F. Scott Fitzgerald',
-    image: '/assets/images/book/product/32.jpg',
-    price: 299,
-    oldPrice: 399,
-    rating: 4.5,
-    description: 'A classic novel of the Roaring Twenties.',
-    unit: 'Paperback',
-    discount: 25,
-  },
-  {
-    id: 2,
-    title: 'To Kill a Mockingbird',
-    author: 'Harper Lee',
-    image: '/assets/images/book/product/33.jpg',
-    price: 349,
-    oldPrice: 449,
-    rating: 4.8,
-    description: 'A novel about racial injustice in the Deep South.',
-    unit: 'Paperback',
-    discount: 22,
-  },
-  // Add more book objects as needed
-];
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Slider } from '@/components/ui/slider';
+import type { Book } from '@/types/types';
+import { getBooks } from '@/services/bookService';
 
 const BooksPage = () => {
   const [showFilter, setShowFilter] = useState(false);
+  const [books, setBooks] = useState<Book[]>([]);
   const min = 0;
   const max = 1000000;
   const [value, setValue] = useState([550000]);
+
+  useEffect(() => {
+    getBooks({ page: 1, limit: 20 })
+      .then(({ data }) => setBooks(data))
+      .catch((err) => console.error(err));
+  }, []);
   return (
     <section className='section-b-space shop-section -mt-8 md:-mt-16'>
       <Breadcrumb
@@ -498,20 +478,7 @@ const BooksPage = () => {
             <div className='row g-sm-4 g-3 row-cols-xxl-5 row-cols-xl-3 row-cols-lg-2 row-cols-md-3 row-cols-2 product-list-section mt-2'>
               {books.map((book) => (
                 <div key={book.id} className='col'>
-                  <AddProductBox
-                    product={{
-                      img: book.image,
-                      spanName: 'Book',
-                      name: book.title,
-                      rating: Math.round(book.rating),
-                      ratingText: `(${book.rating})`,
-                      unit: book.unit,
-                      price: `₹${book.price}`,
-                      oldPrice: `₹${book.oldPrice}`,
-                    }}
-                    idx={book.id}
-                    showOptions={true}
-                  />
+                  <AddProductBox product={book} idx={book.id} showOptions={true} />
                 </div>
               ))}
             </div>

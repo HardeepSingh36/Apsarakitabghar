@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { useNavigate, useLocation } from 'react-router-dom';
 import type { RootState } from '@/app/store';
 
 type AuthView = 'choice' | 'signin' | 'signup' | 'forgot';
@@ -53,7 +52,6 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [fullName, setFullName] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [role, setRole] = React.useState<UserRole>('customer');
-  const [user, setUser] = React.useState<User | null>(null);
 
   const dispatch = useAppDispatch();
   const { isAuthenticated, loading } = useAppSelector((s: RootState) => s.auth);
@@ -308,7 +306,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
                           required
                         />
                       </div>
-                      <div className='form-group'>
+                      {/* <div className='form-group'>
                         <label className='form-label'>Role</label>
                         <select
                           className='form-control'
@@ -320,7 +318,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
                           <option value='publisher'>Publisher</option>
                           <option value='reseller'>Reseller</option>
                         </select>
-                      </div>
+                      </div> */}
                     </>
                   )}
                   <div className='form-group'>

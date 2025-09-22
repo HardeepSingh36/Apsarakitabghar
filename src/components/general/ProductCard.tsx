@@ -36,17 +36,10 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
 
     if (!cartItem) {
       const cartPayload: CartItem = {
-        id: item.id,
-        name: item.title,
-        author: item.author_names || 'Unknown',
-        img: item.cover_image_url,
-        soldBy: item.publisher_name || 'Super Admin',
+        ...item,
         quantity: 1,
-        pages: item.pages,
-        price: item.discounted_price || item.price,
-        oldPrice: item.price,
-        saving: (item.price - (item.discounted_price || item.price)) * 1,
-        total: (item.discounted_price || item.price) * 1,
+        total: item.discounted_price,
+        saving: item.price - item.discounted_price,
       };
       dispatch(addToCart(cartPayload));
       navigate('/cart');
@@ -63,14 +56,8 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
       dispatch(removeFromWishlist(item.id));
     } else {
       const wishlistPayload: WishlistItem = {
-        id: item.id,
-        name: item.title,
-        author: item.author_names || 'Unknown',
-        img: item.cover_image_url,
-        price: item.discounted_price || item.price,
-        oldPrice: item.price,
-        rating: 4,
-        pages: item.pages,
+        ...item,
+        rating: 5,
       };
       dispatch(addToWishlist(wishlistPayload));
     }

@@ -1,12 +1,10 @@
-import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import AddProductBox from '@/components/general/AddProductBox';
 import Breadcrumb from '@/components/ui/Breadcrumb';
-import { removeFromWishlist } from '@/features/wishlist/wishlistSlice';
 
 const WishList = () => {
   const wishlistItems = useAppSelector((state: RootState) => state.wishlist.items);
-  const dispatch = useAppDispatch();
   return (
     <div>
       <Breadcrumb
@@ -24,10 +22,9 @@ const WishList = () => {
                   <div className='wishlist-box'>
                     <AddProductBox
                       key={item.id}
-                      product={item}
+                      product={item} // Pass item directly as it matches Book type
                       idx={item.id}
                       removeButton={true}
-                      onRemove={() => dispatch(removeFromWishlist(item.id))}
                     />
                   </div>
                 </div>

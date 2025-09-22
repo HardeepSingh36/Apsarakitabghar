@@ -82,17 +82,10 @@ const BookDetail = () => {
     if (!book) return;
 
     const cartItem: CartItem = {
-      id: book.id,
-      name: book.title,
-      author: book.author_names || 'Unknown',
-      img: book.cover_image_url,
-      soldBy: book.publisher_name || 'Super Admin',
+      ...book,
       quantity,
-      pages: book.pages,
-      price: book.discounted_price || book.price,
-      oldPrice: book.price,
-      saving: book.price - (book.discounted_price || book.price),
       total: (book.discounted_price || book.price) * quantity,
+      saving: book.price - (book.discounted_price || book.price),
     };
 
     dispatch(addToCart(cartItem));
@@ -110,14 +103,8 @@ const BookDetail = () => {
 
     dispatch(
       addToWishlist({
-        id: book.id,
-        name: book.title,
-        author: book.author_names || 'Unknown',
-        img: book.cover_image_url,
-        price: book.discounted_price || book.price,
-        oldPrice: book.price,
-        rating: 4,
-        pages: book.pages,
+        ...book,
+        rating: 4, // Default rating for WishlistItem
       })
     );
 

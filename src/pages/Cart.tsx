@@ -55,21 +55,23 @@ const Cart = () => {
                               <div className='product border-0'>
                                 <a href={`/books/${item.id}`} className='product-image'>
                                   <img
-                                    src={item.img}
+                                    src={item.cover_image_url || ''}
                                     className='img-fluid blur-up lazyload'
-                                    alt={item.name}
+                                    alt={item.title}
                                   />
                                 </a>
                                 <div className='product-detail'>
                                   <ul>
                                     <li className='name'>
-                                      <a href={`/books/${item.id}`}>{item.name}</a>
+                                      <a href={`/books/${item.id}`}>{item.title}</a>
                                     </li>
                                     <li className='text-content'>
-                                      <span className='text-title'>Author:</span> {item.author}
+                                      <span className='text-title'>Author:</span>{' '}
+                                      {item.author_names}
                                     </li>
                                     <li className='text-content'>
-                                      <span className='text-title'>Sold By:</span> {item.soldBy}
+                                      <span className='text-title'>Sold By:</span>{' '}
+                                      {item.publisher_name}
                                     </li>
                                     <li className='text-content'>
                                       <span className='text-title'>Pages:</span> {item.pages}
@@ -79,8 +81,10 @@ const Cart = () => {
                                     </li>
                                     <li>
                                       <h5 className='text-content d-inline-block'>Price :</h5>
-                                      <span>₹{item.price}</span>
-                                      <span className='text-content'>₹{item.oldPrice}</span>
+                                      <span>₹{item.discounted_price}</span>
+                                      <span className='text-content'>
+                                        ${currency} {item.price}
+                                      </span>
                                     </li>
                                     <li>
                                       <h5 className='saving theme-color'>
@@ -93,9 +97,7 @@ const Cart = () => {
                                           <button
                                             type='button'
                                             className='btn qty-left-minus'
-                                            onClick={() =>
-                                              dispatch(decreaseQuantity(item.id as number))
-                                            }
+                                            onClick={() => dispatch(decreaseQuantity(item.id))}
                                           >
                                             <i className='fa fa-minus ms-0'></i>
                                           </button>
@@ -109,7 +111,15 @@ const Cart = () => {
                                           <button
                                             type='button'
                                             className='btn qty-right-plus'
-                                            onClick={() => dispatch(addToCart(item))}
+                                            onClick={() =>
+                                              dispatch(
+                                                addToCart({
+                                                  ...item,
+                                                  quantity: item.quantity + 1,
+                                                  total: (item.quantity + 1) * item.price,
+                                                })
+                                              )
+                                            }
                                           >
                                             <i className='fa fa-plus ms-0'></i>
                                           </button>
@@ -125,10 +135,10 @@ const Cart = () => {
                             </td>
                             <td className='price'>
                               <h4 className='table-title text-content'>Price</h4>
-                              <h5>
-                                ₹{item.price} <del className='text-content'>₹{item.oldPrice}</del>
-                              </h5>
-                              <h6 className='theme-color'>You Save : ₹{item.saving.toFixed(2)}</h6>
+                              <h5>₹{item.price}</h5>
+                              <h6 className='theme-color'>
+                                You Save : ₹{(item.price - item.discounted_price).toFixed(2)}
+                              </h6>
                             </td>
                             <td className='quantity'>
                               <h4 className='table-title text-content'>Qty</h4>
@@ -138,7 +148,7 @@ const Cart = () => {
                                     <button
                                       type='button'
                                       className='btn qty-left-minus !h-6 !w-6'
-                                      onClick={() => dispatch(decreaseQuantity(item.id as number))}
+                                      onClick={() => dispatch(decreaseQuantity(item.id))}
                                     >
                                       <Minus className='w-4 h-4' />
                                     </button>
@@ -152,7 +162,15 @@ const Cart = () => {
                                     <button
                                       type='button'
                                       className='btn qty-right-plus !h-6 !w-6'
-                                      onClick={() => dispatch(addToCart(item))}
+                                      onClick={() =>
+                                        dispatch(
+                                          addToCart({
+                                            ...item,
+                                            quantity: item.quantity + 1,
+                                            total: (item.quantity + 1) * item.price,
+                                          })
+                                        )
+                                      }
                                     >
                                       <Plus className='w-4 h-4' />
                                     </button>
@@ -177,7 +195,7 @@ const Cart = () => {
                                 <a
                                   className='remove close_button'
                                   href='javascript:void(0)'
-                                  onClick={() => dispatch(removeFromCart(item.id as number))}
+                                  onClick={() => dispatch(removeFromCart(item.id))}
                                   data-tooltip-id='remove-tooltip'
                                 >
                                   <X className='w-5 h-5' />
