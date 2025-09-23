@@ -470,7 +470,7 @@ const BooksPage = () => {
               </div>
             </div>
             {/* Product List Section */}
-            <div className='row g-sm-4 g-3 row-cols-xxl-5 row-cols-xl-3 row-cols-lg-2 row-cols-md-3 row-cols-2 product-list-section mt-2'>
+            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:!gap-4 product-list-section mt-10'>
               {books.map((book) => (
                 <div key={book.id} className='col'>
                   <AddProductBox product={book} idx={book.id} showOptions={true} />

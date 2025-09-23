@@ -275,7 +275,7 @@ const RelatedProducts = () => {
           <div className='slider-6_1 product-wrapper'>
             <Slider key={windowWidth} {...sliderSettings}>
               {relatedProducts.map((product, idx) => (
-                <AddProductBox key={product.id} product={product} idx={idx} showOptions={true} />
+                <AddProductBox key={product.id} product={product} idx={idx} showOptions={true} className='!bg-secondary p-2'/>
               ))}
             </Slider>
           </div>

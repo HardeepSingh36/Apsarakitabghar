@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
-import { Eye, Heart, Minus, Plus, ShoppingCart, X } from 'react-feather';
-import { Tooltip } from 'react-tooltip';
+import { X } from 'react-feather';
+// import { Tooltip } from 'react-tooltip';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
-import { addToCart, decreaseQuantity, removeFromCart } from '@/features/cart/cartSlice';
+import { addToCart} from '@/features/cart/cartSlice';
 import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
+import { useCurrency } from '@/context/CurrencyContext';
 
 interface AddProductBoxProps {
   product: Book;
@@ -19,11 +20,12 @@ interface AddProductBoxProps {
 const AddProductBox = ({
   product,
   idx,
-  showOptions = false,
+  // showOptions = false,
   removeButton = false,
   className = '',
 }: AddProductBoxProps) => {
   const dispatch = useAppDispatch();
+  const { currency } = useCurrency();
   const { isAuthenticated, openSignIn } = useAuthDialog();
 
   // Get cart state for this product
@@ -31,14 +33,14 @@ const AddProductBox = ({
     state.cart.items.find((item) => item.id === product.id)
   );
 
-  const handleDecrease = () => {
-    if (cartItem) {
-      dispatch(decreaseQuantity(product.id));
-      if (cartItem.quantity === 1) {
-        dispatch(removeFromCart(product.id));
-      }
-    }
-  };
+  // const handleDecrease = () => {
+  //   if (cartItem) {
+  //     dispatch(decreaseQuantity(product.id));
+  //     if (cartItem.quantity === 1) {
+  //       dispatch(removeFromCart(product.id));
+  //     }
+  //   }
+  // };
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
@@ -76,15 +78,15 @@ const AddProductBox = ({
 
   return (
     <div
-      className={`product-box-3 wow fadeInUp' ${className}`}
+      className={`flex gap-2 md:gap-0 md:flex-col items-center book-product-box wow fadeIn md:p-3 md:bg-gray-50 ${className}`}
       data-wow-delay={idx ? `0.${(idx * 5).toString().padStart(2, '0')}s` : undefined}
     >
       <div className='product-header'>
-        <div className='product-image'>
+        <div className='product-image p-0 md:!mb-0 w-full '>
           <a href={`/books/${product.id}`}>
             <img
               src={product.cover_image_url || ''}
-              className='img-fluid blur-up lazyload'
+              className='img-fluid blur-up lazyload w-full !h-28 md:!h-72 !object-cover hover:scale-105 transition'
               alt=''
             />
           </a>
@@ -95,7 +97,7 @@ const AddProductBox = ({
               </button>
             </div>
           )}
-          {showOptions && (
+          {/* {showOptions && (
             <ul className='product-option'>
               <li data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
                 <Link to='/cart' onClick={handleAddToCart}>
@@ -116,15 +118,12 @@ const AddProductBox = ({
                 <Tooltip id='view-tooltip' />
               </li>
             </ul>
-          )}
+          )} */}
         </div>
       </div>
       <div className='product-footer'>
-        <div className='product-detail'>
-          <span className='span-name'>Book</span>
-          <Link to={`/books/${product.id}`} state={{ item: product }}>
-            <h5 className='name'>{product.title}</h5>
-          </Link>
+        <div className='product-detail position-relative md:mt-4'>
+          <h6 className='weight'>{product.title}</h6>
           {/* <div className='product-rating mt-2'>
             <ul className='rating'>
               {[...Array(5)].map((_, i) => (
@@ -135,41 +134,34 @@ const AddProductBox = ({
             </ul>
             <span>(5)</span>
           </div> */}
-          <h6 className='unit'>{product.pages} pages</h6>
-          <h5 className='price'>
-            <span className='theme-color'>{product.price}</span>{' '}
-            <del>{product.discounted_price}</del>
-          </h5>
-          <div className='add-to-cart-box bg-white'>
+          <Link to={`/books/${product.id}`} className='!no-underline' state={{ product }}>
+            <h5 className='name'>{product.description}</h5>
+          </Link>
+          <h6 className='byers text-muted'>
+            <span>By</span> {product.author_names || 'Unknown Author'}
+          </h6>
+          <h6 className='price'>
+            {currency} <span className=''>{product.discounted_price}</span>
+            {'  '}
+            <span className='text-muted line-through ms-2'>{product.price}</span>
+          </h6>
+          <div className='add-to-cart-box bg-white hidden md:block'>
             {cartItem ? (
-              <div className='cart_qty qty-box !block !relative !mt-2.5'>
-                <div className='input-group bg-white'>
-                  <button type='button' className='qty-left-minus bg-gray' onClick={handleDecrease}>
-                    <Minus className='w-4 h-4 text-emerald-500' />
-                  </button>
-                  <input
-                    className='form-control input-number qty-input'
-                    type='text'
-                    name='quantity'
-                    value={cartItem.quantity}
-                    readOnly
-                  />
-                  <button
-                    type='button'
-                    className='qty-right-plus bg-gray'
-                    onClick={handleAddToCart}
-                  >
-                    <Plus className='w-4 h-4 text-emerald-500' />
-                  </button>
-                </div>
-              </div>
+              <Link
+                to={'/cart'}
+                className='btn btn-add-cart addcart-button py-3'
+                onClick={handleAddToCart}
+              >
+                ✔ In Cart
+              </Link>
             ) : (
-              <button className='btn btn-add-cart addcart-button' onClick={handleAddToCart}>
-                Add
-                <span className='add-icon bg-light-gray'>
-                  <Plus className='w-4 h-4 text-emerald-500' />
-                </span>
-              </button>
+              <Link
+                to={'#'}
+                className='btn btn-add-cart addcart-button py-3'
+                onClick={handleAddToCart}
+              >
+                Add to Cart
+              </Link>
             )}
           </div>
         </div>

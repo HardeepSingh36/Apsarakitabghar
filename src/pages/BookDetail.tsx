@@ -9,6 +9,7 @@ import { useAppDispatch } from '@/app/hooks';
 import { addToCart } from '@/features/cart/cartSlice';
 import { addToWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
+import { Tooltip } from 'react-tooltip';
 
 const fallbackBook: Book = {
   id: 6,
@@ -147,12 +148,76 @@ const BookDetail = () => {
                 </div>
 
                 <div className='col-xl-6 wow fadeInUp' data-wow-delay='0.1s'>
-                  <div className='right-box-contain'>
-                    <h6 className='offer-top'>
-                      {book.discount ? `${book.discount}% Off` : '30% Off'}
-                    </h6>
-                    <h2 className='name'>{book.title || 'Book Title'}</h2>
-                    <div className='price-rating'>
+                  <div className='right-box-contain relative'>
+                    <div className='buy-box absolute right-4 top-0'>
+                      <button
+                        onClick={handleAddToWishlist}
+                        className='flex items-center gap-2'
+                        data-tooltip-id='cart-tooltip'
+                        data-tooltip-content='Add to cart'
+                      >
+                        <Heart className='w-6 h-6' />
+                      </button>
+                      <Tooltip id='cart-tooltip' />
+                    </div>
+                    <h2 className='name mb-0'>{book.title || 'Book Title'}</h2>
+                    <p className='author text-muted'>{book.author_names || 'Book Author'}</p>
+                    {/* <div className='price-rating'>
+                      <h3 className='theme-color price'>
+                        ₹{book.discounted_price || book.price}{' '}
+                        <del className='text-content'>₹{book.price}</del>{' '}
+                        <span className='offer theme-color'>
+                          ({book.discount ? `${book.discount}% off` : '8% off'})
+                        </span>
+                      </h3>
+                      <div className='product-rating custom-rate'>
+                        <ul className='rating'>
+                          <li>
+                            <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
+                          </li>
+                          <li>
+                            <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
+                          </li>
+                          <li>
+                            <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
+                          </li>
+                          <li>
+                            <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
+                          </li>
+                          <li>
+                            <Star className='w-4 h-4 text-yellow-500' />
+                          </li>
+                        </ul>
+                        <span className='review'>23 Customer Review</span>
+                      </div>
+                    </div> */}
+
+                    <div className='product-contain'>
+                      <p>{book.description || 'No description available.'}</p>
+                    </div>
+
+                    {/* Book Formats */}
+                    <div className='product-package'>
+                      <div className='product-title'>
+                        <h4>Tags</h4>
+                      </div>
+                      <ul className='select-package'>
+                        {tags.map((tag) => (
+                          <li key={tag}>
+                            <a
+                              type='button'
+                              href='javascript:void(0)'
+                              // onClick={() => setSelectedFormat(format)}
+                              // className={`capitalize ${selectedFormat === format ? 'active' : ''}`}
+                              className='capitalize'
+                            >
+                              {tag}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className='price-rating mt-4'>
                       <h3 className='theme-color price'>
                         ₹{book.discounted_price || book.price}{' '}
                         <del className='text-content'>₹{book.price}</del>{' '}
@@ -182,31 +247,6 @@ const BookDetail = () => {
                       </div> */}
                     </div>
 
-                    <div className='product-contain'>
-                      <p>{book.description || 'No description available.'}</p>
-                    </div>
-
-                    {/* Book Formats */}
-                    <div className='product-package'>
-                      <div className='product-title'>
-                        <h4>Tags</h4>
-                      </div>
-                      <ul className='select-package'>
-                        {tags.map((tag) => (
-                          <li key={tag}>
-                            <a
-                              type='button'
-                              href='javascript:void(0)'
-                              // onClick={() => setSelectedFormat(format)}
-                              // className={`capitalize ${selectedFormat === format ? 'active' : ''}`}
-                              className='capitalize'
-                            >
-                              {tag}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
                     {/* Quantity */}
                     <div className='note-box product-package'>
                       <div className='cart_qty qty-box product-qty'>
@@ -216,7 +256,7 @@ const BookDetail = () => {
                             className='qty-left-minus'
                             data-type='minus'
                             data-field=''
-                            onClick={() => setQuantity((prev) => Math.max(prev - 1, 0))}
+                            onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
                           >
                             <i className='fa fa-minus'></i>
                           </button>
@@ -225,14 +265,14 @@ const BookDetail = () => {
                             type='text'
                             name='quantity'
                             readOnly
-                            value={quantity}
+                            value={quantity === 0 ? 1 : quantity}
                           />
                           <button
                             type='button'
                             className='qty-right-plus'
                             data-type='plus'
                             data-field=''
-                            onClick={() => setQuantity((prev) => prev + 1)}
+                            onClick={() => setQuantity((prev) => (prev === 0 ? 2 : prev + 1))}
                           >
                             <i className='fa fa-plus'></i>
                           </button>
@@ -247,7 +287,7 @@ const BookDetail = () => {
                       </button>
                     </div>
 
-                    <div className='progress-sec'>
+                    {/* <div className='progress-sec'>
                       <div className='left-progressbar'>
                         <h6>
                           {book.stock
@@ -255,32 +295,25 @@ const BookDetail = () => {
                             : 'Please hurry! Only 5 left in stock'}
                         </h6>
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className='buy-box'>
-                      <button onClick={handleAddToWishlist} className='flex items-center gap-2'>
-                        <Heart className='w-5 h-5' />
-                        <span>Add To Wishlist</span>
-                      </button>
-                    </div>
-
-                    <div className='pickup-box'>
+                    {/* <div className='pickup-box'>
                       <div className='product-title'>
                         <h4>Store Information</h4>
                       </div>
 
                       <div className='pickup-detail'>
-                        {/* <h4 className='text-content'>
+                        <h4 className='text-content'>
                           {book.publisher_name ||
                             'Noodles & Company is an American fast-casual restaurant that offers international and American noodle dishes and pasta.'}
-                        </h4> */}
+                        </h4>
                       </div>
 
                       <div className='product-info'>
                         <ul className='product-info-list product-info-list-2'>
-                          {/* <li>
+                          <li>
                             Type : <a href='javascript:void(0)'>{book.format || 'Black Forest'}</a>
-                          </li> */}
+                          </li>
                           <li>
                             SKU : <a href='javascript:void(0)'>{book.isbn || 'SDFVW65467'}</a>
                           </li>
@@ -297,67 +330,14 @@ const BookDetail = () => {
                           <li>
                             Category :{' '}
                             <a href='javascript:void(0)'>
-                              {/* {book.category_ids?.join(', ') || 'Cake,'} */}
+                              {book.category_ids?.join(', ') || 'Cake,'}
                               Mystery
                             </a>{' '}
-                            {/* <a href='javascript:void(0)'>{book.language || 'Backery'}</a> */}
+                            <a href='javascript:void(0)'>{book.language || 'Backery'}</a>
                           </li>
                         </ul>
                       </div>
-                    </div>
-
-                    <div className='payment-option'>
-                      <div className='product-title'>
-                        <h4>Guaranteed Safe Checkout</h4>
-                      </div>
-                      <ul>
-                        <li>
-                          <a href='javascript:void(0)'>
-                            <img
-                              src='/assets/images/product/payment/1.svg'
-                              className='blur-up lazyload'
-                              alt=''
-                            />
-                          </a>
-                        </li>
-                        <li>
-                          <a href='javascript:void(0)'>
-                            <img
-                              src='/assets/images/product/payment/2.svg'
-                              className='blur-up lazyload'
-                              alt=''
-                            />
-                          </a>
-                        </li>
-                        <li>
-                          <a href='javascript:void(0)'>
-                            <img
-                              src='/assets/images/product/payment/3.svg'
-                              className='blur-up lazyload'
-                              alt=''
-                            />
-                          </a>
-                        </li>
-                        <li>
-                          <a href='javascript:void(0)'>
-                            <img
-                              src='/assets/images/product/payment/4.svg'
-                              className='blur-up lazyload'
-                              alt=''
-                            />{' '}
-                          </a>
-                        </li>
-                        <li>
-                          <a href='javascript:void(0)'>
-                            <img
-                              src='/assets/images/product/payment/5.svg'
-                              className='blur-up lazyload'
-                              alt=''
-                            />{' '}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -439,28 +419,6 @@ const BookDetail = () => {
                                 <p className='mx-auto mt-1'>A Journey Beyond Imagination</p>
                               </div>
                             </div>
-                          </div>
-
-                          <div className='nav-desh'>
-                            <div className='desh-title'>
-                              <h5>Publisher's Note:</h5>
-                            </div>
-                            <p>
-                              "The Lost Tales" is a labor of love from our team and author Harbhajan
-                              Singh. This book was crafted to inspire readers to dream big, embrace
-                              adventure, and cherish the bonds of friendship. We believe every page
-                              will transport you to a world where magic and reality blend
-                              seamlessly, and where every challenge leads to growth and discovery.
-                              Thank you for joining us on this unforgettable journey.
-                            </p>
-
-                            <p>
-                              About the Author: Harbhajan Singh is known for his vivid imagination
-                              and captivating storytelling. With years of experience weaving tales
-                              that touch the heart, he brings characters and worlds to life in a way
-                              that resonates with readers of all ages. We are proud to present his
-                              latest work and hope it finds a special place in your collection.
-                            </p>
                           </div>
                         </div>
                       </div>

@@ -1,7 +1,7 @@
-import ProductCard from '../general/ProductCard';
 import { useEffect, useState } from 'react';
 import type { Book } from '@/types/types';
 import { getBooks } from '@/services/bookService';
+import AddProductBox from '../general/AddProductBox';
 
 const PopularBooksByYear = () => {
   const [books, setBooks] = useState<Book[] | []>([]);
@@ -21,9 +21,9 @@ const PopularBooksByYear = () => {
         {books.length === 0 ? (
           <p className='text-center'>No books found.</p>
         ) : (
-          <div className='grid grid-cols-1 md:grid-cols-4 xl:grid-cols-6 gap-4'>
+          <div className='grid grid-cols-1 md:grid-cols-4 xl:grid-cols-5 gap-4'>
             {books.map((book) => (
-              <ProductCard key={book.id} item={book} />
+              <AddProductBox key={book.id} idx={book.id} product={book} />
             ))}
           </div>
         )}

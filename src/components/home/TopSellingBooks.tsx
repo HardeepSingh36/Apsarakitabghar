@@ -7,6 +7,7 @@ import ProductCard from '../general/ProductCard';
 import Heading2 from '../general/Heading2';
 import { BOOKS_LIST } from '@/services/API';
 import type { Book } from '@/types/types';
+import AddProductBox from '../general/AddProductBox';
 
 const TopSellingBooks = () => {
   const [books, setBooks] = useState<Book[] | []>([]);
@@ -50,9 +51,9 @@ const TopSellingBooks = () => {
     <div className='row'>
       <div className='col-12'>
         <div className='top-selling-box'>
-          <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-            {items.map((item, i) => (
-              <ProductCard key={i} item={item} />
+          <div className='grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4'>
+            {items.map((item) => (
+              <AddProductBox key={item.id} idx={item.id} product={item} />
             ))}
           </div>
         </div>

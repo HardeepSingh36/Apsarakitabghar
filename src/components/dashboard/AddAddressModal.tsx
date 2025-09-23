@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { countries } from '@/data/countries';
 interface Address {
   id: string;
   firstName: string;
@@ -33,11 +33,10 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
       state: '',
       postalCode: '',
       phone: '',
-      // type: 'shipping',
       country: 'India',
     }
   );
-
+  const [selectedCode, setSelectedCode] = useState('+91'); // Default country code
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isEdit, setIsEdit] = useState(false); // New edit flag
 
@@ -56,7 +55,6 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
         state: '',
         postalCode: '',
         phone: '',
-        // type: 'shipping',
         country: 'India',
       });
       setIsEdit(false); // Set edit flag to false
@@ -68,6 +66,15 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
   ) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData((prev) => ({ ...prev, phone: value }));
+  };
+
+  const handleCodeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCode(e.target.value);
   };
 
   const validateForm = () => {
@@ -97,7 +104,6 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
         state: '',
         postalCode: '',
         phone: '',
-        // type: 'shipping',
         country: 'India',
       });
     }
@@ -124,7 +130,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
         <div className='modal-content'>
           <div className='modal-header'>
             <h5 className='modal-title' id='exampleModalLabel'>
-              {isEdit ? 'Edit Address' : 'Add a new address'}
+              {isEdit ? 'Edit Delivery Address' : 'Add Delivery Address'}
             </h5>
             <button type='button' className='btn-close' onClick={handleClose}>
               <i className='fa-solid fa-xmark'></i>
@@ -192,31 +198,12 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                 </div>
                 <div className='col-xxl-6'>
                   <div className='form-floating theme-form-floating'>
-                    <select
-                      className='form-select'
-                      id='floatingSelect1'
-                      defaultValue='Choose Your Country'
-                    >
-                      <option>Choose Your Country</option>
-                      <option value='kingdom'>United Kingdom</option>
-                      <option value='India'>India</option>
-                      <option value='states'>United States</option>
-                      <option value='fra'>France</option>
-                      <option value='china'>China</option>
-                      <option value='spain'>Spain</option>
-                      <option value='italy'>Italy</option>
-                      <option value='turkey'>Turkey</option>
-                      <option value='germany'>Germany</option>
-                      <option value='russian'>Russian Federation</option>
-                      <option value='malay'>Malaysia</option>
-                      <option value='mexico'>Mexico</option>
-                      <option value='austria'>Austria</option>
-                      <option value='hong'>Hong Kong SAR, China</option>
-                      <option value='ukraine'>Ukraine</option>
-                      <option value='thailand'>Thailand</option>
-                      <option value='saudi'>Saudi Arabia</option>
-                      <option value='canada'>Canada</option>
-                      <option value='singa'>Singapore</option>
+                    <select className='form-select' id='floatingSelect1' defaultValue='India'>
+                      {countries.map((country) => (
+                        <option key={country.code} value={country.name}>
+                          {country.name}
+                        </option>
+                      ))}
                     </select>
                     <label htmlFor='floatingSelect1'>Country</label>
                   </div>
@@ -265,16 +252,30 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                 </div>
                 <div className='col-xxl-6'>
                   <div className='form-floating theme-form-floating'>
+                    <div className='input-group'>
+                      <select
+                        className='form-select max-w-[90px] focus:!shadow-none focus:!border-[#0da487]'
+                        id='floatingSelect1'
+                        value={selectedCode}
+                        onChange={handleCodeChange}
+                      >
+                        {countries.map((country) => (
+                          <option key={country.code} value={country.code}>
+                            {country.dialCode}
+                          </option>
+                        ))}
+                      </select>
                       <input
-                      type='phone'
+                        type='text'
                         className='form-control'
                         id='phone'
                         placeholder='Enter Phone Number'
                         value={formData.phone}
-                      onChange={handleChange}
+                        onChange={handlePhoneChange}
                       />
-                    <label htmlFor='phone'>Phone Number</label>
+                    </div>
                     {errors.phone && <div className='text-danger'>{errors.phone}</div>}
+                    {/* <label htmlFor='phone'>Phone Number</label> */}
                   </div>
                 </div>
                 {/* <div className='col-xxl-6'>
