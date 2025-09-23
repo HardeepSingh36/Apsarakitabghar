@@ -1,16 +1,11 @@
 import { useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import AddProductBox from '@/components/general/AddProductBox';
-import Breadcrumb from '@/components/ui/Breadcrumb';
 
 const WishList = () => {
   const wishlistItems = useAppSelector((state: RootState) => state.wishlist.items);
   return (
     <div>
-      <Breadcrumb
-        title='Wishlist'
-        items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'Wishlist' }]}
-      />
 
       {/* Wishlist Section Start */}
       <section className='wishlist-section section-b-space'>

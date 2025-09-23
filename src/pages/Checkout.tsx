@@ -1,5 +1,4 @@
 import { useCurrency } from '@/context/CurrencyContext';
-import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import { setSelectedAddress } from '@/features/user/userSlice';
 import type { RootState } from '@/app/store';
@@ -24,10 +23,6 @@ const Checkout = () => {
 
   return (
     <div>
-      <Breadcrumb
-        title='Checkout'
-        items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'Checkout' }]}
-      />
 
       {/* Checkout section Start */}
       <section className='checkout-section-2 section-b-space'>

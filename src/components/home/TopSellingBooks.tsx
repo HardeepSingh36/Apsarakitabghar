@@ -3,7 +3,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
-import ProductCard from '../general/ProductCard';
 import Heading2 from '../general/Heading2';
 import { BOOKS_LIST } from '@/services/API';
 import type { Book } from '@/types/types';

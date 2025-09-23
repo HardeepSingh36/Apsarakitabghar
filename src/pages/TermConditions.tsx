@@ -1,27 +1,6 @@
 const TermConditions = () => {
   return (
     <>
-      <section className='breadcrumb-section pt-0'>
-        <div className='container-fluid-lg'>
-          <div className='row'>
-            <div className='col-12'>
-              <div className='breadcrumb-contain'>
-                <h2>Terms & Conditions</h2>
-                <nav>
-                  <ol className='breadcrumb mb-0'>
-                    <li className='breadcrumb-item'>
-                      <a href='/'>
-                        <i className='fa-solid fa-house'></i>
-                      </a>
-                    </li>
-                    <li className='breadcrumb-item active'>Terms & Conditions</li>
-                  </ol>
-                </nav>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
       <section className='blog-section section-b-space'>
         <div className='container-fluid-lg'>
           <div className='row g-sm-4 g-3'>

@@ -1,4 +1,3 @@
-import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import { type RootState } from '@/app/store'; // store type
 import { addToCart, decreaseQuantity, removeFromCart } from '@/features/cart/cartSlice';
@@ -18,10 +17,6 @@ const Cart = () => {
 
   return (
     <div>
-      <Breadcrumb
-        title='Cart'
-        items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'Cart' }]}
-      />
 
       {/* Cart Section Start */}
       <section className='cart-section section-b-space'>

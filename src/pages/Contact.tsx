@@ -1,12 +1,7 @@
-import Breadcrumb from '@/components/ui/Breadcrumb';
 
 const Contact = () => {
   return (
     <div>
-      <Breadcrumb
-        title='Contact Us'
-        items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'Contact Us' }]}
-      />
 
       <section className='contact-box-section'>
         <div className='container-fluid-lg'>

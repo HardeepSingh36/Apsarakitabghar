@@ -3,7 +3,7 @@ import { X } from 'react-feather';
 // import { Tooltip } from 'react-tooltip';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
-import { addToCart} from '@/features/cart/cartSlice';
+import { addToCart } from '@/features/cart/cartSlice';
 import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
@@ -83,13 +83,13 @@ const AddProductBox = ({
     >
       <div className='product-header'>
         <div className='product-image p-0 md:!mb-0 w-full '>
-          <a href={`/books/${product.id}`}>
+          <Link to={`/books/${product.id}`} state={{ item: product }}>
             <img
               src={product.cover_image_url || ''}
               className='img-fluid blur-up lazyload w-full !h-28 md:!h-72 !object-cover hover:scale-105 transition'
               alt=''
             />
-          </a>
+          </Link>
           {removeButton && (
             <div className='product-header-top'>
               <button className='btn wishlist-button close_button' onClick={handleWishlistToggle}>
@@ -134,7 +134,7 @@ const AddProductBox = ({
             </ul>
             <span>(5)</span>
           </div> */}
-          <Link to={`/books/${product.id}`} className='!no-underline' state={{ product }}>
+          <Link to={`/books/${product.id}`} className='!no-underline' state={{ item: product }}>
             <h5 className='name'>{product.description}</h5>
           </Link>
           <h6 className='byers text-muted'>

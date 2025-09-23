@@ -1,4 +1,3 @@
-import Breadcrumb from '@/components/ui/Breadcrumb';
 import Slider from 'react-slick';
 import { useEffect, useState } from 'react';
 
@@ -51,10 +50,6 @@ const About = () => {
 
   return (
     <div>
-      <Breadcrumb
-        title='About Us'
-        items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'About Us' }]}
-      />
       <section className='fresh-vegetable-section section-lg-space'>
         <div className='container-fluid-lg'>
           <div className='row gx-xl-5 gy-xl-0 g-3 ratio_148_1'>

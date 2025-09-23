@@ -1,27 +1,6 @@
 const QueryForm = () => {
   return (
     <>
-      <section className='breadcrumb-section pt-0'>
-        <div className='container-fluid-lg'>
-          <div className='row'>
-            <div className='col-12'>
-              <div className='breadcrumb-contain'>
-                <h2>Query</h2>
-                <nav>
-                  <ol className='breadcrumb mb-0'>
-                    <li className='breadcrumb-item'>
-                      <a href='/'>
-                        <i className='fa-solid fa-house'></i>
-                      </a>
-                    </li>
-                    <li className='breadcrumb-item active'>Query</li>
-                  </ol>
-                </nav>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
       <section className='contact-box-section'>
         <div className='container-fluid-lg'>
           <div className='row g-lg-5 g-3'>
