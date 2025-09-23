@@ -1,17 +1,27 @@
 import { useCurrency } from '@/context/CurrencyContext';
 import Breadcrumb from '@/components/ui/Breadcrumb';
-import { useAppSelector } from '@/app/hooks';
+import { useAppSelector, useAppDispatch } from '@/app/hooks';
+import { setSelectedAddress } from '@/features/user/userSlice';
 import type { RootState } from '@/app/store';
 
 const Checkout = () => {
   const { currency } = useCurrency();
+  const dispatch = useAppDispatch();
 
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
+  const addresses = useAppSelector((state: RootState) => state.user.addresses);
+  const selectedAddressId = useAppSelector((state: RootState) => state.user.selectedAddressId);
+
   const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
   const shipping = 6.9; // static or calculate based on rules
   const tax = subtotal * 0.1; // example 10% GST
   const coupon = 20; // example static coupon discount
   const total = subtotal + shipping + tax - coupon;
+
+  const handleAddressSelect = (id: string) => {
+    dispatch(setSelectedAddress(id));
+  };
+
   return (
     <div>
       <Breadcrumb
@@ -45,97 +55,62 @@ const Checkout = () => {
 
                         <div className='checkout-detail'>
                           <div className='row g-4'>
-                            <div className='col-xxl-6 col-lg-12 col-md-6'>
-                              <div className='delivery-address-box'>
-                                <div>
-                                  <div className='form-check'>
-                                    <input
-                                      className='form-check-input'
-                                      type='radio'
-                                      name='jack'
-                                      id='flexRadioDefault1'
-                                    />
+                            {addresses.map((address) => (
+                              <div className='col-xxl-6 col-lg-12 col-md-6' key={address.id}>
+                                <div
+                                  className={`delivery-address-box ${
+                                    selectedAddressId === address.id ? 'selected' : ''
+                                  }`}
+                                  onClick={() => handleAddressSelect(address.id)}
+                                >
+                                  <div>
+                                    <div className='form-check'>
+                                      <input
+                                        className='form-check-input'
+                                        type='radio'
+                                        name='address'
+                                        id={`address-${address.id}`}
+                                        checked={selectedAddressId === address.id}
+                                        onChange={() => handleAddressSelect(address.id)}
+                                      />
+                                    </div>
+
+                                    <div className='label'>
+                                      <label>{address.type}</label>
+                                    </div>
+
+                                    <ul className='delivery-address-detail'>
+                                      <li>
+                                        <h4 className='fw-500'>{`${address.firstName} ${address.lastName}`}</h4>
+                                      </li>
+
+                                      <li>
+                                        <p className='text-content'>
+                                          <span className='text-title'>Address : </span>
+                                          {`${address.addressLine1}, ${
+                                            address.addressLine2 || ''
+                                          }, ${address.city}, ${address.state}, ${address.country}`}
+                                        </p>
+                                      </li>
+
+                                      <li>
+                                        <h6 className='text-content'>
+                                          <span className='text-title'>Pin Code :</span>{' '}
+                                          {address.postalCode}
+                                        </h6>
+                                      </li>
+
+                                      <li>
+                                        <h6 className='text-content mb-0'>
+                                          <span className='text-title'>Phone :</span>{' '}
+                                          {address.phone}
+                                        </h6>
+                                      </li>
+                                    </ul>
                                   </div>
-
-                                  <div className='label'>
-                                    <label>Home</label>
-                                  </div>
-
-                                  <ul className='delivery-address-detail'>
-                                    <li>
-                                      <h4 className='fw-500'>Jack Jennas</h4>
-                                    </li>
-
-                                    <li>
-                                      <p className='text-content'>
-                                        <span className='text-title'>Address : </span>8424 James
-                                        Lane South San Francisco, CA 94080
-                                      </p>
-                                    </li>
-
-                                    <li>
-                                      <h6 className='text-content'>
-                                        <span className='text-title'>Pin Code :</span> +380
-                                      </h6>
-                                    </li>
-
-                                    <li>
-                                      <h6 className='text-content mb-0'>
-                                        <span className='text-title'>Phone :</span> + 380 (0564) 53
-                                        - 29 - 68
-                                      </h6>
-                                    </li>
-                                  </ul>
                                 </div>
                               </div>
-                            </div>
-
-                            <div className='col-xxl-6 col-lg-12 col-md-6'>
-                              <div className='delivery-address-box'>
-                                <div>
-                                  <div className='form-check'>
-                                    <input
-                                      className='form-check-input'
-                                      type='radio'
-                                      name='jack'
-                                      id='flexRadioDefault2'
-                                      checked={true}
-                                    />
-                                  </div>
-
-                                  <div className='label'>
-                                    <label>Office</label>
-                                  </div>
-
-                                  <ul className='delivery-address-detail'>
-                                    <li>
-                                      <h4 className='fw-500'>Jack Jennas</h4>
-                                    </li>
-
-                                    <li>
-                                      <p className='text-content'>
-                                        <span className='text-title'>Address :</span>Nakhimovskiy
-                                        R-N / Lastovaya Ul., bld. 5/A, appt. 12
-                                      </p>
-                                    </li>
-
-                                    <li>
-                                      <h6 className='text-content'>
-                                        <span className='text-title'>Pin Code :</span>
-                                        +380
-                                      </h6>
-                                    </li>
-
-                                    <li>
-                                      <h6 className='text-content mb-0'>
-                                        <span className='text-title'>Phone :</span> + 380 (0564) 53
-                                        - 29 - 68
-                                      </h6>
-                                    </li>
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
+                            ))}
                           </div>
                         </div>
                       </div>
