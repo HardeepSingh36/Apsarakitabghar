@@ -22,7 +22,7 @@ const RightSideBox = () => {
   // Handle protected navigation
   const handleProtectedNav = (path: string) => {
     if (!isAuthenticated) {
-      openSignIn();
+      openSignIn('/cart');
       return;
     }
     navigate(path);
@@ -88,7 +88,7 @@ const RightSideBox = () => {
                   <p className='mb-2'>Please log in to view your cart.</p>
                   <button
                     className='btn btn-sm theme-bg-color text-white mx-auto'
-                    onClick={openSignIn}
+                    onClick={() => openSignIn('/cart')}
                   >
                     Log In
                   </button>
@@ -212,7 +212,7 @@ const RightSideBox = () => {
                     <button
                       type='button'
                       className='!no-underline bg-transparent border-0 p-0'
-                      onClick={openSignIn}
+                      onClick={() => openSignIn('/')}
                     >
                       Log In
                     </button>

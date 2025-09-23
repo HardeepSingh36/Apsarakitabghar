@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import type { Book, CartItem } from '@/types/types';
 import { getBooks } from '@/services/bookService';
-import { Heart} from 'react-feather';
+import { Heart } from 'react-feather';
 import { useAppDispatch } from '@/app/hooks';
 import { addToCart } from '@/features/cart/cartSlice';
 import { addToWishlist } from '@/features/wishlist/wishlistSlice';
@@ -75,7 +75,7 @@ const BookDetail = () => {
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
-      openSignIn();
+      openSignIn('/cart'); // Pass redirect path
       return;
     }
 
@@ -95,7 +95,7 @@ const BookDetail = () => {
 
   const handleAddToWishlist = () => {
     if (!isAuthenticated) {
-      openSignIn();
+      openSignIn('/wishlist'); // Pass redirect path
       return;
     }
 

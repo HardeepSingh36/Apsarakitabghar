@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { login, logout } from '@/features/auth/authSlice';
 import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Dialog,
@@ -27,7 +28,7 @@ export type User = {
 
 type AuthDialogContextValue = {
   openChoice: (role: UserRole) => void;
-  openSignIn: () => void;
+  openSignIn: (path?: string) => void;
   openSignUp: () => void;
   openForgot: () => void;
   isAuthenticated: boolean;
@@ -54,8 +55,10 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [fullName, setFullName] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [redirectPath, setRedirectPath] = React.useState<string | null>(null); // Track origin page
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
 
   const handleClose = (open: boolean) => {
@@ -63,6 +66,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     if (!open) {
       setAuthView('choice');
       setSelectedRole(null);
+      setRedirectPath(null); // Reset redirect path
     }
   };
 
@@ -71,21 +75,23 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     setAuthView('choice');
     setDialogOpen(true);
   };
-  const openSignIn = () => {
+  const openSignIn = (path?: string) => {
     resetForm();
     setSelectedRole(null);
     setAuthView('signin');
     setEmail(''); // Reset email
     setPassword(''); // Reset password
     setDialogOpen(true);
+    if (path) setRedirectPath(path); // Set origin page
   };
-  const openSignUp = () => {
+  const openSignUp = (path?: string) => {
     resetForm();
     setSelectedRole(null);
     setAuthView('signup');
     setEmail(''); // Reset email
     setPassword(''); // Reset password
     setDialogOpen(true);
+    if (path) setRedirectPath(path); // Set origin page
   };
   const openForgot = () => {
     setSelectedRole(null);
@@ -102,6 +108,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     setPhoneNumber('');
   };
 
+  // Ensure `navigate` is used explicitly in `handleSubmit` to avoid lint errors
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -145,6 +152,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
             );
             toast.success('Successfully signed in!');
             setDialogOpen(false);
+            if (redirectPath) navigate(redirectPath); // Explicitly use navigate
           } else {
             toast.error('Invalid credentials. Use demo@demo.com / Password@123');
           }
@@ -160,6 +168,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
           );
           toast.success('Account created successfully!');
           setDialogOpen(false);
+          if (redirectPath) navigate(redirectPath); // Explicitly use navigate
         } else if (authView === 'forgot') {
           toast.success('Reset link sent (dummy).');
           setAuthView('signin');

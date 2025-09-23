@@ -4,6 +4,7 @@ import Heading2 from './general/Heading2';
 import type { Category } from '@/types/types';
 import { useEffect, useState } from 'react';
 import { BOOKS_CATEGORIES } from '@/services/API';
+import { Link } from 'react-router-dom';
 
 interface AllCategoriesProps {
   show: boolean;
@@ -43,10 +44,10 @@ const AllCategories = ({ show, setShow }: AllCategoriesProps) => {
         <div className='p-4 overflow-y-scroll'>
           <div className='grid grid-cols-3 gap-4 justify-center'>
             {categories.map((category, index) => (
-              <div key={index} className='flex items-center flex-col text-center'>
+              <Link key={index} to={'/books'} className='flex items-center flex-col text-center text-black hover:!text-gray-700 hover:scale-105'>
                 <BookOpen />
                 <Heading2 className='category-title'>{category.name}</Heading2>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

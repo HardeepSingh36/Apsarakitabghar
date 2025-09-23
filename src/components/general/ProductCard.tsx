@@ -30,7 +30,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
 
   const handleCartClick = () => {
     if (!isAuthenticated) {
-      openSignIn();
+      openSignIn('/cart'); // Pass redirect path
       return;
     }
 
@@ -48,7 +48,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
 
   const handleWishlistClick = () => {
     if (!isAuthenticated) {
-      openSignIn();
+      openSignIn('/wishlist'); // Pass redirect path
       return;
     }
 

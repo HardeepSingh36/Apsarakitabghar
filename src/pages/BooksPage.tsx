@@ -20,20 +20,16 @@ const BooksPage = () => {
   }, []);
   return (
     <section className='section-b-space shop-section -mt-8 md:-mt-16'>
-      <Breadcrumb
-        title='Shop Books'
-        items={[{ label: '', href: '/', iconClass: 'fa-solid fa-house' }, { label: 'Books' }]}
-      />
       <div className='container-fluid-lg'>
         <div className='row !mt-6'>
           <div className='col-12'>
             {/* Search Bar Section Start */}
-            <section className='search-section pt-0 mb-4'>
+            <section className='search-section pt-0'>
               <div className='container-fluid-lg'>
                 <div className='row'>
                   <div className=' mx-auto'>
                     <div className='title d-block text-center mb-0'>
-                      <h2>Search for books</h2>
+                      <h2>Find Your Next Read</h2>
                       <span className='title-leaf'>
                         <svg className='icon-width'>
                           <use xlinkHref='/assets/svg/leaf.svg#leaf'></use>
@@ -58,7 +54,7 @@ const BooksPage = () => {
               </div>
             </section>
             {/* Top Filter Menu */}
-            <div className='show-button'>
+            {/* <div className='show-button'>
               <div className='top-filter-menu-2'>
                 <div className='sidebar-filter-menu'>
                   <button
@@ -145,7 +141,7 @@ const BooksPage = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
             {/* Filter Box Toggle */}
             <div className={`top-filter-category ${showFilter && ' show'}`} id='collapseExample'>
               <div className='row g-sm-4 g-3'>

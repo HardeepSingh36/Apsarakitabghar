@@ -40,10 +40,25 @@ const AddProductBox = ({
     }
   };
 
-  const handleWishlistToggle = (e?: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+  const handleAddToCart = () => {
     if (!isAuthenticated) {
-      e?.preventDefault();
-      openSignIn();
+      openSignIn('/cart');
+      return;
+    }
+
+    dispatch(
+      addToCart({
+        ...product,
+        quantity: 1,
+        total: product.price,
+        saving: product.discounted_price - product.price,
+      })
+    );
+  };
+
+  const handleWishlistToggle = () => {
+    if (!isAuthenticated) {
+      openSignIn('/wishlist');
       return;
     }
 
@@ -57,23 +72,6 @@ const AddProductBox = ({
         })
       );
     }
-  };
-
-  const handleAddToCart = (e?: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    if (!isAuthenticated) {
-      e?.preventDefault();
-      openSignIn();
-      return;
-    }
-
-    dispatch(
-      addToCart({
-        ...product,
-        quantity: 1,
-        total: product.price,
-        saving: product.discounted_price - product.price,
-      })
-    );
   };
 
   return (
@@ -100,17 +98,13 @@ const AddProductBox = ({
           {showOptions && (
             <ul className='product-option'>
               <li data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
-                <Link to='/cart' onClick={(e) => handleAddToCart(e)}>
+                <Link to='/cart' onClick={handleAddToCart}>
                   <ShoppingCart size={18} className='mx-auto text-gray-600' />
                 </Link>
                 <Tooltip id='cart-tooltip' />
               </li>
               <li data-tooltip-id='wishlist-tooltip' data-tooltip-content='Add to wishlist'>
-                <Link
-                  to='/wishlist'
-                  className='notifi-wishlist'
-                  onClick={(e) => handleWishlistToggle(e)}
-                >
+                <Link to='/wishlist' className='notifi-wishlist' onClick={handleWishlistToggle}>
                   <Heart size={18} className='mx-auto text-gray-600' />
                 </Link>
                 <Tooltip id='wishlist-tooltip' />
