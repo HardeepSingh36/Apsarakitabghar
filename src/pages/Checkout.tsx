@@ -75,9 +75,9 @@ const Checkout = () => {
                                       />
                                     </div>
 
-                                    <div className='label'>
+                                    {/* <div className='label'>
                                       <label>{address.type}</label>
-                                    </div>
+                                    </div> */}
 
                                     <ul className='delivery-address-detail'>
                                       <li>

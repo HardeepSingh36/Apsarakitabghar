@@ -4,7 +4,7 @@ import {
   Home,
   ShoppingBag,
   Heart,
-  CreditCard,
+  // CreditCard,
   HelpCircle,
   MapPin,
   User,
@@ -82,7 +82,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
             </div>
             <div className='profile-name'>
               <h3>Vicki E. Pope</h3>
-              <h6 className='text-content'>vicki.pope@gmail.com</h6>
+              {/* <h6 className='text-content'>vicki.pope@gmail.com</h6> */}
             </div>
           </div>
         </div>
@@ -121,19 +121,6 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               onClick={onClose}
             >
               <Heart size={16} className='me-2' /> Wishlist
-            </button>
-          </li>
-          <li className='nav-item' role='presentation'>
-            <button
-              className='nav-link'
-              id='pills-payment-tab'
-              data-bs-toggle='pill'
-              data-bs-target='#pills-payment'
-              type='button'
-              role='tab'
-              onClick={onClose}
-            >
-              <CreditCard size={16} className='me-2' /> Payment History
             </button>
           </li>
           <li className='nav-item' role='presentation'>

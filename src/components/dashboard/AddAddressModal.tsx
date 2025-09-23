@@ -194,13 +194,31 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                   <div className='form-floating theme-form-floating'>
                     <select
                       className='form-select'
-                      id='country'
-                      value={formData.country}
-                      onChange={handleChange}
+                      id='floatingSelect1'
+                      defaultValue='Choose Your Country'
                     >
-                      <option value='india'>India</option>
+                      <option>Choose Your Country</option>
+                      <option value='kingdom'>United Kingdom</option>
+                      <option value='India'>India</option>
+                      <option value='states'>United States</option>
+                      <option value='fra'>France</option>
+                      <option value='china'>China</option>
+                      <option value='spain'>Spain</option>
+                      <option value='italy'>Italy</option>
+                      <option value='turkey'>Turkey</option>
+                      <option value='germany'>Germany</option>
+                      <option value='russian'>Russian Federation</option>
+                      <option value='malay'>Malaysia</option>
+                      <option value='mexico'>Mexico</option>
+                      <option value='austria'>Austria</option>
+                      <option value='hong'>Hong Kong SAR, China</option>
+                      <option value='ukraine'>Ukraine</option>
+                      <option value='thailand'>Thailand</option>
+                      <option value='saudi'>Saudi Arabia</option>
+                      <option value='canada'>Canada</option>
+                      <option value='singa'>Singapore</option>
                     </select>
-                    <label htmlFor='country'>Country</label>
+                    <label htmlFor='floatingSelect1'>Country</label>
                   </div>
                 </div>
                 <div className='col-xxl-6'>
@@ -247,14 +265,14 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                 </div>
                 <div className='col-xxl-6'>
                   <div className='form-floating theme-form-floating'>
-                    <input
+                      <input
                       type='phone'
-                      className='form-control'
-                      id='phone'
-                      placeholder='Enter Phone Number'
-                      value={formData.phone}
+                        className='form-control'
+                        id='phone'
+                        placeholder='Enter Phone Number'
+                        value={formData.phone}
                       onChange={handleChange}
-                    />
+                      />
                     <label htmlFor='phone'>Phone Number</label>
                     {errors.phone && <div className='text-danger'>{errors.phone}</div>}
                   </div>

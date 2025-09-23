@@ -1,97 +1,58 @@
+import { useCurrency } from '@/context/CurrencyContext';
 import React from 'react';
 
-const DashboardOrders: React.FC = () => (
-  <div className='dashboard-order'>
-    <div className='title'>
-      <h2>My Orders History</h2>
-      <span className='title-leaf title-leaf-gray'>
-        <svg className='icon-width bg-gray'>
-          <use xlinkHref='assets/svg/leaf.svg#leaf'></use>
-        </svg>
-      </span>
-    </div>
-    <div className='order-contain'>
-      {/* Book order example */}
-      <div className='order-box dashboard-bg-box'>
-        <div className='order-container'>
-          <div className='order-icon'>
-            <i data-feather='book'></i>
-          </div>
-          <div className='order-detail'>
-            <h4>
-              Delivery <span>Pending</span>
-            </h4>
-            <h6 className='text-content'>
-              "The Lost Tales" by Harbhajan Singh is on its way to you!
-            </h6>
-          </div>
-        </div>
-        <div className='product-order-detail'>
-          <a href='/books/32' className='order-image h-full w-36'>
-            <img
-              src='/assets/images/book/product/32.jpg'
-              className='blur-up lazyload'
-              alt='The Lost Tales'
-            />
-          </a>
-          <div className='order-wrap'>
-            <a href='/books/32'>
-              <h3>The Lost Tales</h3>
-            </a>
-            <p className='text-content'>
-              Dive into adventure and mystery with this bestselling book. 320 pages, paperback
-              edition.
-            </p>
-            <ul className='product-size'>
-              <li>
-                <div className='size-box'>
-                  <h6 className='text-content'>Price : </h6>
-                  <h5>₹449</h5>
-                </div>
-              </li>
-              <li>
-                <div className='size-box'>
-                  <h6 className='text-content'>Rate : </h6>
-                  <div className='product-rating ms-2'>
-                    <ul className='rating'>
-                      <li>
-                        <i data-feather='star' className='fill'></i>
-                      </li>
-                      <li>
-                        <i data-feather='star' className='fill'></i>
-                      </li>
-                      <li>
-                        <i data-feather='star' className='fill'></i>
-                      </li>
-                      <li>
-                        <i data-feather='star' className='fill'></i>
-                      </li>
-                      <li>
-                        <i data-feather='star'></i>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className='size-box'>
-                  <h6 className='text-content'>Sold By : </h6>
-                  <h5>Super Admin</h5>
-                </div>
-              </li>
-              <li>
-                <div className='size-box'>
-                  <h6 className='text-content'>Quantity : </h6>
-                  <h5>1</h5>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
+const DashboardOrders: React.FC = () => {
+  const { currency } = useCurrency();
+  return (
+    <div className='dashboard-order'>
+      <div className='title'>
+        <h2>My Orders History</h2>
+        <span className='title-leaf title-leaf-gray'>
+          <svg className='icon-width bg-gray'>
+            <use xlinkHref='assets/svg/leaf.svg#leaf'></use>
+          </svg>
+        </span>
       </div>
-      {/* Add more book orders as needed */}
+      <div className='order-contain'>
+        <ul className='space-y-2 w-full'>
+          <li className='!flex !items-center bg-white shadow-md rounded-lg p-3 hover:shadow-lg transition'>
+            {/* Book Image */}
+            <div className='w-20 h-20 flex-shrink-0'>
+              <img
+                src='/assets/images/book/product/32.jpg'
+                alt='The Lost Tales'
+                className='w-full h-full object-cover rounded-md'
+              />
+            </div>
+
+            {/* Order Details */}
+            <div className='ml-4 flex-grow'>
+              <h4 className='text-lg font-semibold'>The Lost Tales</h4>
+              <p className='text-sm text-gray-500 m-0'>by Harbhajan Singh</p>
+              <p className='text-sm text-gray-700 m-0'>Order ID: #12345</p>
+              <p className='text-sm font-medium text-gray-800 m-0'>
+                Total: <span className='text-theme'>{currency}449</span>
+              </p>
+            </div>
+
+            {/* Status + Actions */}
+            <div className='text-right'>
+              <p className='text-sm text-muted m-0 mb-1'>Placed on: 15 Sep 2025</p>
+
+              <p className='text-sm'>
+                Status:{' '}
+                <span className='px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-600'>
+                  Pending
+                </span>
+              </p>
+            </div>
+          </li>
+
+          {/* Add more orders as needed */}
+        </ul>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default DashboardOrders;
