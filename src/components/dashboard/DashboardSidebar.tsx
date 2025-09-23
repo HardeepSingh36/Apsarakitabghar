@@ -1,4 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  LogOut,
+  Home,
+  ShoppingBag,
+  Heart,
+  CreditCard,
+  HelpCircle,
+  MapPin,
+  User,
+} from 'react-feather';
+import { useNavigate } from 'react-router-dom';
+import LogoutConfirmationModal from './LogoutConfirmationModal';
+import { useAuthDialog } from '@/context/AuthDialogContext';
 
 interface DashboardSidebarProps {
   show: boolean;
@@ -6,6 +19,16 @@ interface DashboardSidebarProps {
 }
 
 const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
+  const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
+  const { logout } = useAuthDialog();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setLogoutModalOpen(false);
+    logout();
+    navigate('/'); // Redirect to homepage
+  };
+
   useEffect(() => {
     if (show) {
       document.body.style.overflow = 'hidden';
@@ -47,7 +70,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               <div className='position-relative'>
                 <img
                   src='assets/images/inner-page/user/1.jpg'
-                  className='blur-up lazyload update_img'
+                  className='blur-up lazyload update_img mx-auto'
                   alt=''
                 />
                 <div className='cover-icon'>
@@ -73,7 +96,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               type='button'
               onClick={onClose}
             >
-              <i data-feather='home'></i> DashBoard
+              <Home size={16} className='me-2' /> DashBoard
             </button>
           </li>
           <li className='nav-item' role='presentation'>
@@ -85,7 +108,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               type='button'
               onClick={onClose}
             >
-              <i data-feather='shopping-bag'></i>Order
+              <ShoppingBag size={16} className='me-2' /> Order
             </button>
           </li>
           <li className='nav-item' role='presentation'>
@@ -97,21 +120,9 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               type='button'
               onClick={onClose}
             >
-              <i data-feather='heart'></i> Wishlist
+              <Heart size={16} className='me-2' /> Wishlist
             </button>
           </li>
-          {/* <li className='nav-item' role='presentation'>
-            <button
-              className='nav-link'
-              id='pills-reviews-tab'
-              data-bs-toggle='pill'
-              data-bs-target='#pills-reviews'
-              type='button'
-              onClick={onClose}
-            >
-              <i data-feather='star'></i> Reviews
-            </button>
-          </li> */}
           <li className='nav-item' role='presentation'>
             <button
               className='nav-link'
@@ -122,7 +133,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               role='tab'
               onClick={onClose}
             >
-              <i data-feather='credit-card'></i> Payment History
+              <CreditCard size={16} className='me-2' /> Payment History
             </button>
           </li>
           <li className='nav-item' role='presentation'>
@@ -135,7 +146,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               role='tab'
               onClick={onClose}
             >
-              <i data-feather='help-circle'></i> Support
+              <HelpCircle size={16} className='me-2' /> Support
             </button>
           </li>
           <li className='nav-item' role='presentation'>
@@ -148,7 +159,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               role='tab'
               onClick={onClose}
             >
-              <i data-feather='map-pin'></i>Address
+              <MapPin size={16} className='me-2' /> Address
             </button>
           </li>
           <li className='nav-item' role='presentation'>
@@ -161,11 +172,28 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               role='tab'
               onClick={onClose}
             >
-              <i data-feather='user'></i> Profile
+              <User size={16} className='me-2' /> Profile
+            </button>
+          </li>
+          <li className='nav-item' role='presentation'>
+            <button
+              className='nav-link'
+              type='button'
+              role='tab'
+              onClick={() => setLogoutModalOpen(true)}
+            >
+              <LogOut size={16} className='me-2' /> Logout
             </button>
           </li>
         </ul>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+      />
     </>
   );
 };

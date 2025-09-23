@@ -8,7 +8,7 @@ const Footer = () => {
   const handleProtectedClick = (e: React.MouseEvent) => {
     if (!isAuthenticated) {
       e.preventDefault(); // stop navigation
-      openSignIn(); // open login/signup dialog
+      openSignIn('/dashboard'); // open login/signup dialog
     }
   };
 

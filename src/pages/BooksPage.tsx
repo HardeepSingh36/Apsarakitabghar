@@ -1,4 +1,3 @@
-import Breadcrumb from '../components/ui/Breadcrumb';
 import AddProductBox from '../components/general/AddProductBox';
 
 import { useEffect, useState } from 'react';
@@ -7,7 +6,7 @@ import type { Book } from '@/types/types';
 import { getBooks } from '@/services/bookService';
 
 const BooksPage = () => {
-  const [showFilter, setShowFilter] = useState(false);
+  const [showFilter] = useState(false);
   const [books, setBooks] = useState<Book[]>([]);
   const min = 0;
   const max = 1000000;

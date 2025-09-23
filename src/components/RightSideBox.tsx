@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, User } from 'react-feather';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
@@ -183,9 +183,10 @@ const RightSideBox = () => {
                 <User size={22} />
               )}
             </div>
-            <div className='delivery-detail'>
-              <h6>{isAuthenticated ? `Hello, ${user?.full_name}` : 'Hello,'}</h6>
-              <h5>{isAuthenticated ? 'Account' : 'My Account'}</h5>
+            <div className='delivery-detail ml-1 mt-1'>
+              {isAuthenticated && user?.full_name && (
+                <h6 className='!font-medium'>{user?.full_name}</h6>
+              )}
             </div>
           </div>
 
@@ -193,9 +194,12 @@ const RightSideBox = () => {
             <ul className='user-box-name !pl-0'>
               {isAuthenticated ? (
                 <>
-                  <li className='product-box-contain'>
-                    <span className='!no-underline'>Signed in as {user?.email}</span>
+                  <li className='product-box-contain font-semibold'>
+                    <span className='!no-underline'>Signed in as {user?.full_name}</span>
                   </li>
+                    <Link to='/dashboard' className='!no-underline !text-inherit'>
+                      Profile
+                    </Link>
                   <li className='product-box-contain'>
                     <button
                       type='button'

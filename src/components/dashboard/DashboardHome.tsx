@@ -83,7 +83,7 @@ const DashboardHome: React.FC = () => {
             <a href='javascript:void(0)'>Change Password</a>
           </div>
         </div>
-        <div className='col-12'>
+        {/* <div className='col-12'>
           <div className='dashboard-content-title'>
             <h4>
               Address Book{' '}
@@ -124,7 +124,7 @@ const DashboardHome: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       {/* Modal for editing the profile */}
       <EditProfileModal isOpen={showEditModal} onClose={closeEditModal} />

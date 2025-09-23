@@ -4,7 +4,7 @@ export type UserRole = 'customer' | 'publisher' | 'reseller';
 
 export interface Address {
   id: string;
-  type: 'billing' | 'shipping';
+  // type: 'billing' | 'shipping';
   firstName: string;
   lastName: string;
   addressLine1: string;

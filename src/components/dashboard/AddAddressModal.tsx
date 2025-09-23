@@ -10,7 +10,7 @@ interface Address {
   state: string;
   postalCode: string;
   phone: string;
-  type: 'billing' | 'shipping';
+  // type: 'billing' | 'shipping';
   country: string;
 }
 
@@ -33,7 +33,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
       state: '',
       postalCode: '',
       phone: '',
-      type: 'shipping',
+      // type: 'shipping',
       country: 'India',
     }
   );
@@ -56,7 +56,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
         state: '',
         postalCode: '',
         phone: '',
-        type: 'shipping',
+        // type: 'shipping',
         country: 'India',
       });
       setIsEdit(false); // Set edit flag to false
@@ -97,7 +97,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
         state: '',
         postalCode: '',
         phone: '',
-        type: 'shipping',
+        // type: 'shipping',
         country: 'India',
       });
     }
@@ -259,7 +259,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                     {errors.phone && <div className='text-danger'>{errors.phone}</div>}
                   </div>
                 </div>
-                <div className='col-xxl-6'>
+                {/* <div className='col-xxl-6'>
                   <div className='form-floating theme-form-floating'>
                     <select
                       className='form-select'
@@ -272,7 +272,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                     </select>
                     <label htmlFor='type'>Address Type</label>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className='modal-footer'>

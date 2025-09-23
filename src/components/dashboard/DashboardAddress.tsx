@@ -97,9 +97,9 @@ const DashboardAddress: React.FC = () => {
                       id={`address-${address.id}`}
                     />
                   </div>
-                  <div className='label'>
+                  {/* <div className='label'>
                     <label>{address.type}</label>
-                  </div>
+                  </div> */}
                   <div className='table-responsive address-table'>
                     <table className='table'>
                       <tbody>
