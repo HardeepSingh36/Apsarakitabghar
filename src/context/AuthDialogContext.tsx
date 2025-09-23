@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { login, logout } from '@/features/auth/authSlice';
+import toast from 'react-hot-toast';
+import { Loader } from 'react-feather';
 
 import {
   Dialog,
@@ -51,27 +53,16 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [confirmPassword, setConfirmPassword] = React.useState('');
   const [fullName, setFullName] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
-  const [role, setRole] = React.useState<UserRole>('customer');
+  const [loading, setLoading] = React.useState(false);
 
   const dispatch = useAppDispatch();
-  const { isAuthenticated, loading } = useAppSelector((s: RootState) => s.auth);
-
-  const resetForm = () => {
-    setUsername('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setFullName('');
-    setPhoneNumber('');
-    setRole('customer');
-  };
+  const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
 
   const handleClose = (open: boolean) => {
     setDialogOpen(open);
     if (!open) {
       setAuthView('choice');
       setSelectedRole(null);
-      resetForm();
     }
   };
 
@@ -81,13 +72,19 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     setDialogOpen(true);
   };
   const openSignIn = () => {
+    resetForm();
     setSelectedRole(null);
     setAuthView('signin');
+    setEmail(''); // Reset email
+    setPassword(''); // Reset password
     setDialogOpen(true);
   };
   const openSignUp = () => {
+    resetForm();
     setSelectedRole(null);
     setAuthView('signup');
+    setEmail(''); // Reset email
+    setPassword(''); // Reset password
     setDialogOpen(true);
   };
   const openForgot = () => {
@@ -96,45 +93,83 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     setDialogOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const resetForm = () => {
+    setUsername('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setFullName('');
+    setPhoneNumber('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation: Ensure no field is empty
     if (authView === 'signin') {
-      const valid = email === 'demo@demo.com' && password === 'Password@123';
-      if (valid) {
-        dispatch(
-          login({
-            username: 'demo_user',
-            email,
-            full_name: 'Demo User',
-            phone_number: '+1234567890',
-            role: 'customer',
-          })
-        );
-        setDialogOpen(false);
-      } else {
-        alert('Invalid credentials. Use demo@demo.com / Password@123');
-      }
-    } else if (authView === 'signup') {
-      // Validate password confirmation
-      if (password !== confirmPassword) {
-        alert('Passwords do not match. Please try again.');
+      if (!email || !password) {
+        toast.error('Please fill in all fields.');
         return;
       }
-
-      dispatch(
-        login({
-          username,
-          email,
-          full_name: fullName || 'New User',
-          phone_number: phoneNumber,
-          role,
-        })
-      );
-      setDialogOpen(false);
+    } else if (authView === 'signup') {
+      if (!username || !email || !password || !confirmPassword || !fullName || !phoneNumber) {
+        toast.error('Please fill in all fields.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        toast.error('Passwords do not match. Please try again.');
+        return;
+      }
     } else if (authView === 'forgot') {
-      alert('Reset link sent (dummy).');
-      setAuthView('signin');
+      if (!email) {
+        toast.error('Please enter your email.');
+        return;
+      }
     }
+
+    setLoading(true);
+
+    setTimeout(async () => {
+      try {
+        if (authView === 'signin') {
+          const valid = email === 'demo@demo.com' && password === 'Password@123';
+          if (valid) {
+            dispatch(
+              login({
+                username: 'demo_user',
+                email,
+                full_name: 'Demo User',
+                phone_number: '+1234567890',
+                role: 'customer',
+              })
+            );
+            toast.success('Successfully signed in!');
+            setDialogOpen(false);
+          } else {
+            toast.error('Invalid credentials. Use demo@demo.com / Password@123');
+          }
+        } else if (authView === 'signup') {
+          dispatch(
+            login({
+              username,
+              email,
+              full_name: fullName || 'New User',
+              phone_number: phoneNumber,
+              role: 'customer',
+            })
+          );
+          toast.success('Account created successfully!');
+          setDialogOpen(false);
+        } else if (authView === 'forgot') {
+          toast.success('Reset link sent (dummy).');
+          setAuthView('signin');
+        }
+      } catch (error) {
+        toast.error('An error occurred. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    }, 1500); // Simulate a delay of 1.5 seconds
   };
 
   const ctxValue: AuthDialogContextValue = {
@@ -244,11 +279,22 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
               </div>
               <button
                 type='button'
-                className='btn btn-sm cart-button theme-bg-color text-white'
-                style={{ width: '100%', marginTop: 12 }}
+                className={`btn btn-sm cart-button theme-bg-color text-white ${
+                  loading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                style={{
+                  width: '100%',
+                  marginTop: 12,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
                 onClick={handleSubmit}
+                disabled={loading}
               >
                 Send Reset Link
+                {loading && <Loader className='animate-spin' size={16} />}
               </button>
               <div
                 className='d-flex justify-content-between align-items-center'
@@ -306,19 +352,6 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
                           required
                         />
                       </div>
-                      {/* <div className='form-group'>
-                        <label className='form-label'>Role</label>
-                        <select
-                          className='form-control'
-                          value={role}
-                          onChange={(e) => setRole(e.target.value as UserRole)}
-                          required
-                        >
-                          <option value='customer'>Customer</option>
-                          <option value='publisher'>Publisher</option>
-                          <option value='reseller'>Reseller</option>
-                        </select>
-                      </div> */}
                     </>
                   )}
                   <div className='form-group'>
@@ -360,11 +393,22 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
               </div>
               <button
                 type='button'
-                className='btn btn-sm cart-button theme-bg-color text-white'
-                style={{ width: '100%', marginTop: 12 }}
+                className={`btn btn-sm cart-button theme-bg-color text-white ${
+                  loading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                style={{
+                  width: '100%',
+                  marginTop: 12,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                }}
                 onClick={handleSubmit}
+                disabled={loading}
               >
                 {authView === 'signin' ? 'Sign In' : 'Create Account'}
+                {loading && <Loader className='animate-spin' size={16} />}
               </button>
               <div
                 className='d-flex justify-content-between align-items-center'

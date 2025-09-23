@@ -21,6 +21,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermConditions from './pages/TermConditions';
 import ScrollToTop from './components/scrollToTop';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Toaster } from 'react-hot-toast';
 
 // define once globally
 defineElement(Lottie.loadAnimation);
@@ -79,6 +80,7 @@ const App = () => {
         <Route path='*' element={<div>404 Not Found</div>} />
       </Routes>
       <Footer />
+      <Toaster position='top-right' />
     </AuthDialogProvider>
   );
 };
