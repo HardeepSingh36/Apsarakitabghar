@@ -47,9 +47,9 @@ const TopSellingBooks = () => {
     [books]
   );
 
-  // useEffect(() => {
-  //   fetchBooks();
-  // }, []);
+  useEffect(() => {
+    fetchBooks();
+  }, []);
 
   const BookGrid: React.FC<{ items: Book[] }> = ({ items }) => (
     <div className='row'>
