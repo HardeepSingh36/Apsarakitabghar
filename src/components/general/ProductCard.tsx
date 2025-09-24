@@ -102,7 +102,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
         </div>
       </div>
       <div className='product-detail position-relative md:mt-4'>
-        <h6 className='weight'>{item.title}</h6>
+        <h6 className='weight notranslate'>{item.title}</h6>
         <Link to={`/books/${item.id}`} className='!no-underline' state={{ item }}>
           <h5 className='name'>{item.description}</h5>
         </Link>

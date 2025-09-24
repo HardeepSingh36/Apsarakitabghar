@@ -23,7 +23,6 @@ const Checkout = () => {
 
   return (
     <div>
-
       {/* Checkout section Start */}
       <section className='checkout-section-2 section-b-space'>
         <div className='container-fluid-lg'>
@@ -633,10 +632,10 @@ const Checkout = () => {
                       <li key={item.id}>
                         <img
                           src={item.cover_image_url}
-                          className='img-fluid blur-up lazyloaded checkout-image'
+                          className='img-fluid blur-up lazyloaded checkout-image notranslate'
                           alt={item.title}
                         />
-                        <h4>
+                        <h4 className='notranslate'>
                           {item.title} <span>X {item.quantity}</span>
                         </h4>
                         <h4 className='price'>

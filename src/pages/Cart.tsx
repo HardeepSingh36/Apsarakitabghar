@@ -17,7 +17,6 @@ const Cart = () => {
 
   return (
     <div>
-
       {/* Cart Section Start */}
       <section className='cart-section section-b-space'>
         <div className='container-fluid-lg'>
@@ -51,14 +50,16 @@ const Cart = () => {
                                 <a href={`/books/${item.id}`} className='product-image'>
                                   <img
                                     src={item.cover_image_url || ''}
-                                    className='img-fluid blur-up lazyload'
+                                    className='img-fluid blur-up lazyload notranslate'
                                     alt={item.title}
                                   />
                                 </a>
                                 <div className='product-detail'>
                                   <ul>
                                     <li className='name'>
-                                      <a href={`/books/${item.id}`}>{item.title}</a>
+                                      <a href={`/books/${item.id}`} className='notranslate'>
+                                        {item.title}
+                                      </a>
                                     </li>
                                     <li className='text-content'>
                                       <span className='text-title'>Author:</span>{' '}
@@ -76,14 +77,18 @@ const Cart = () => {
                                     </li>
                                     <li>
                                       <h5 className='text-content d-inline-block'>Price :</h5>
-                                      <span>{currency}{item.discounted_price}</span>
+                                      <span>
+                                        {currency}
+                                        {item.discounted_price}
+                                      </span>
                                       <span className='text-content'>
                                         {currency} {item.price}
                                       </span>
                                     </li>
                                     <li>
                                       <h5 className='saving theme-color'>
-                                        Saving : {currency}{item.saving}
+                                        Saving : {currency}
+                                        {item.saving}
                                       </h5>
                                     </li>
                                     <li className='quantity-price-box'>
@@ -122,7 +127,10 @@ const Cart = () => {
                                       </div>
                                     </li>
                                     <li>
-                                      <h5>Total: {currency}{item.total.toFixed(2)}</h5>
+                                      <h5>
+                                        Total: {currency}
+                                        {item.total.toFixed(2)}
+                                      </h5>
                                     </li>
                                   </ul>
                                 </div>
@@ -131,13 +139,15 @@ const Cart = () => {
                             <td className='price'>
                               <h4 className='table-title text-content'>Price</h4>
                               <h5>
-                                {currency}{item.discounted_price}{' '}
+                                {currency}
+                                {item.discounted_price}{' '}
                                 <del className='text-center'>
                                   {currency} {item.price}
                                 </del>
                               </h5>
                               <h6 className='theme-color'>
-                                You Save : {currency}{(item.price - item.discounted_price).toFixed(2)}
+                                You Save : {currency}
+                                {(item.price - item.discounted_price).toFixed(2)}
                               </h6>
                             </td>
                             <td className='quantity'>
@@ -180,7 +190,10 @@ const Cart = () => {
                             </td>
                             <td className='subtotal'>
                               <h4 className='table-title text-content'>Total</h4>
-                              <h5>{currency}{item.total.toFixed(2)}</h5>
+                              <h5>
+                                {currency}
+                                {item.total.toFixed(2)}
+                              </h5>
                             </td>
                             <td className='save-remove'>
                               <h4 className='table-title text-content'>Action</h4>

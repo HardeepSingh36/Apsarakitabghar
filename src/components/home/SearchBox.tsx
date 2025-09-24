@@ -243,7 +243,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
                     }`}
                   >
                     <Icon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
-                    <span className='truncate'>{suggestion}</span>
+                    <span className='truncate notranslate'>{suggestion}</span>
                   </button>
                 );
               })}

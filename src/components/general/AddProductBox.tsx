@@ -124,7 +124,7 @@ const AddProductBox = ({
       </div>
       <div className='product-footer'>
         <div className='product-detail position-relative md:mt-4'>
-          <h6 className='weight'>{product.title}</h6>
+          <h6 className='weight notranslate'>{product.title}</h6>
           {/* <div className='product-rating mt-2'>
             <ul className='rating'>
               {[...Array(5)].map((_, i) => (

@@ -112,14 +112,14 @@ const RightSideBox = () => {
                           >
                             <img
                               src={item.cover_image_url}
-                              className='blur-up lazyload'
+                              className='blur-up lazyload notranslate'
                               alt={item.title}
                             />
                           </button>
                           <div className='drop-contain'>
                             <button
                               type='button'
-                              className='!no-underline bg-transparent border-0 p-0'
+                              className='!no-underline bg-transparent border-0 p-0 notranslate'
                               onClick={() => handleProtectedNav('/cart')}
                             >
                               <h5>{item.title}</h5>
@@ -173,7 +173,7 @@ const RightSideBox = () => {
             <div className='delivery-icon'>
               {isAuthenticated ? (
                 <div
-                  className='rounded-circle bg-dark text-white d-flex align-items-center justify-content-center'
+                  className='rounded-circle bg-dark text-white d-flex align-items-center justify-content-center notranslate'
                   style={{ width: 28, height: 28, fontSize: 12 }}
                   title={user?.email || ''}
                 >
@@ -197,9 +197,9 @@ const RightSideBox = () => {
                   <li className='product-box-contain font-semibold'>
                     <span className='!no-underline'>Signed in as {user?.full_name}</span>
                   </li>
-                    <Link to='/dashboard' className='!no-underline !text-inherit'>
-                      Profile
-                    </Link>
+                  <Link to='/dashboard' className='!no-underline !text-inherit'>
+                    Profile
+                  </Link>
                   <li className='product-box-contain'>
                     <button
                       type='button'

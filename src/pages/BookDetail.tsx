@@ -136,7 +136,7 @@ const BookDetail = () => {
                                 data-zoom-image={
                                   book.cover_image_url || '/assets/images/product/category/1.jpg'
                                 }
-                                className='img-fluid image_zoom_cls-0 blur-up lazyload'
+                                className='img-fluid image_zoom_cls-0 blur-up lazyload notranslate'
                                 alt={book.title || ''}
                               />
                             </div>
@@ -160,7 +160,7 @@ const BookDetail = () => {
                       </button>
                       <Tooltip id='cart-tooltip' />
                     </div>
-                    <h2 className='name mb-0'>{book.title || 'Book Title'}</h2>
+                    <h2 className='name mb-0 notranslate'>{book.title || 'Book Title'}</h2>
                     <p className='author text-muted'>{book.author_names || 'Book Author'}</p>
                     {/* <div className='price-rating'>
                       <h3 className='theme-color price'>
@@ -521,14 +521,16 @@ const BookDetail = () => {
                           <a href={`/books/${fallbackBook.id}`} className='offer-image'>
                             <img
                               src={fallbackBook.cover_image_url}
-                              className='img-fluid blur-up lazyload'
+                              className='img-fluid blur-up lazyload notranslate'
                               alt={fallbackBook.title}
                             />
                           </a>
                           <div className='offer-detail'>
                             <div>
                               <a href={`/books/${fallbackBook.id}`}>
-                                <h6 className='name'>{fallbackBook.title}</h6>
+                                <h6 className='name notranslate' translate='no'>
+                                  {fallbackBook.title}
+                                </h6>
                               </a>
                               <span>{fallbackBook.author_names}</span>
                               <h6 className='price theme-color'>
@@ -543,14 +545,14 @@ const BookDetail = () => {
                           <a href={`/books/${fallbackBook.id}`} className='offer-image'>
                             <img
                               src={fallbackBook.cover_image_url}
-                              className='img-fluid blur-up lazyload'
+                              className='img-fluid blur-up lazyload notranslate'
                               alt={fallbackBook.title}
                             />
                           </a>
                           <div className='offer-detail'>
                             <div>
                               <a href={`/books/${fallbackBook.id}`}>
-                                <h6 className='name'>{fallbackBook.title}</h6>
+                                <h6 className='name notranslate'>{fallbackBook.title}</h6>
                               </a>
                               <span>{fallbackBook.author_names}</span>
                               <h6 className='price theme-color'>
@@ -565,14 +567,14 @@ const BookDetail = () => {
                           <a href={`/books/${fallbackBook.id}`} className='offer-image'>
                             <img
                               src={fallbackBook.cover_image_url}
-                              className='img-fluid blur-up lazyload'
+                              className='img-fluid blur-up lazyload notranslate'
                               alt={fallbackBook.title}
                             />
                           </a>
                           <div className='offer-detail'>
                             <div>
                               <a href={`/books/${fallbackBook.id}`}>
-                                <h6 className='name'>{fallbackBook.title}</h6>
+                                <h6 className='name notranslate'>{fallbackBook.title}</h6>
                               </a>
                               <span>{fallbackBook.author_names}</span>
                               <h6 className='price theme-color'>
