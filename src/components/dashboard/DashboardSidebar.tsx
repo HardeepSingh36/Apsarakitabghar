@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   LogOut,
   Home,
@@ -22,6 +22,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
   const { logout } = useAuthDialog();
   const navigate = useNavigate();
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = () => {
     setLogoutModalOpen(false);
@@ -29,14 +30,23 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
     navigate('/'); // Redirect to homepage
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+      onClose();
+    }
+  };
+
   useEffect(() => {
     if (show) {
+      document.addEventListener('mousedown', handleClickOutside);
       document.body.style.overflow = 'hidden';
     } else {
+      document.removeEventListener('mousedown', handleClickOutside);
       document.body.style.overflow = '';
     }
 
     return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
       document.body.style.overflow = '';
     };
   }, [show]);
@@ -49,6 +59,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
         } top-0 left-0 w-screen h-screen bg-black/20 z-40 lg:hidden`}
       ></div>
       <div
+        ref={sidebarRef}
         className={`dashboard-left-sidebar ${show ? 'show !z-50' : ''}`}
         style={{ scrollbarWidth: 'none' }}
       >

@@ -46,6 +46,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose }) 
                       className='form-control'
                       id='email1'
                       defaultValue='vicki.pope@gmail.com'
+                      readOnly
                     />
                     <label htmlFor='email1'>Email address</label>
                   </div>

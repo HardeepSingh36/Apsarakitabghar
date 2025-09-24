@@ -3,7 +3,7 @@ import feather from 'feather-icons';
 import Header from './components/Header';
 import MobileFixMenu from './components/MobileFixMenu';
 import Home from './pages/Home';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import BooksPage from './pages/BooksPage';
 import BookDetail from './pages/BookDetail';
 import Footer from './components/Footer';
@@ -27,12 +27,15 @@ import { Toaster } from 'react-hot-toast';
 defineElement(Lottie.loadAnimation);
 
 const App = () => {
+  const location = useLocation();
+
   useEffect(() => {
     feather.replace();
   }, []);
   return (
     <AuthDialogProvider>
-      <Header />
+      {/* Conditionally render Header */}
+      {location.pathname !== '/dashboard' && <Header />}
       <MobileFixMenu />
       <ScrollToTop />
       <Routes>
