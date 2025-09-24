@@ -8,6 +8,7 @@ import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistS
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 interface AddProductBoxProps {
   product: Book;
@@ -23,7 +24,7 @@ const AddProductBox = ({
   // showOptions = false,
   removeButton = false,
   className = '',
-}: AddProductBoxProps) => {
+}: AddProductBoxProps & { isLoading?: boolean }) => {
   const dispatch = useAppDispatch();
   const { currency } = useCurrency();
   const { isAuthenticated, openSignIn } = useAuthDialog();
