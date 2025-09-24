@@ -16,17 +16,7 @@ const DashboardHome: React.FC = () => {
           </svg>
         </span>
       </div>
-      <div className='dashboard-user-name'>
-        <h6 className='text-content'>
-          Hello, <b className='text-title'>Vicki E. Pope</b>
-        </h6>
-        <p className='text-content'>
-          From your My Account Dashboard you have the ability to view a snapshot of your recent
-          account activity and update your account information. Select a link below to view or edit
-          information.
-        </p>
-      </div>
-      <div className='total-box'>
+      <div className='total-box !mt-0'>
         <div className='row g-sm-4 g-3'>
           <div className='col-xxl-4 col-lg-6 col-md-4 col-sm-6'>
             <div className='total-contain'>
@@ -59,9 +49,6 @@ const DashboardHome: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className='dashboard-title'>
-        <h3>Account Information</h3>
       </div>
       <div className='row g-4'>
         <div className='col-xxl-6'>

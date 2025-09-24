@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "tailwindcss-animate";
 
@@ -132,8 +132,8 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .scroll-container {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* Fullscreen auth dialog on small screens */
@@ -147,4 +147,14 @@
     padding: 16px !important;
     overflow: auto;
   }
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}
+.skiptranslate {
+  display: none !important;
 }
