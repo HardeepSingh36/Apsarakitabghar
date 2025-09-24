@@ -12,15 +12,27 @@ declare global {
 
 const HeaderTop = () => {
   const [isPublishModalOpen, setPublishModalOpen] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('English');
 
+  const langMap: Record<string, string> = {
+    english: 'en',
+    hindi: 'hi',
+    punjabi: 'pa',
+  };
+
+  const flagMap: Record<string, string> = {
+    english: '/assets/images/country/united-kingdom.png',
+    hindi: '/assets/images/country/india.png',
+    punjabi: '/assets/images/country/india.png',
+  };
+
+  // Load Google Translate script
   useEffect(() => {
-    // Add the Google Translate container
     const container = document.createElement('div');
     container.id = 'google_translate_element';
     container.style.display = 'none';
     document.body.appendChild(container);
 
-    // Define global init function
     window.googleTranslateElementInit = () => {
       new window.google.translate.TranslateElement(
         { pageLanguage: 'en', includedLanguages: 'en,hi,pa', autoDisplay: false },
@@ -28,11 +40,14 @@ const HeaderTop = () => {
       );
     };
 
-    // Load script dynamically
     const script = document.createElement('script');
     script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
     script.async = true;
     document.body.appendChild(script);
+
+    // On load, apply saved language
+    const savedLang = localStorage.getItem('selectedLanguage') || 'english';
+    setCurrentLanguage(savedLang.charAt(0).toUpperCase() + savedLang.slice(1));
 
     return () => {
       document.body.removeChild(container);
@@ -40,27 +55,26 @@ const HeaderTop = () => {
     };
   }, []);
 
+  // Change language function
   const changeLanguage = (lang: string) => {
     const select = document.querySelector<HTMLSelectElement>('select.goog-te-combo');
     if (!select) {
-      console.log('Google translate select not found yet, retrying...');
+      console.log('Google Translate select not found yet, retrying...');
       setTimeout(() => changeLanguage(lang), 500);
       return;
     }
 
-    const langMap: Record<string, string> = {
-      english: 'en',
-      hindi: 'hi',
-      punjabi: 'pa',
-    };
-
     select.value = langMap[lang.toLowerCase()];
     select.dispatchEvent(new Event('change'));
 
-    // Refresh the page after a short delay so translation applies
+    // Save selection in localStorage
+    localStorage.setItem('selectedLanguage', lang.toLowerCase());
+    setCurrentLanguage(lang.charAt(0).toUpperCase() + lang.slice(1));
+
+    // Reload page after a short delay to ensure translation applies
     setTimeout(() => {
       window.location.reload();
-    }, 1000); // 1 second delay ensures Google Translate has started
+    }, 1000);
   };
 
   return (
@@ -80,9 +94,12 @@ const HeaderTop = () => {
               Publish With Us
             </Link>
           </div>
+
           <div className='col-xxl-6 col-lg-9 d-lg-block d-none'></div>
+
           <div className='col-lg-3'>
             <ul className='about-list right-nav-about'>
+              {/* Language Dropdown */}
               <li className='right-nav-list'>
                 <div className='dropdown theme-form-select'>
                   <button
@@ -92,70 +109,38 @@ const HeaderTop = () => {
                     data-bs-toggle='dropdown'
                   >
                     <img
-                      src='/assets/images/country/united-kingdom.png'
+                      src={flagMap[currentLanguage.toLowerCase()]}
                       className='img-fluid blur-up lazyload'
-                      alt=''
+                      alt={currentLanguage}
+                      style={{ width: 20, marginRight: 5 }}
                     />
-                    <span>English</span>
+                    <span>{currentLanguage}</span>
                   </button>
                   <ul className='dropdown-menu dropdown-menu-end'>
-                    <li>
-                      <Link
-                        className='dropdown-item'
-                        to='#'
-                        id='english'
-                        onClick={(e) => {
-                          e.preventDefault();
-                          changeLanguage('english');
-                        }}
-                      >
-                        <img
-                          src='/assets/images/country/united-kingdom.png'
-                          className='img-fluid blur-up lazyload'
-                          alt=''
-                        />
-                        <span>English</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className='dropdown-item'
-                        to='#'
-                        id='france'
-                        onClick={(e) => {
-                          e.preventDefault();
-                          changeLanguage('hindi');
-                        }}
-                      >
-                        <img
-                          src='/assets/images/country/germany.png'
-                          className='img-fluid blur-up lazyload'
-                          alt=''
-                        />
-                        <span>हिन्दी</span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className='dropdown-item'
-                        to='#'
-                        id='chinese'
-                        onClick={(e) => {
-                          e.preventDefault();
-                          changeLanguage('punjabi');
-                        }}
-                      >
-                        <img
-                          src='/assets/images/country/turkish.png'
-                          className='img-fluid blur-up lazyload'
-                          alt=''
-                        />
-                        <span>ਪੰਜਾਬੀ</span>
-                      </Link>
-                    </li>
+                    {Object.keys(langMap).map((lang) => (
+                      <li key={lang}>
+                        <Link
+                          className='dropdown-item'
+                          to='#'
+                          onClick={(e) => {
+                            e.preventDefault();
+                            changeLanguage(lang);
+                          }}
+                        >
+                          <img
+                            src={flagMap[lang]}
+                            alt={lang}
+                            style={{ width: 20, marginRight: 8 }}
+                          />
+                          {lang.charAt(0).toUpperCase() + lang.slice(1)}
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </li>
+
+              {/* Currency Dropdown */}
               <li className='right-nav-list'>
                 <div className='dropdown theme-form-select'>
                   <button
@@ -168,17 +153,17 @@ const HeaderTop = () => {
                   </button>
                   <ul className='dropdown-menu dropdown-menu-end sm-dropdown-menu'>
                     <li>
-                      <a className='dropdown-item' id='aud' href='javascript:void(0)'>
+                      <a className='dropdown-item' id='aud' href='#'>
                         USD
                       </a>
                     </li>
                     <li>
-                      <a className='dropdown-item' id='eur' href='javascript:void(0)'>
+                      <a className='dropdown-item' id='eur' href='#'>
                         EUR
                       </a>
                     </li>
                     <li>
-                      <a className='dropdown-item' id='cny' href='javascript:void(0)'>
+                      <a className='dropdown-item' id='cny' href='#'>
                         AUD
                       </a>
                     </li>
@@ -189,6 +174,7 @@ const HeaderTop = () => {
           </div>
         </div>
       </div>
+
       <PublishBookModal isOpen={isPublishModalOpen} onClose={() => setPublishModalOpen(false)} />
     </div>
   );
