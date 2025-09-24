@@ -1,0 +1,24 @@
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.custom-skeleton {
+  --base-color: #e2e2e2; /* Tailwind gray-600 */
+  --highlight-color: #f5f5f5; /* Tailwind gray-100 */
+  --animation-duration: 2s;
+
+  background: linear-gradient(
+    90deg,
+    var(--base-color) 25%,
+    var(--highlight-color) 50%,
+    var(--base-color) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer var(--animation-duration) linear infinite;
+  border-radius: 4px;
+}

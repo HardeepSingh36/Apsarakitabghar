@@ -1,4 +1,5 @@
 import AddProductBox from '../components/general/AddProductBox';
+import ProductCardSkeleton from '../components/ProductSkeleton';
 
 import { useEffect, useState } from 'react';
 import { Slider } from '@/components/ui/slider';
@@ -8,14 +9,22 @@ import { getBooks } from '@/services/bookService';
 const BooksPage = () => {
   const [showFilter] = useState(false);
   const [books, setBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const min = 0;
   const max = 1000000;
   const [value, setValue] = useState([550000]);
 
   useEffect(() => {
+    setIsLoading(true);
     getBooks({ page: 1, limit: 20 })
-      .then(({ data }) => setBooks(data))
-      .catch((err) => console.error(err));
+      .then(({ data }) => {
+        setBooks(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsLoading(false);
+      });
   }, []);
   return (
     <section className='section-b-space shop-section -mt-8 md:-mt-16'>
@@ -471,11 +480,17 @@ const BooksPage = () => {
             </div>
             {/* Product List Section */}
             <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:!gap-4 product-list-section mt-10'>
-              {books.map((book) => (
-                <div key={book.id} className='col'>
-                  <AddProductBox product={book} idx={book.id} showOptions={true} />
-                </div>
-              ))}
+              {isLoading
+                ? Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} className='col'>
+                      <ProductCardSkeleton />
+                    </div>
+                  ))
+                : books.map((book) => (
+                    <div key={book.id} className='col'>
+                      <AddProductBox product={book} idx={book.id} showOptions={true} />
+                    </div>
+                  ))}
             </div>
           </div>
         </div>

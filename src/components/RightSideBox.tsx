@@ -185,7 +185,7 @@ const RightSideBox = () => {
             </div>
             <div className='delivery-detail ml-1 mt-1'>
               {isAuthenticated && user?.full_name && (
-                <h6 className='!font-medium'>{user?.full_name}</h6>
+                <h6 className='!font-medium notranslate'>{user?.full_name}</h6>
               )}
             </div>
           </div>
@@ -195,7 +195,9 @@ const RightSideBox = () => {
               {isAuthenticated ? (
                 <>
                   <li className='product-box-contain font-semibold'>
-                    <span className='!no-underline'>Signed in as {user?.full_name}</span>
+                    <span className='!no-underline'>
+                      Signed in as <span className='notranslate ms-1'>{user?.full_name}</span>
+                    </span>
                   </li>
                   <Link to='/dashboard' className='!no-underline !text-inherit'>
                     Profile

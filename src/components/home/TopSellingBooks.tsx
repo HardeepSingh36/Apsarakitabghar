@@ -7,11 +7,13 @@ import Heading2 from '../general/Heading2';
 import { BOOKS_LIST } from '@/services/API';
 import type { Book } from '@/types/types';
 import AddProductBox from '../general/AddProductBox';
+import ProductCardSkeleton from '../ProductSkeleton';
 
 const TopSellingBooks = () => {
   const [books, setBooks] = useState<Book[] | []>([]);
   const [fade, setFade] = useState(false);
   const [activeTab, setActiveTab] = useState('top');
+  const [isLoading, setIsLoading] = useState<boolean>(true); // loading state
 
   const handleTabChange = (value: string) => {
     setFade(true);
@@ -22,6 +24,7 @@ const TopSellingBooks = () => {
   };
 
   const fetchBooks = async () => {
+    setIsLoading(true);
     try {
       const res = await fetch(BOOKS_LIST);
       if (!res.ok) throw new Error('Failed to fetch books');
@@ -29,6 +32,8 @@ const TopSellingBooks = () => {
       setBooks(data);
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -42,18 +47,18 @@ const TopSellingBooks = () => {
     [books]
   );
 
-  useEffect(() => {
-    fetchBooks();
-  }, []);
+  // useEffect(() => {
+  //   fetchBooks();
+  // }, []);
 
   const BookGrid: React.FC<{ items: Book[] }> = ({ items }) => (
     <div className='row'>
       <div className='col-12'>
         <div className='top-selling-box'>
           <div className='grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4'>
-            {items.map((item) => (
-              <AddProductBox key={item.id} idx={item.id} product={item} />
-            ))}
+            {isLoading
+              ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
+              : items.map((item) => <AddProductBox key={item.id} idx={item.id} product={item} />)}
           </div>
         </div>
       </div>
