@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { countries } from '@/data/countries';
+import { statesByCountry } from '@/data/states';
 import Select from 'react-select';
-import ReactSelect from 'react-select';
 
 interface Address {
   id: string;
@@ -44,14 +44,14 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
       country: '',
     }
   );
-  const [selectedCode, setSelectedCode] = useState('+91'); // Default country code
+  const [selectedCode, setSelectedCode] = useState('+91');
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isEdit, setIsEdit] = useState(false); // New edit flag
+  const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
     if (address) {
       setFormData(address); // Initialize formData with the address prop when editing
-      setIsEdit(true); // Set edit flag to true
+      setIsEdit(true);
     } else {
       setFormData({
         id: `${Date.now()}`,
@@ -83,6 +83,14 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCode(e.target.value);
+  };
+
+  const handleCountryChange = (selectedOption: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      country: selectedOption ? selectedOption.value : '',
+      state: '', // Reset state when country changes
+    }));
   };
 
   const validateForm = () => {
@@ -128,6 +136,13 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
     onSave(addressWithId);
     handleClose();
   };
+
+  const statesOptions = formData.country
+    ? statesByCountry[formData.country]?.map((state) => ({
+        value: state,
+        label: state,
+      })) || []
+    : [];
 
   if (!isOpen) return null;
 
@@ -242,16 +257,67 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                       } as any
                     }
                     value={countriesOptions.find((option) => option.value === formData.country)}
-                    onChange={(selectedOption) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        country: selectedOption ? selectedOption.value : '',
-                      }))
-                    }
+                    onChange={handleCountryChange}
                   />
                   {errors.country && <div className='text-danger'>{errors.country}</div>}
 
                   {/* <label htmlFor='floatingSelect1'>Country</label> */}
+                </div>
+                <div className='col-xxl-6'>
+                  {statesByCountry[formData.country] ? (
+                    <Select
+                      options={statesOptions}
+                      placeholder='Select a state'
+                      isClearable
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          height: '53px',
+                          minHeight: '53px',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#0da487',
+                          },
+                          '&:focus-within': { borderColor: '#0da487' },
+                        }),
+                        placeholder: (base) => ({
+                          ...base,
+                          color: '#4a5558',
+                          fontSize: 'calc(13px + 3 * (100vw - 320px) / 1600)',
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          color: 'black',
+                          fontSize: 'calc(15px + 2 * (100vw - 320px) / 1600)',
+                        }),
+                        singleValue: (base) => ({
+                          ...base,
+                          color: 'black',
+                          fontSize: 'calc(14px + 2 * (100vw - 320px) / 1600)',
+                        }),
+                      }}
+                      value={statesOptions.find((option) => option.value === formData.state)}
+                      onChange={(selectedOption) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          state: selectedOption ? selectedOption.value : '',
+                        }))
+                      }
+                    />
+                  ) : (
+                    <div className='form-floating theme-form-floating'>
+                      <input
+                        type='text'
+                        className='form-control'
+                        id='state'
+                        placeholder='Enter State'
+                        value={formData.state}
+                        onChange={handleChange}
+                      />
+                      <label htmlFor='state'>State</label>
+                    </div>
+                  )}
+                  {errors.state && <div className='text-danger'>{errors.state}</div>}
                 </div>
                 <div className='col-xxl-6'>
                   <div className='form-floating theme-form-floating'>
@@ -265,20 +331,6 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                     />
                     <label htmlFor='city'>City</label>
                     {errors.city && <div className='text-danger'>{errors.city}</div>}
-                  </div>
-                </div>
-                <div className='col-xxl-6'>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='text'
-                      className='form-control'
-                      id='state'
-                      placeholder='Enter State'
-                      value={formData.state}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor='state'>State</label>
-                    {errors.state && <div className='text-danger'>{errors.state}</div>}
                   </div>
                 </div>
                 <div className='col-xxl-6'>
