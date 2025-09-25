@@ -639,7 +639,7 @@ const Checkout = () => {
                           {item.title} <span>X {item.quantity}</span>
                         </h4>
                         <h4 className='price'>
-                          {currency} {item.total.toFixed(2)}
+                          {currency.sign}{item.total.toFixed(2)}
                         </h4>
                       </li>
                     ))}
@@ -649,41 +649,41 @@ const Checkout = () => {
                     <li>
                       <h4>Gross Total</h4>
                       <h4 className='price'>
-                        {currency} {subtotal.toFixed(2)}
+                        {currency.sign}{subtotal.toFixed(2)}
                       </h4>
                     </li>
 
                     <li>
                       <h4>Shipping</h4>
                       <h4 className='price'>
-                        {currency} {shipping.toFixed(2)}
+                        {currency.sign}{shipping.toFixed(2)}
                       </h4>
                     </li>
 
                     <li>
                       <h4>GST/Tax</h4>
                       <h4 className='price'>
-                        {currency} {tax.toFixed(2)}
+                        {currency.sign}{tax.toFixed(2)}
                       </h4>
                     </li>
 
                     <li>
                       <h4>Coupon/Code</h4>
                       <h4 className='price'>
-                        {currency} -{coupon.toFixed(2)}
+                        {currency.sign}-{coupon.toFixed(2)}
                       </h4>
                     </li>
 
                     <li className='list-total'>
-                      <h4>Total ({currency})</h4>
+                      <h4>Total ({currency.sign})</h4>
                       <h4 className='price'>
-                        {currency} {total.toFixed(2)}
+                        {currency.sign}{total.toFixed(2)}
                       </h4>
                     </li>
                   </ul>
                 </div>
 
-                <div className='checkout-offer'>
+                {/* <div className='checkout-offer'>
                   <div className='offer-title'>
                     <div className='offer-icon'>
                       <img src='/assets/images/inner-page/offer.svg' className='img-fluid' alt='' />
@@ -703,7 +703,7 @@ const Checkout = () => {
                       </p>
                     </li>
                   </ul>
-                </div>
+                </div> */}
 
                 <button className='btn theme-bg-color text-white btn-md w-100 mt-4 fw-bold'>
                   Place Order

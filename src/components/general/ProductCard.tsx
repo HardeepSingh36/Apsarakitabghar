@@ -110,7 +110,7 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
           <span>By</span> {item.author_names || 'Unknown Author'}
         </h6>
         <h6 className='price'>
-          {currency} <span className=''>{item.discounted_price}</span>
+          {currency.sign} <span className=''>{item.discounted_price}</span>
           {'  '}
           <span className='text-muted line-through ms-2'>{item.price}</span>
         </h6>

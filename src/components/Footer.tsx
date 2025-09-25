@@ -188,42 +188,9 @@ const Footer = () => {
 
         {/* Sub Footer */}
         <div className='sub-footer sub-footer-lite section-b-space section-t-space'>
-          <div className='left-footer'>
+          <div className='left-footer w-full text-center'>
             <p className='light-text'>2024 Copyright By Apsra Kitab Ghar</p>
           </div>
-          <ul className='payment-box'>
-            <li>
-              <img src='/assets/images/icon/paymant/visa.png' className='blur-up lazyload' alt='' />
-            </li>
-            <li>
-              <img
-                src='/assets/images/icon/paymant/discover.png'
-                alt=''
-                className='blur-up lazyload'
-              />
-            </li>
-            <li>
-              <img
-                src='/assets/images/icon/paymant/american.png'
-                alt=''
-                className='blur-up lazyload'
-              />
-            </li>
-            <li>
-              <img
-                src='/assets/images/icon/paymant/master-card.png'
-                alt=''
-                className='blur-up lazyload'
-              />
-            </li>
-            <li>
-              <img
-                src='/assets/images/icon/paymant/giro-pay.png'
-                alt=''
-                className='blur-up lazyload'
-              />
-            </li>
-          </ul>
         </div>
       </div>
     </footer>

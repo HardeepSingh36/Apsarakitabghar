@@ -10,7 +10,7 @@ const WishList = () => {
       {/* Wishlist Section Start */}
       <section className='wishlist-section section-b-space'>
         <div className='container-fluid-lg'>
-          <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6'>
+          <div className='grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
             {wishlistItems.length > 0 ? (
               wishlistItems.map((item) => (
                 <div key={item.id}>

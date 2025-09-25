@@ -140,7 +140,7 @@ const AddProductBox = ({
             <span>By</span> {product.author_names || 'Unknown Author'}
           </h6>
           <h6 className='price'>
-            {currency} <span className=''>{product.discounted_price}</span>
+            {currency.sign}<span className=''>{product.discounted_price}</span>
             {'  '}
             <span className='text-muted line-through ms-2'>{product.price}</span>
           </h6>

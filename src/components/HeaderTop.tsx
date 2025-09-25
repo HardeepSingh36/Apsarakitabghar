@@ -21,7 +21,7 @@ const HeaderTop = () => {
   };
 
   const flagMap: Record<string, string> = {
-    english: '/assets/images/country/united-kingdom.png',
+    english: '/assets/images/country/india.png',
     hindi: '/assets/images/country/india.png',
     punjabi: '/assets/images/country/india.png',
   };

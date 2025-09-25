@@ -78,16 +78,17 @@ const Cart = () => {
                                     <li>
                                       <h5 className='text-content d-inline-block'>Price :</h5>
                                       <span>
-                                        {currency}
+                                        {currency.sign}
                                         {item.discounted_price}
                                       </span>
                                       <span className='text-content'>
-                                        {currency} {item.price}
+                                        {currency.sign}
+                                        {item.price}
                                       </span>
                                     </li>
                                     <li>
                                       <h5 className='saving theme-color'>
-                                        Saving : {currency}
+                                        Saving : {currency.sign}
                                         {item.saving}
                                       </h5>
                                     </li>
@@ -128,7 +129,7 @@ const Cart = () => {
                                     </li>
                                     <li>
                                       <h5>
-                                        Total: {currency}
+                                        Total: {currency.sign}
                                         {item.total.toFixed(2)}
                                       </h5>
                                     </li>
@@ -139,14 +140,14 @@ const Cart = () => {
                             <td className='price'>
                               <h4 className='table-title text-content'>Price</h4>
                               <h5>
-                                {currency}
+                                {currency.sign}
                                 {item.discounted_price}{' '}
                                 <del className='text-center'>
-                                  {currency} {item.price}
+                                  {currency.sign}{item.price}
                                 </del>
                               </h5>
                               <h6 className='theme-color'>
-                                You Save : {currency}
+                                You Save : {currency.sign}
                                 {(item.price - item.discounted_price).toFixed(2)}
                               </h6>
                             </td>
@@ -191,7 +192,7 @@ const Cart = () => {
                             <td className='subtotal'>
                               <h4 className='table-title text-content'>Total</h4>
                               <h5>
-                                {currency}
+                                {currency.sign}
                                 {item.total.toFixed(2)}
                               </h5>
                             </td>
@@ -250,7 +251,7 @@ const Cart = () => {
                     <li>
                       <h4>Subtotal</h4>
                       <h4 className='price'>
-                        {currency}
+                        {currency.sign}
                         {subtotal.toFixed(2)}
                       </h4>
                     </li>
@@ -263,7 +264,7 @@ const Cart = () => {
                     <li className='align-items-start'>
                       <h4>Shipping</h4>
                       <h4 className='price text-end'>
-                        {currency}
+                        {currency.sign}
                         {shipping.toFixed(2)}
                       </h4>
                     </li>
@@ -274,7 +275,7 @@ const Cart = () => {
                   <li className='list-total border-top-0'>
                     <h4>Total (USD)</h4>
                     <h4 className='price theme-color'>
-                      {currency}
+                      {currency.sign}
                       {total.toFixed(2)}
                     </h4>
                   </li>

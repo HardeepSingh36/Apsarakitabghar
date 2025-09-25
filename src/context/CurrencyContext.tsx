@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useMemo } from 'react';
 
-type Currency = 'INR' | 'USD' | 'EUR';
+type Currency = { code: 'INR' | 'USD' | 'EUR'; sign: '₹' | '$' | '€' };
 
 interface CurrencyContextType {
   currency: Currency;
@@ -13,10 +13,10 @@ const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined
 
 // Provider
 export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currency, setCurrency] = useState<Currency>('INR');
+  const [currency, setCurrency] = useState<Currency>({ code: 'INR', sign: '₹' });
 
   // Simple conversion rates (you can fetch from API in real-world apps)
-  const conversionRates: Record<Currency, number> = {
+  const conversionRates: Record<Currency['code'], number> = {
     INR: 1,
     USD: 0.012,
     EUR: 0.011,
@@ -24,10 +24,10 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Memoized formatter
   const formatPrice = (price: number): string => {
-    const converted = price * conversionRates[currency];
+    const converted = price * conversionRates[currency.code];
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency,
+      currency: currency.code,
     }).format(converted);
   };
 
