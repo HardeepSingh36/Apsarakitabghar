@@ -6,7 +6,7 @@ import type { Book, CartItem } from '@/types/types';
 import { getBooks } from '@/services/bookService';
 import { Heart } from 'react-feather';
 import { useAppDispatch } from '@/app/hooks';
-import { addToCart } from '@/features/cart/cartSlice';
+import { addToCart, setBuyNowItem } from '@/features/cart/cartSlice';
 import { addToWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { Tooltip } from 'react-tooltip';
@@ -105,11 +105,25 @@ const BookDetail = () => {
     dispatch(
       addToWishlist({
         ...book,
-        rating: 4, // Default rating for WishlistItem
+        rating: 4,
       })
     );
 
     navigate('/wishlist');
+  };
+
+  const handleBuyNow = () => {
+    if (!book) return;
+
+    const item: CartItem = {
+      ...book,
+      quantity: 1,
+      total: book.discounted_price || book.price,
+      saving: book.price - (book.discounted_price || book.price),
+    };
+    dispatch(setBuyNowItem(item));
+    dispatch(addToCart(item));
+    navigate('/checkout', { state: { isBuyNow: true } });
   };
 
   if (!book) return null;
@@ -284,6 +298,12 @@ const BookDetail = () => {
                         onClick={handleAddToCart}
                       >
                         Add To Cart
+                      </button>
+                      <button
+                        className='btn btn-md bg-dark cart-button text-white w-100 mt-4'
+                        onClick={handleBuyNow}
+                      >
+                        Buy Now
                       </button>
                     </div>
 
