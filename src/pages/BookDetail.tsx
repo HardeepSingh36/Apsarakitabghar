@@ -84,7 +84,7 @@ const BookDetail = () => {
 
     const cartItem: CartItem = {
       ...book,
-      quantity,
+      quantity: quantity === 0 ? 1 : quantity,
       total: (book.discounted_price || book.price) * quantity,
       saving: book.price - (book.discounted_price || book.price),
     };
@@ -262,7 +262,7 @@ const BookDetail = () => {
                     </div>
 
                     {/* Quantity */}
-                    <div className='note-box product-package'>
+                    <div className='note-box product-package !items-start'>
                       <div className='cart_qty qty-box product-qty'>
                         <div className='input-group'>
                           <button
@@ -293,18 +293,20 @@ const BookDetail = () => {
                         </div>
                       </div>
 
-                      <button
-                        className='btn btn-md bg-dark cart-button text-white w-100'
-                        onClick={handleAddToCart}
-                      >
-                        Add To Cart
-                      </button>
-                      <button
-                        className='btn btn-md bg-dark cart-button text-white w-100 mt-4'
-                        onClick={handleBuyNow}
-                      >
-                        Buy Now
-                      </button>
+                      <div className='w-full'>
+                        <button
+                          className='btn btn-md bg-dark cart-button text-white w-100'
+                          onClick={handleAddToCart}
+                        >
+                          Add To Cart
+                        </button>
+                        <button
+                          className='btn btn-md !bg-gradient-to-r !from-red-400 !to-red-500 cart-button mt-2 text-white w-100'
+                          onClick={handleBuyNow}
+                        >
+                          Buy Now
+                        </button>
+                      </div>
                     </div>
 
                     {/* <div className='progress-sec'>
