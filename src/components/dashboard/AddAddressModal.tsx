@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { countries } from '@/data/countries';
+import Select from 'react-select';
+import ReactSelect from 'react-select';
+
 interface Address {
   id: string;
   firstName: string;
@@ -21,6 +24,11 @@ interface AddAddressModalProps {
   onSave: (updatedAddress: Address) => void;
 }
 
+const countriesOptions = countries.map((country) => ({
+  value: country.code,
+  label: country.name,
+}));
+
 const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, address, onSave }) => {
   const [formData, setFormData] = useState<Address>(
     address || {
@@ -33,7 +41,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
       state: '',
       postalCode: '',
       phone: '',
-      country: 'India',
+      country: '',
     }
   );
   const [selectedCode, setSelectedCode] = useState('+91'); // Default country code
@@ -55,9 +63,9 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
         state: '',
         postalCode: '',
         phone: '',
-        country: 'India',
+        country: '',
       });
-      setIsEdit(false); // Set edit flag to false
+      setIsEdit(false);
     }
   }, [address]);
 
@@ -83,6 +91,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
     if (!formData.firstName.trim()) newErrors.firstName = 'First Name is required';
     if (!formData.lastName.trim()) newErrors.lastName = 'Last Name is required';
     if (!formData.addressLine1.trim()) newErrors.addressLine1 = 'Street Address is required';
+    if (!formData.country.trim()) newErrors.country = 'Country is required';
     if (!formData.city.trim()) newErrors.city = 'City is required';
     if (!formData.state.trim()) newErrors.state = 'State is required';
     if (!formData.postalCode.trim()) newErrors.postalCode = 'Postal Code is required';
@@ -104,9 +113,11 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
         state: '',
         postalCode: '',
         phone: '',
-        country: 'India',
+        country: '',
       });
+      setErrors({});
     }
+
     onClose();
   };
 
@@ -126,7 +137,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
       style={{ display: 'block', background: 'rgba(0,0,0,0.5)' }}
       tabIndex={-1}
     >
-      <div className='modal-dialog modal-lg modal-dialog-centered modal-fullscreen-sm-down'>
+      <div className='modal-dialog modal-lg modal-dialog-centered modal-fullscreen-sm'>
         <div className='modal-content'>
           <div className='modal-header'>
             <h5 className='modal-title' id='exampleModalLabel'>
@@ -197,16 +208,50 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                   </div>
                 </div>
                 <div className='col-xxl-6'>
-                  <div className='form-floating theme-form-floating'>
-                    <select className='form-select' id='floatingSelect1' defaultValue='India'>
-                      {countries.map((country) => (
-                        <option key={country.code} value={country.name}>
-                          {country.name}
-                        </option>
-                      ))}
-                    </select>
-                    <label htmlFor='floatingSelect1'>Country</label>
-                  </div>
+                  <Select
+                    options={countriesOptions}
+                    placeholder='Select a country'
+                    isClearable
+                    styles={
+                      {
+                        control: (base: any) => ({
+                          ...base,
+                          height: '53px',
+                          minHeight: '53px',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            borderColor: '#0da487',
+                          },
+                          '&:focus-within': { borderColor: '#0da487' },
+                        }),
+                        placeholder: (base: any) => ({
+                          ...base,
+                          color: '#4a5558', // placeholder text color
+                          fontSize: 'calc(13px + 3 * (100vw - 320px) / 1600)',
+                        }),
+                        input: (base: any) => ({
+                          ...base,
+                          color: 'black', // input text color
+                          fontSize: 'calc(15px + 2 * (100vw - 320px) / 1600)',
+                        }),
+                        singleValue: (base: any) => ({
+                          ...base,
+                          color: 'black', // input text color
+                          fontSize: 'calc(14px + 2 * (100vw - 320px) / 1600)',
+                        }),
+                      } as any
+                    }
+                    value={countriesOptions.find((option) => option.value === formData.country)}
+                    onChange={(selectedOption) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        country: selectedOption ? selectedOption.value : '',
+                      }))
+                    }
+                  />
+                  {errors.country && <div className='text-danger'>{errors.country}</div>}
+
+                  {/* <label htmlFor='floatingSelect1'>Country</label> */}
                 </div>
                 <div className='col-xxl-6'>
                   <div className='form-floating theme-form-floating'>

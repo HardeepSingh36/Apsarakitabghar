@@ -12,6 +12,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import LogoutConfirmationModal from './LogoutConfirmationModal';
 import { useAuthDialog } from '@/context/AuthDialogContext';
+import { useAppSelector } from '@/app/hooks';
+import type { RootState } from '@/app/store';
 
 interface DashboardSidebarProps {
   show: boolean;
@@ -19,6 +21,7 @@ interface DashboardSidebarProps {
 }
 
 const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
+  const { user } = useAppSelector((state: RootState) => state.auth);
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
   const { logout } = useAuthDialog();
   const navigate = useNavigate();
@@ -92,8 +95,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               </div>
             </div>
             <div className='profile-name'>
-              <h3>Vicki E. Pope</h3>
-              {/* <h6 className='text-content'>vicki.pope@gmail.com</h6> */}
+              <h3>{user?.full_name}</h3>
             </div>
           </div>
         </div>

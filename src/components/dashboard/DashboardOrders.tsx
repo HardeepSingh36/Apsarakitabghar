@@ -31,7 +31,7 @@ const DashboardOrders: React.FC = () => {
               <p className='text-sm text-gray-500 m-0'>by Harbhajan Singh</p>
               <p className='text-sm text-gray-700 m-0'>Order ID: #12345</p>
               <p className='text-sm font-medium text-gray-800 m-0'>
-                Total: <span className='text-theme'>{currency}449</span>
+                Total: <span className='text-theme'>{currency.sign}449</span>
               </p>
             </div>
 

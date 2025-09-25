@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Printer } from 'react-feather';
 import { useEffect, useState } from 'react';
 import PublishBookModal from './dashboard/PublishBookModal';
+// import { useCurrency } from '@/context/CurrencyContext';
 
 declare global {
   interface Window {
@@ -13,6 +14,7 @@ declare global {
 const HeaderTop = () => {
   const [isPublishModalOpen, setPublishModalOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('English');
+  // const { currency, setCurrency } = useCurrency();
 
   const langMap: Record<string, string> = {
     english: 'en',
@@ -141,7 +143,7 @@ const HeaderTop = () => {
               </li>
 
               {/* Currency Dropdown */}
-              <li className='right-nav-list'>
+              {/* <li className='right-nav-list'>
                 <div className='dropdown theme-form-select'>
                   <button
                     className='btn dropdown-toggle'
@@ -149,27 +151,43 @@ const HeaderTop = () => {
                     id='select-dollar'
                     data-bs-toggle='dropdown'
                   >
-                    <span>INR</span>
+                    <span>{currency.code}</span>
                   </button>
                   <ul className='dropdown-menu dropdown-menu-end sm-dropdown-menu'>
                     <li>
-                      <a className='dropdown-item' id='aud' href='#'>
+                      <button
+                        className='dropdown-item'
+                        id='inr'
+                        onClick={() => {
+                          setCurrency({ code: 'INR', sign: '₹' });
+                        }}
+                      >
+                        INR
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className='dropdown-item'
+                        id='usd'
+                        onClick={() => {
+                          setCurrency({ code: 'USD', sign: '$' });
+                        }}
+                      >
                         USD
-                      </a>
+                      </button>
                     </li>
                     <li>
-                      <a className='dropdown-item' id='eur' href='#'>
+                      <button
+                        className='dropdown-item'
+                        id='eur'
+                        onClick={() => setCurrency({ code: 'EUR', sign: '€' })}
+                      >
                         EUR
-                      </a>
-                    </li>
-                    <li>
-                      <a className='dropdown-item' id='cny' href='#'>
-                        AUD
-                      </a>
+                      </button>
                     </li>
                   </ul>
                 </div>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
