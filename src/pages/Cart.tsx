@@ -115,7 +115,7 @@ const Cart = () => {
                                               dispatch(
                                                 addToCart({
                                                   ...item,
-                                                  quantity: item.quantity + 1,
+                                                  quantity: 1,
                                                   total: (item.quantity + 1) * item.price,
                                                 })
                                               )
@@ -176,7 +176,7 @@ const Cart = () => {
                                         dispatch(
                                           addToCart({
                                             ...item,
-                                            quantity: item.quantity + 1,
+                                            quantity: 1,
                                             total: (item.quantity + 1) * item.price,
                                           })
                                         )

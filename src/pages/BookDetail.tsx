@@ -92,7 +92,7 @@ const BookDetail = () => {
 
     dispatch(addToCart(cartItem));
     setQuantity(1);
-    toast.success('Book added to cart!');
+    toast.success(quantity > 1 ? 'Books added to cart' : 'Book added to cart');
   };
 
   const handleAddToWishlist = () => {
