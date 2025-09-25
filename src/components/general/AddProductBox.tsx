@@ -92,11 +92,9 @@ const AddProductBox = ({
             />
           </Link>
           {removeButton && (
-            <div className='product-header-top'>
-              <button className='btn wishlist-button close_button' onClick={handleWishlistToggle}>
-                <X className='w-4 h-4 text-gray-500' />
+              <button className='btn !absolute top-0 right-0 bg-white !rounded-full w-9 h-9 !p-2' onClick={handleWishlistToggle}>
+                <X className='w-10 h-10 text-gray-500' />
               </button>
-            </div>
           )}
           {/* {showOptions && (
             <ul className='product-option'>

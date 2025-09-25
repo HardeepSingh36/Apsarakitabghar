@@ -80,6 +80,20 @@ const PublishBookModal: React.FC<PublishBookModalProps> = ({ isOpen, onClose }) 
                   </div>
                 </form>
               </div>
+              <div className='col-12'>
+                <form>
+                  <div className='form-floating theme-form-floating'>
+                    <textarea
+                      className='form-control'
+                      id='message'
+                      placeholder='Message'
+                      maxLength={10}
+                      style={{ height: '80px' }}
+                    />
+                    <label htmlFor='message'>Message</label>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
           <div className='modal-footer'>
