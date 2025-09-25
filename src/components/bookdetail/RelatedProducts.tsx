@@ -231,10 +231,9 @@ const relatedProducts = [
 
 const getSlidesToShow = (width: number) => {
   if (width < 480) return 2;
-  if (width < 768) return 3;
-  if (width < 992) return 4;
-  if (width < 1200) return 6;
-  return 6;
+  if (width < 1000) return 3;
+  if (width < 1200) return 4;
+  return 5;
 };
 
 const baseSliderSettings = {
@@ -275,7 +274,7 @@ const RelatedProducts = () => {
           <div className='slider-6_1 product-wrapper'>
             <Slider key={windowWidth} {...sliderSettings}>
               {relatedProducts.map((product, idx) => (
-                <AddProductBox key={product.id} product={product} idx={idx} showOptions={true} className='!bg-secondary p-2'/>
+                <AddProductBox key={product.id} product={product} idx={idx} showOptions={true} className='!bg-secondary p-2 !block'/>
               ))}
             </Slider>
           </div>

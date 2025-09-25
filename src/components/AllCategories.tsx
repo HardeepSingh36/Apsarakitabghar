@@ -1,6 +1,5 @@
 import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
 import { BookOpen, X } from 'lucide-react';
-import Heading2 from './general/Heading2';
 import type { Category } from '@/types/types';
 import { useEffect, useState } from 'react';
 import { BOOKS_CATEGORIES } from '@/services/API';
@@ -14,7 +13,7 @@ interface AllCategoriesProps {
 
 const AllCategories = ({ show, setShow }: AllCategoriesProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true); 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const getBooks = async () => {
     setIsLoading(true);
@@ -48,28 +47,30 @@ const AllCategories = ({ show, setShow }: AllCategoriesProps) => {
         </button>
         <div className='p-4 overflow-y-scroll'>
           <div className='grid grid-cols-3 gap-4 justify-center'>
-                          {isLoading
-                            ? Array.from({ length: 11 }).map((_, index) => (
-                                <div
-                                  key={index}
-                                  className='flex items-center flex-col text-center !text-black'
-                                >
-                                  <Skeleton circle={false} width={48} height={48} className='mb-2 custom-skeleton' />
-                                  <Skeleton width={120} height={16} className='custom-skeleton' />
-                                </div>
-                              ))
-                            : categories.map((category, index) => (
-                                <Link
-                                  key={index}
-                                  to={`/books`}
-                                  className='flex items-center flex-col text-center !text-black hover:!text-gray-700 hover:scale-105'
-                                >
-                                  <BookOpen className='hover:!text-gray-700' />
-                                  <p className='category-title !text-[clamp(0.985rem,2vw,1rem)]'>
-                                    {category.name}
-                                  </p>
-                                </Link>
-                              ))}
+            {isLoading
+              ? Array.from({ length: 11 }).map((_, index) => (
+                  <div key={index} className='flex items-center flex-col text-center !text-black'>
+                    <Skeleton
+                      circle={false}
+                      width={48}
+                      height={48}
+                      className='mb-2 custom-skeleton'
+                    />
+                    <Skeleton width={120} height={16} className='custom-skeleton' />
+                  </div>
+                ))
+              : categories.map((category, index) => (
+                  <Link
+                    key={index}
+                    to={`/books`}
+                    className='flex items-center flex-col text-center !text-black hover:!text-gray-700 hover:scale-105'
+                  >
+                    <BookOpen className='hover:!text-gray-700' />
+                    <p className='category-title !text-[clamp(0.985rem,2vw,1rem)]'>
+                      {category.name}
+                    </p>
+                  </Link>
+                ))}
           </div>
         </div>
       </DrawerContent>
