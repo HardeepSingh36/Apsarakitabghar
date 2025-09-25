@@ -84,7 +84,7 @@ const AddProductBox = ({
     >
       <div className='product-header'>
         <div className='product-image p-0 md:!mb-0 w-full '>
-          <Link to={`/books/${product.id}`} state={{ item: product }}>
+          <Link to={`/books/${product.slug}`} state={{ item: product }}>
             <img
               src={product.cover_image_url || ''}
               className='img-fluid blur-up lazyload w-full !h-28 md:!h-72 !object-cover hover:scale-105 transition'
@@ -111,7 +111,7 @@ const AddProductBox = ({
                 <Tooltip id='wishlist-tooltip' />
               </li>
               <li data-tooltip-id='view-tooltip' data-tooltip-content='View'>
-                <Link to={`/books/${product.id}`} state={{ item: product }}>
+                <Link to={`/books/${product.slug}`} state={{ item: product }}>
                   <Eye size={18} className='mx-auto text-gray-600' />
                 </Link>
                 <Tooltip id='view-tooltip' />
@@ -133,7 +133,7 @@ const AddProductBox = ({
             </ul>
             <span>(5)</span>
           </div> */}
-          <Link to={`/books/${product.id}`} className='!no-underline' state={{ item: product }}>
+          <Link to={`/books/${product.slug}`} className='!no-underline' state={{ item: product }}>
             <h5 className='name'>{product.description}</h5>
           </Link>
           <h6 className='byers text-muted'>

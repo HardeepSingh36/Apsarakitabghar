@@ -47,7 +47,7 @@ const Cart = () => {
                           <tr className='product-box-contain' key={item.id}>
                             <td className='product-detail'>
                               <div className='product border-0'>
-                                <a href={`/books/${item.id}`} className='product-image'>
+                                <a href={`/books/${item.slug}`} className='product-image'>
                                   <img
                                     src={item.cover_image_url || ''}
                                     className='img-fluid blur-up lazyload notranslate'
@@ -57,7 +57,7 @@ const Cart = () => {
                                 <div className='product-detail'>
                                   <ul>
                                     <li className='name'>
-                                      <a href={`/books/${item.id}`} className='notranslate'>
+                                      <a href={`/books/${item.slug}`} className='notranslate'>
                                         {item.title}
                                       </a>
                                     </li>

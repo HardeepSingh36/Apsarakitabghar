@@ -141,7 +141,7 @@ const BookDetail = () => {
                       <div className='col-xxl-10 col-lg-12 col-md-10 order-xxl-2 order-lg-1 order-md-2'>
                         <div className='product-main-2 no-arrow'>
                           <div>
-                            <div className='slider-image'>
+                            <div className='slider-image relative'>
                               <img
                                 src={
                                   book.cover_image_url || '/assets/images/product/category/1.jpg'
@@ -153,6 +153,17 @@ const BookDetail = () => {
                                 className='img-fluid image_zoom_cls-0 blur-up lazyload notranslate'
                                 alt={book.title || ''}
                               />
+                              <div className='buy-box absolute right-4 top-4 bg-white p-2 rounded-full md:hidden'>
+                                <button
+                                  onClick={handleAddToWishlist}
+                                  className='flex items-center gap-2'
+                                  data-tooltip-id='cart-tooltip'
+                                  data-tooltip-content='Add to wishlist'
+                                >
+                                  <Heart className='w-6 h-6' />
+                                </button>
+                                <Tooltip id='cart-tooltip' />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -163,12 +174,12 @@ const BookDetail = () => {
 
                 <div className='col-xl-6 wow fadeInUp' data-wow-delay='0.1s'>
                   <div className='right-box-contain relative'>
-                    <div className='buy-box absolute right-4 top-0'>
+                    <div className='buy-box absolute right-4 top-0 !hidden md:!block'>
                       <button
                         onClick={handleAddToWishlist}
                         className='flex items-center gap-2'
                         data-tooltip-id='cart-tooltip'
-                        data-tooltip-content='Add to cart'
+                        data-tooltip-content='Add to wishlist'
                       >
                         <Heart className='w-6 h-6' />
                       </button>
@@ -540,7 +551,7 @@ const BookDetail = () => {
                     <ul className='product-list product-right-sidebar border-0 p-0'>
                       <li>
                         <div className='offer-product'>
-                          <a href={`/books/${fallbackBook.id}`} className='offer-image'>
+                          <a href={`/books/${fallbackBook.slug}`} className='offer-image'>
                             <img
                               src={fallbackBook.cover_image_url}
                               className='img-fluid blur-up lazyload notranslate'
@@ -549,7 +560,7 @@ const BookDetail = () => {
                           </a>
                           <div className='offer-detail'>
                             <div>
-                              <a href={`/books/${fallbackBook.id}`}>
+                              <a href={`/books/${fallbackBook.slug}`}>
                                 <h6 className='name notranslate' translate='no'>
                                   {fallbackBook.title}
                                 </h6>
@@ -564,7 +575,7 @@ const BookDetail = () => {
                       </li>
                       <li>
                         <div className='offer-product'>
-                          <a href={`/books/${fallbackBook.id}`} className='offer-image'>
+                          <a href={`/books/${fallbackBook.slug}`} className='offer-image'>
                             <img
                               src={fallbackBook.cover_image_url}
                               className='img-fluid blur-up lazyload notranslate'
@@ -573,7 +584,7 @@ const BookDetail = () => {
                           </a>
                           <div className='offer-detail'>
                             <div>
-                              <a href={`/books/${fallbackBook.id}`}>
+                              <a href={`/books/${fallbackBook.slug}`}>
                                 <h6 className='name notranslate'>{fallbackBook.title}</h6>
                               </a>
                               <span>{fallbackBook.author_names}</span>
@@ -586,7 +597,7 @@ const BookDetail = () => {
                       </li>
                       <li>
                         <div className='offer-product'>
-                          <a href={`/books/${fallbackBook.id}`} className='offer-image'>
+                          <a href={`/books/${fallbackBook.slug}`} className='offer-image'>
                             <img
                               src={fallbackBook.cover_image_url}
                               className='img-fluid blur-up lazyload notranslate'
@@ -595,7 +606,7 @@ const BookDetail = () => {
                           </a>
                           <div className='offer-detail'>
                             <div>
-                              <a href={`/books/${fallbackBook.id}`}>
+                              <a href={`/books/${fallbackBook.slug}`}>
                                 <h6 className='name notranslate'>{fallbackBook.title}</h6>
                               </a>
                               <span>{fallbackBook.author_names}</span>

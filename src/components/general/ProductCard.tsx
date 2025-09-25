@@ -89,21 +89,21 @@ const ProductCard = ({ item, className }: ProductCardProps) => {
             <Tooltip id='wishlist-tooltip' />
           </li>
           <li data-tooltip-id='view-tooltip' data-tooltip-content='View'>
-            <Link to={`/books/${item.id}`} state={{ item }}>
+            <Link to={`/books/${item.slug}`} state={{ item }}>
               <Eye size={18} className='mx-auto text-gray-600' />
             </Link>
             <Tooltip id='view-tooltip' />
           </li>
         </ul>
         <div className='front h-28 w-28 md:h-64 md:w-72'>
-          <Link to={`/books/${item.id}`} className='!no-underline block' state={{ item }}>
+          <Link to={`/books/${item.slug}`} className='!no-underline block' state={{ item }}>
             <img src={item.cover_image_url} className='img-fluid lazyload h-full w-full' alt='' />
           </Link>
         </div>
       </div>
       <div className='product-detail position-relative md:mt-4'>
         <h6 className='weight notranslate'>{item.title}</h6>
-        <Link to={`/books/${item.id}`} className='!no-underline' state={{ item }}>
+        <Link to={`/books/${item.slug}`} className='!no-underline' state={{ item }}>
           <h5 className='name'>{item.description}</h5>
         </Link>
         <h6 className='byers'>
