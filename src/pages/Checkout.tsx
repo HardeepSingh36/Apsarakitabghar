@@ -2,24 +2,16 @@ import { useCurrency } from '@/context/CurrencyContext';
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import { setSelectedAddress } from '@/features/user/userSlice';
 import type { RootState } from '@/app/store';
-import { useLocation } from 'react-router-dom';
 
 const Checkout = () => {
   const { currency } = useCurrency();
   const dispatch = useAppDispatch();
-  const location = useLocation();
 
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
   const addresses = useAppSelector((state: RootState) => state.user.addresses);
   const selectedAddressId = useAppSelector((state: RootState) => state.user.selectedAddressId);
-  const buyNowItem = useAppSelector((state: RootState) => state.cart.buyNowItem);
 
-  // Check if the user navigated from the "Buy Now" button
-  const isBuyNowFlow = location.state?.isBuyNow || false;
-
-  const itemsToCheckout = isBuyNowFlow && buyNowItem ? [buyNowItem] : cartItems;
-
-  const subtotal = itemsToCheckout.reduce((sum, item) => sum + item.total, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
   const shipping = 6.9; // static or calculate based on rules
   const tax = subtotal * 0.1; // example 10% GST
   const coupon = 20; // example static coupon discount
@@ -636,7 +628,7 @@ const Checkout = () => {
                   </div>
 
                   <ul className='summery-contain'>
-                    {itemsToCheckout.map((item) => (
+                    {cartItems.map((item) => (
                       <li key={item.id}>
                         <img
                           src={item.cover_image_url}
@@ -691,7 +683,7 @@ const Checkout = () => {
                   </ul>
                 </div>
 
-                {/* <div className='checkout-offer'>
+                <div className='checkout-offer'>
                   <div className='offer-title'>
                     <div className='offer-icon'>
                       <img src='/assets/images/inner-page/offer.svg' className='img-fluid' alt='' />
@@ -711,7 +703,7 @@ const Checkout = () => {
                       </p>
                     </li>
                   </ul>
-                </div> */}
+                </div>
 
                 <button className='btn theme-bg-color text-white btn-md w-100 mt-4 fw-bold'>
                   Place Order

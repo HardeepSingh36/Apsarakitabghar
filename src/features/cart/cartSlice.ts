@@ -3,12 +3,10 @@ import type { CartItem } from '@/types/types';
 
 interface CartState {
   items: CartItem[];
-  buyNowItem?: CartItem | null;
 }
 
 const initialState: CartState = {
   items: [],
-  buyNowItem: null,
 };
 
 const cartSlice = createSlice({
@@ -19,7 +17,7 @@ const cartSlice = createSlice({
       const existingItem = state.items.find((item) => item.id === action.payload.id);
 
       if (existingItem) {
-        existingItem.quantity += 1;
+        existingItem.quantity += action.payload.quantity || 1;
         existingItem.total = existingItem.discounted_price * existingItem.quantity;
         existingItem.saving = existingItem.price * existingItem.quantity - existingItem.total;
       } else {
@@ -51,15 +49,9 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
     },
-    setBuyNowItem: (state, action: PayloadAction<CartItem>) => {
-      state.buyNowItem = action.payload;
-    },
-    clearBuyNowItem: (state) => {
-      state.buyNowItem = null;
-    },
   },
 });
 
-export const { addToCart, removeFromCart, decreaseQuantity, clearCart, setBuyNowItem, clearBuyNowItem } = cartSlice.actions;
+export const { addToCart, removeFromCart, decreaseQuantity, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

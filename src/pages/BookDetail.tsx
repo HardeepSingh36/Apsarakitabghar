@@ -6,10 +6,11 @@ import type { Book, CartItem } from '@/types/types';
 import { getBooks } from '@/services/bookService';
 import { Heart } from 'react-feather';
 import { useAppDispatch } from '@/app/hooks';
-import { addToCart, setBuyNowItem } from '@/features/cart/cartSlice';
+import { addToCart } from '@/features/cart/cartSlice';
 import { addToWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { Tooltip } from 'react-tooltip';
+import toast from 'react-hot-toast';
 
 const fallbackBook: Book = {
   id: 6,
@@ -47,7 +48,7 @@ const fallbackBook: Book = {
 const BookDetail = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, openSignIn } = useAuthDialog();
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const { id } = useParams();
   const [book, setBook] = useState<Book | null>(null);
   // const [selectedFormat, setSelectedFormat] = useState('hardcover');
@@ -84,14 +85,14 @@ const BookDetail = () => {
 
     const cartItem: CartItem = {
       ...book,
-      quantity: quantity === 0 ? 1 : quantity,
+      quantity: quantity,
       total: (book.discounted_price || book.price) * quantity,
       saving: book.price - (book.discounted_price || book.price),
     };
 
     dispatch(addToCart(cartItem));
-
-    navigate('/cart');
+    setQuantity(1);
+    toast.success('Book added to cart!');
   };
 
   const handleAddToWishlist = () => {
@@ -121,9 +122,8 @@ const BookDetail = () => {
       total: book.discounted_price || book.price,
       saving: book.price - (book.discounted_price || book.price),
     };
-    dispatch(setBuyNowItem(item));
     dispatch(addToCart(item));
-    navigate('/checkout', { state: { isBuyNow: true } });
+    navigate('/cart', { state: { isBuyNow: true } });
   };
 
   if (!book) return null;
