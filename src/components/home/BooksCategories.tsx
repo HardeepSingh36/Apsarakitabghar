@@ -17,7 +17,7 @@ const BooksCategories = () => {
       const { data } = await res.json();
       setCategories(data);
     } catch (err) {
-      console.log(err);
+      throw new Error('Failed to fetch categories');
     } finally {
       setIsLoading(false);
     }
@@ -36,28 +36,34 @@ const BooksCategories = () => {
         <div className='row'>
           <div className='col-12'>
             <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 justify-center '>
-              {isLoading
-                ? Array.from({ length: 8 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className='flex items-center flex-col text-center !text-black'
-                    >
-                      <Skeleton circle={false} width={48} height={48} className='mb-2 custom-skeleton' />
-                      <Skeleton width={120} height={16} className='custom-skeleton' />
-                    </div>
-                  ))
-                : categories.map((category, index) => (
-                    <Link
-                      key={index}
-                      to={`/books`}
-                      className='flex items-center flex-col text-center !text-black hover:!text-gray-700 hover:scale-105'
-                    >
-                      <BookOpen className='hover:!text-gray-700' />
-                      <p className='category-title !text-[clamp(0.985rem,2vw,1rem)]'>
-                        {category.name}
-                      </p>
-                    </Link>
-                  ))}
+              {isLoading ? (
+                Array.from({ length: 8 }).map((_, index) => (
+                  <div key={index} className='flex items-center flex-col text-center !text-black'>
+                    <Skeleton
+                      circle={false}
+                      width={48}
+                      height={48}
+                      className='mb-2 custom-skeleton'
+                    />
+                    <Skeleton width={120} height={16} className='custom-skeleton' />
+                  </div>
+                ))
+              ) : categories && categories.length > 0 ? (
+                categories.map((category, index) => (
+                  <Link
+                    key={index}
+                    to={`/books`}
+                    className='flex items-center flex-col text-center !text-black hover:!text-gray-700 hover:scale-105'
+                  >
+                    <BookOpen className='hover:!text-gray-700' />
+                    <p className='category-title !text-[clamp(0.985rem,2vw,1rem)]'>
+                      {category.name}
+                    </p>
+                  </Link>
+                ))
+              ) : (
+                <p className='text-center col-span-full'>No categories found.</p>
+              )}
             </div>
           </div>
         </div>

@@ -24,8 +24,8 @@ const AllCategories = ({ show, setShow }: AllCategoriesProps) => {
       setCategories(data);
       setIsLoading(false);
     } catch (err) {
-      console.log(err);
       setIsLoading(false);
+      throw new Error('Failed to fetch categories');
     }
   };
 

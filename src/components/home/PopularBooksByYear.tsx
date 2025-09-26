@@ -16,8 +16,8 @@ const PopularBooksByYear = () => {
         setIsLoading(false);
       })
       .catch((err) => {
-        console.error(err);
         setIsLoading(false);
+        throw new Error(err);
       });
   }, []);
   return (
@@ -32,8 +32,10 @@ const PopularBooksByYear = () => {
             Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
           ) : books.length === 0 ? (
             <p className='text-center col-span-full'>No books found.</p>
-          ) : (
+          ) : books && books.length > 0 ? (
             books.map((book) => <AddProductBox key={book.id} idx={book.id} product={book} />)
+          ) : (
+            <p className='text-center col-span-full'>No books found.</p>
           )}
         </div>
       </div>

@@ -37,15 +37,13 @@ const TopSellingBooks = () => {
     }
   };
 
-  const top = useMemo(() => books.filter((b) => b.top).slice(0, 6), [books]);
-  const trending = useMemo(() => books.filter((b) => b.trending).slice(0, 6), [books]);
-  const recent = useMemo(
-    () =>
-      [...books]
+  const top = Array.isArray(books) ? books.filter((b) => b.top).slice(0, 6) : [];
+  const trending = Array.isArray(books) ? books.filter((b) => b.trending).slice(0, 6) : [];
+  const recent = Array.isArray(books)
+    ? [...books]
         .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-        .slice(0, 6),
-    [books]
-  );
+        .slice(0, 6)
+    : [];
 
   useEffect(() => {
     fetchBooks();
@@ -56,9 +54,13 @@ const TopSellingBooks = () => {
       <div className='col-12'>
         <div className='top-selling-box'>
           <div className='grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4'>
-            {isLoading
-              ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
-              : items.map((item) => <AddProductBox key={item.id} idx={item.id} product={item} />)}
+            {isLoading ? (
+              Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
+            ) : items && items.length > 0 ? (
+              items.map((item) => <AddProductBox key={item.id} idx={item.id} product={item} />)
+            ) : (
+              <p className='text-center col-span-full'>No books found.</p>
+            )}
           </div>
         </div>
       </div>

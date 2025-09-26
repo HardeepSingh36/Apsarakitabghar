@@ -480,17 +480,21 @@ const BooksPage = () => {
             </div>
             {/* Product List Section */}
             <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:!gap-4 product-list-section mt-10'>
-              {isLoading
-                ? Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className='col'>
-                      <ProductCardSkeleton />
-                    </div>
-                  ))
-                : books.map((book) => (
-                    <div key={book.id} className='col'>
-                      <AddProductBox product={book} idx={book.id} showOptions={true} />
-                    </div>
-                  ))}
+              {isLoading ? (
+                Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className='col'>
+                    <ProductCardSkeleton />
+                  </div>
+                ))
+              ) : books && books.length > 0 ? (
+                books.map((book) => (
+                  <div key={book.id} className='col'>
+                    <AddProductBox product={book} idx={book.id} showOptions={true} />
+                  </div>
+                ))
+              ) : (
+                <p className='text-center col-span-full'>No books found.</p>
+              )}
             </div>
           </div>
         </div>
