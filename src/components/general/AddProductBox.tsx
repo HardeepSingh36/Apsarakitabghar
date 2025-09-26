@@ -33,7 +33,6 @@ const AddProductBox = ({
   const cartItem = useAppSelector((state: RootState) =>
     state.cart.items.find((item) => item.id === product.id)
   );
-
   // const handleDecrease = () => {
   //   if (cartItem) {
   //     dispatch(decreaseQuantity(product.id));
@@ -86,15 +85,21 @@ const AddProductBox = ({
         <div className='product-image p-0 md:!mb-0 w-full '>
           <Link to={`/books/${product.slug}`} state={{ item: product }}>
             <img
-              src={product.cover_image_url || ''}
+              src={product.cover_image_name || ''}
+              onError={(e) => {
+                e.currentTarget.src = '/assets/images/book/product/1.jpg';
+              }}
               className='img-fluid blur-up lazyload w-full !h-28 md:!h-72 !object-cover hover:scale-105 transition'
               alt=''
             />
           </Link>
           {removeButton && (
-              <button className='btn !absolute top-0 right-0 bg-white !rounded-full w-9 h-9 !p-2 shadow-md' onClick={handleWishlistToggle}>
-                <X className='w-10 h-10 text-gray-500' />
-              </button>
+            <button
+              className='btn !absolute top-0 right-0 bg-white !rounded-full w-9 h-9 !p-2 shadow-md'
+              onClick={handleWishlistToggle}
+            >
+              <X className='w-10 h-10 text-gray-500' />
+            </button>
           )}
           {/* {showOptions && (
             <ul className='product-option'>
@@ -140,7 +145,8 @@ const AddProductBox = ({
             <span>By</span> {product.author_names || 'Unknown Author'}
           </h6>
           <h6 className='price'>
-            {currency.sign}<span className=''>{product.discounted_price}</span>
+            {currency.sign}
+            <span className=''>{product.discounted_price}</span>
             {'  '}
             <span className='text-muted line-through ms-2'>{product.price}</span>
           </h6>

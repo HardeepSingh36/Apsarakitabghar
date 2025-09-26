@@ -15,7 +15,8 @@ const BooksCategories = () => {
       const res = await fetch(BOOKS_CATEGORIES);
       if (!res.ok) throw new Error('Failed to fetch categories');
       const { data } = await res.json();
-      setCategories(data);
+      const { categories } = data;
+      setCategories(categories);
     } catch (err) {
       throw new Error('Failed to fetch categories');
     } finally {
@@ -57,7 +58,7 @@ const BooksCategories = () => {
                   >
                     <BookOpen className='hover:!text-gray-700' />
                     <p className='category-title !text-[clamp(0.985rem,2vw,1rem)]'>
-                      {category.name}
+                      {category.category_name}
                     </p>
                   </Link>
                 ))

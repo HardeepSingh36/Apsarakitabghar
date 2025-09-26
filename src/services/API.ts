@@ -1,5 +1,6 @@
 // Base URL (local or production)
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost/apsra/simple-api';
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost/apsra/simple-api';
 // ------------- Health & Info -------------
 export const API_INDEX = `${API_BASE_URL}/index`;
 export const API_HEALTH = `${API_BASE_URL}/health`;
@@ -11,11 +12,11 @@ export const AUTH_ME = `${API_BASE_URL}/auth/me`;
 
 // ------------- Public Books -------------
 export const BOOKS_LIST = `${API_BASE_URL}/books-list`;
-export const BOOKS_SINGLE = `${API_BASE_URL}/books/single`; 
+export const BOOKS_SINGLE = `${API_BASE_URL}/books/single`;
 export const BOOKS_SEARCH = `${API_BASE_URL}/books/search`;
 export const BOOKS_AUTHORS = `${API_BASE_URL}/books/authors`;
-export const BOOKS_CATEGORIES = `${API_BASE_URL}/books/categories`;
-export const IMAGE_PATH= 'https://apsrakitabghar.com/uploads/';
+export const BOOKS_CATEGORIES = `${API_BASE_URL}/categories-list`;
+export const IMAGE_PATH = 'https://apsrakitabghar.com/uploads/';
 
 // ------------- Admin / Publisher -------------
 export const ADMIN_BOOKS = `${API_BASE_URL}/admin/books`;

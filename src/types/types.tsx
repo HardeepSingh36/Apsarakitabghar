@@ -1,46 +1,48 @@
 export interface Category {
-  created_at: string;
-  description: string;
   id: number;
-  name: string;
+  category_name: string;
   parent_id: number | null;
-  slug: string;
   status: string;
+  created_at: string;
   updated_at: string;
+  book_count: number;
+  parent_name: string | null;
+  children: Category[];
 }
 
 export interface Book {
   id: number;
   title: string;
-  subtitle: string | null;
-  slug: string | null;
+  slug: string;
   description: string;
   isbn: string;
   language: string;
-  publisher_id: number;
-  published_date: string;
-  edition: string | null;
-  pages: number;
-  format: 'hardcover' | 'paperback' | 'ebook' | string;
   price: number;
-  discount: number;
-  stock: number;
-  cover_image: string | null;
-  sample_file: string | null;
-  author_ids: string[];
-  category_ids: string[];
-  status: 'active' | 'inactive' | string;
-  created_by: number;
+  discount_percent: number;
+  stock_quantity: number;
+  pages: number;
+  publisher_name: string;
+  publish_date: string;
+  cover_image_name: string;
+  featured: number;
+  views_count: number;
+  sales_count: number;
+  rating_avg: number;
+  rating_count: number;
   created_at: string;
   updated_at: string;
-  publisher_name: string;
-  author_names: string;
+  author_id: number;
+  category_id: number;
+  genre_id: number;
+  author_table_id: number | null;
+  author_name: string | null;
+  author_pen_name: string | null;
+  category_table_id: number;
+  category_name: string;
+  genre_table_id: number | null;
+  genre_name: string | null;
+  tags: any[];
   discounted_price: number;
-  cover_image_url: string;
-  trending: number;
-  top: number;
-  popular: number;
-  isBest?: boolean;
 }
 
 export interface CartItem extends Book {

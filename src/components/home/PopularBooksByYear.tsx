@@ -12,14 +12,15 @@ const PopularBooksByYear = () => {
     setIsLoading(true);
     getBooks({ page: 1, limit: 20 })
       .then(({ data }) => {
-        setBooks(data);
+        const { books } = data;
+        setBooks(books);
         setIsLoading(false);
       })
       .catch((err) => {
         setIsLoading(false);
         throw new Error(err);
       });
-  }, []);
+  }, [books.length]);
   return (
     <section className='book-category'>
       <div className='container-fluid-lg'>
@@ -30,9 +31,7 @@ const PopularBooksByYear = () => {
         <div className='grid grid-cols-1 md:grid-cols-4 xl:grid-cols-5 gap-4'>
           {isLoading ? (
             Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
-          ) : books.length === 0 ? (
-            <p className='text-center col-span-full'>No books found.</p>
-          ) : books && books.length > 0 ? (
+          ) : books.length > 0 ? (
             books.map((book) => <AddProductBox key={book.id} idx={book.id} product={book} />)
           ) : (
             <p className='text-center col-span-full'>No books found.</p>

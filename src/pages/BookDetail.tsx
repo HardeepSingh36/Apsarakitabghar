@@ -13,36 +13,38 @@ import { Tooltip } from 'react-tooltip';
 import toast from 'react-hot-toast';
 
 const fallbackBook: Book = {
-  id: 6,
-  title: 'The Lost Tales',
-  subtitle: 'Adventures Beyond',
-  slug: 'the-lost-tales',
-  description: 'A thrilling collection of stories set in mystical lands.',
-  isbn: '978-1234560006',
-  language: 'English',
-  publisher_id: 1,
-  published_date: '2021-05-10',
-  edition: '1st',
-  pages: 320,
-  format: 'paperback',
-  price: 499,
-  discount: 10,
-  stock: 50,
-  cover_image: '6.jpg',
-  sample_file: '',
-  author_ids: ['5'],
-  category_ids: ['6'],
-  status: 'active',
-  created_by: 1,
-  created_at: '2025-09-16 09:37:42',
-  updated_at: '2025-09-16 11:12:17',
-  trending: 1,
-  top: 0,
-  popular: 1,
-  publisher_name: 'Super Admin',
-  author_names: 'Harbhajan Singh',
-  discounted_price: 449.1,
-  cover_image_url: 'https://apsrakitabghar.com/uploads/covers/6.jpg',
+  id: 51,
+  title: 'ਪੰਜਾਬ ਦੇ ਵੀਰ ਯੋਧੇ',
+  slug: 'punjab-de-veer-yodhe',
+  description: 'ਪੰਜਾਬ ਦੇ ਇਤਿਹਾਸਕ ਵੀਰ ਯੋਧਿਆਂ ਅਤੇ ਉਨ੍ਹਾਂ ਦੇ ਬਲਿਦਾਨਾਂ ਦੀ ਗਾਥਾ',
+  isbn: '9782222222244',
+  language: 'Punjabi',
+  price: 450,
+  discount_percent: 18,
+  stock_quantity: 52,
+  pages: 423,
+  publisher_name: 'ਵੀਰ ਗਾਥਾ ਪ੍ਰਕਾਸ਼ਨ',
+  publish_date: '2023-05-25',
+  cover_image_name: 'warriors_cover.jpg',
+  featured: 1,
+  views_count: 1567,
+  sales_count: 124,
+  rating_avg: 4.5,
+  rating_count: 234,
+  created_at: '2025-09-26 09:09:35',
+  updated_at: '2025-09-26 09:11:18',
+  author_id: 50,
+  category_id: 5,
+  genre_id: 49,
+  author_table_id: null,
+  author_name: null,
+  author_pen_name: null,
+  category_table_id: 5,
+  category_name: 'रहस्य कहानी',
+  genre_table_id: null,
+  genre_name: null,
+  tags: [],
+  discounted_price: 369,
 };
 
 const BookDetail = () => {
@@ -144,11 +146,11 @@ const BookDetail = () => {
                             <div className='slider-image relative'>
                               <img
                                 src={
-                                  book.cover_image_url || '/assets/images/product/category/1.jpg'
+                                  book.cover_image_url || '/assets/images/book/product/1.jpg'
                                 }
                                 id='img-1'
                                 data-zoom-image={
-                                  book.cover_image_url || '/assets/images/product/category/1.jpg'
+                                  book.cover_image_url || '/assets/images/book/product/1.jpg'
                                 }
                                 className='img-fluid image_zoom_cls-0 blur-up lazyload notranslate'
                                 alt={book.title || ''}
@@ -186,7 +188,7 @@ const BookDetail = () => {
                       <Tooltip id='cart-tooltip' />
                     </div>
                     <h2 className='name mb-0 notranslate'>{book.title || 'Book Title'}</h2>
-                    <p className='author text-muted'>{book.author_names || 'Book Author'}</p>
+                    <p className='author text-muted'>{book.author_name || 'Book Author'}</p>
                     {/* <div className='price-rating'>
                       <h3 className='theme-color price'>
                         ₹{book.discounted_price || book.price}{' '}
@@ -247,7 +249,7 @@ const BookDetail = () => {
                         ₹{book.discounted_price || book.price}{' '}
                         <del className='text-content'>₹{book.price}</del>{' '}
                         <span className='offer theme-color'>
-                          ({book.discount ? `${book.discount}% off` : '8% off'})
+                          ({book.discount_percent ? `${book.discount_percent}% off` : '8% off'})
                         </span>
                       </h3>
                       {/* <div className='product-rating custom-rate'>
@@ -474,7 +476,7 @@ const BookDetail = () => {
                               </tr>
                               <tr>
                                 <td>Form</td>
-                                <td>{book.format || 'Bar Brownie'}</td>
+                                {/* <td>{book.format || 'Bar Brownie'}</td> */}
                               </tr>
                               <tr>
                                 <td>Package Information</td>
@@ -565,7 +567,7 @@ const BookDetail = () => {
                                   {fallbackBook.title}
                                 </h6>
                               </a>
-                              <span>{fallbackBook.author_names}</span>
+                              <span>{fallbackBook.author_name}</span>
                               <h6 className='price theme-color'>
                                 ₹{fallbackBook.discounted_price}
                               </h6>
@@ -587,7 +589,7 @@ const BookDetail = () => {
                               <a href={`/books/${fallbackBook.slug}`}>
                                 <h6 className='name notranslate'>{fallbackBook.title}</h6>
                               </a>
-                              <span>{fallbackBook.author_names}</span>
+                              <span>{fallbackBook.author_name}</span>
                               <h6 className='price theme-color'>
                                 ₹{fallbackBook.discounted_price}
                               </h6>
@@ -609,7 +611,7 @@ const BookDetail = () => {
                               <a href={`/books/${fallbackBook.slug}`}>
                                 <h6 className='name notranslate'>{fallbackBook.title}</h6>
                               </a>
-                              <span>{fallbackBook.author_names}</span>
+                              <span>{fallbackBook.author_name}</span>
                               <h6 className='price theme-color'>
                                 ₹{fallbackBook.discounted_price}
                               </h6>

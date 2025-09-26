@@ -1,7 +1,7 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Heading2 from '../general/Heading2';
 import { BOOKS_LIST } from '@/services/API';
@@ -29,7 +29,7 @@ const TopSellingBooks = () => {
       const res = await fetch(BOOKS_LIST);
       if (!res.ok) throw new Error('Failed to fetch books');
       const { data } = await res.json();
-      setBooks(data);
+      setBooks(data.books);
     } catch (err) {
       console.log(err);
     } finally {
@@ -47,7 +47,7 @@ const TopSellingBooks = () => {
 
   useEffect(() => {
     fetchBooks();
-  }, []);
+  }, [books.length]);
 
   const BookGrid: React.FC<{ items: Book[] }> = ({ items }) => (
     <div className='row'>
@@ -56,7 +56,7 @@ const TopSellingBooks = () => {
           <div className='grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4'>
             {isLoading ? (
               Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
-            ) : items && items.length > 0 ? (
+            ) : items.length > 0 ? (
               items.map((item) => <AddProductBox key={item.id} idx={item.id} product={item} />)
             ) : (
               <p className='text-center col-span-full'>No books found.</p>
