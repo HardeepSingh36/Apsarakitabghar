@@ -1,8 +1,8 @@
+import { SimpleCaptcha } from '../components/SimpleCaptcha';
 
 const Contact = () => {
   return (
     <div>
-
       <section className='contact-box-section'>
         <div className='container-fluid-lg'>
           <div className='row g-lg-5 g-3'>
@@ -183,6 +183,15 @@ const Contact = () => {
                         <i className='fa-solid fa-message'></i>
                       </div>
                     </div>
+                  </div>
+
+                  <div className='col-12'>
+                    <SimpleCaptcha
+                      onChange={(isValid) => {
+                        console.log('Captcha valid:', isValid);
+                      }}
+                      captchaBgColor='bg-gray-200'
+                    />
                   </div>
                 </div>
                 <button className='btn btn-animation btn-md fw-bold ms-auto'>Send Message</button>

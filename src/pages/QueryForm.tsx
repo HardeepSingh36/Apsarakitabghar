@@ -1,3 +1,5 @@
+import { SimpleCaptcha } from '../components/SimpleCaptcha';
+
 const QueryForm = () => {
   return (
     <>
@@ -90,6 +92,14 @@ const QueryForm = () => {
                         <i className='fa-solid fa-message'></i>
                       </div>
                     </div>
+                  </div>
+                  <div className='col-12'>
+                    <SimpleCaptcha
+                      onChange={(isValid) => {
+                        console.log('Captcha valid:', isValid);
+                      }}
+                      captchaBgColor='bg-gray-200'
+                    />
                   </div>
                 </div>
                 <button className='btn btn-animation btn-md fw-bold ms-auto'>Send Message</button>

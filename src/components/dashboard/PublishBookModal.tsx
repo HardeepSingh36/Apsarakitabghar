@@ -1,4 +1,5 @@
 import React from 'react';
+import { SimpleCaptcha } from '../SimpleCaptcha';
 
 interface PublishBookModalProps {
   isOpen: boolean;
@@ -93,6 +94,13 @@ const PublishBookModal: React.FC<PublishBookModalProps> = ({ isOpen, onClose }) 
                     <label htmlFor='message'>Message</label>
                   </div>
                 </form>
+              </div>
+              <div className='col-12'>
+                <SimpleCaptcha
+                  onChange={(isValid: boolean) => {
+                    console.log('Captcha valid:', isValid);
+                  }}
+                />
               </div>
             </div>
           </div>

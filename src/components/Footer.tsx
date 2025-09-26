@@ -88,7 +88,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to='/query-form'
+                    to='/contact-us'
                     className='light-text'
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   >

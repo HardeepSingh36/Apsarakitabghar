@@ -4,6 +4,7 @@ import { login, logout } from '@/features/auth/authSlice';
 import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
+import { SimpleCaptcha } from '@/components/SimpleCaptcha';
 
 import {
   Dialog,
@@ -13,6 +14,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import type { RootState } from '@/app/store';
+import { useRef } from 'react';
 
 type AuthView = 'choice' | 'signin' | 'signup' | 'forgot';
 
@@ -56,10 +58,12 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [redirectPath, setRedirectPath] = React.useState<string | null>(null); // Track origin page
+  const [captchaValid, setCaptchaValid] = React.useState(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
+  const captchaRef = useRef<{ generateCaptcha: () => void } | null>(null);
 
   const handleClose = (open: boolean) => {
     setDialogOpen(open);
@@ -125,6 +129,11 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
       }
       if (password !== confirmPassword) {
         toast.error('Passwords do not match. Please try again.');
+        return;
+      }
+      if (!captchaValid) {
+        toast.error('Captcha validation failed. Please try again.');
+        captchaRef.current?.generateCaptcha(); // Refresh captcha
         return;
       }
     } else if (authView === 'forgot') {
@@ -221,8 +230,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
         >
           <DialogHeader>
             <DialogTitle style={{ fontWeight: 600, fontSize: 22, marginBottom: 8 }}>
-              {authView === 'choice' ? // <>Join{selectedRole ? ` as ${selectedRole}` : ''}</>
-              null : authView === 'signin' ? (
+              {authView === 'choice' ? null : authView === 'signin' ? ( // <>Join{selectedRole ? ` as ${selectedRole}` : ''}</>
                 <>Sign In</>
               ) : authView === 'signup' ? (
                 <>Create Account</>
@@ -377,6 +385,15 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
+                      />
+                    </div>
+                  )}
+                  {authView === 'signup' && (
+                    <div className='form-group'>
+                      <label className='form-label'>Captcha</label>
+                      <SimpleCaptcha
+                        ref={captchaRef}
+                        onChange={(isValid) => setCaptchaValid(isValid)}
                       />
                     </div>
                   )}

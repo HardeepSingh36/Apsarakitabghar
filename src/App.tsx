@@ -76,7 +76,7 @@ const App = () => {
           }
         />
         <Route path='/about' element={<About />} />
-        <Route path='/contact' element={<Contact />} />
+        <Route path='/contact-us' element={<Contact />} />
         <Route path='/query-form' element={<QueryForm />} />
         <Route path='/privacy-policy' element={<PrivacyPolicy />} />
         <Route path='/term-conditions' element={<TermConditions />} />
