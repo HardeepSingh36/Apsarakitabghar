@@ -1,16 +1,26 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import HeaderTop from './HeaderTop';
 import MainNav from './MainNav';
 import RightSideBox from './RightSideBox';
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const location = useLocation();
+
+  // Define pages that require a different background and shadow
+  const specialPages = ['/about', '/contact', '/query-form', '/term-conditions', '/privacy-policy'];
+  const isSpecialPage = specialPages.includes(location.pathname);
+
   return (
     <header className=''>
       <HeaderTop />
 
-      <div className='top-nav top-header sticky-header'>
+      <div
+        className={`top-nav top-header sticky-header ${
+          isSpecialPage ? 'bg-[#f8f8f8] shadow-md shadow-black/15' : ''
+        }`}
+      >
         <div className='container-fluid-lg'>
           <div className='row'>
             <div className='col-12'>

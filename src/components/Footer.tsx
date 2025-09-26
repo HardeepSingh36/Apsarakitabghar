@@ -92,7 +92,7 @@ const Footer = () => {
                     className='light-text'
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   >
-                    Query Form
+                    Contact Us
                   </Link>
                 </li>
               </ul>
@@ -170,14 +170,6 @@ const Footer = () => {
                     <div className='inform-box'>
                       <i data-feather='mail'></i>
                       <p>Email Us: info@apsrakitabghar.com</p>
-                    </div>
-                  </a>
-                </li>
-                <li>
-                  <a href='javascript:void(0)' className='light-text'>
-                    <div className='inform-box'>
-                      <i data-feather='printer'></i>
-                      <p>Fax: 123456</p>
                     </div>
                   </a>
                 </li>

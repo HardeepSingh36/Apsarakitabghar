@@ -1,7 +1,15 @@
 import { useCurrency } from '@/context/CurrencyContext';
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
-import { setSelectedAddress } from '@/features/user/userSlice';
+import {
+  addAddress,
+  setSelectedAddress,
+  type Address,
+  updateAddress,
+} from '@/features/user/userSlice';
 import type { RootState } from '@/app/store';
+import AddAddressModal from '@/components/dashboard/AddAddressModal';
+import { useState } from 'react';
+import { Edit } from 'react-feather';
 
 const Checkout = () => {
   const { currency } = useCurrency();
@@ -11,6 +19,9 @@ const Checkout = () => {
   const addresses = useAppSelector((state: RootState) => state.user.addresses);
   const selectedAddressId = useAppSelector((state: RootState) => state.user.selectedAddressId);
 
+  const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
+  const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
+
   const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
   const shipping = 6.9; // static or calculate based on rules
   const tax = subtotal * 0.1; // example 10% GST
@@ -19,6 +30,23 @@ const Checkout = () => {
 
   const handleAddressSelect = (id: string) => {
     dispatch(setSelectedAddress(id));
+  };
+
+  const handleAddAddress = (newAddress: Address) => {
+    if (addressToEdit) {
+      // Update the existing address
+      dispatch(updateAddress({ ...addressToEdit, ...newAddress }));
+    } else {
+      // Add a new address
+      dispatch(addAddress(newAddress));
+    }
+    setAddAddressModalOpen(false);
+    setAddressToEdit(null);
+  };
+
+  const handleEditAddress = (address: Address) => {
+    setAddressToEdit(address);
+    setAddAddressModalOpen(true);
   };
 
   return (
@@ -48,64 +76,83 @@ const Checkout = () => {
                         </div>
 
                         <div className='checkout-detail'>
-                          <div className='row g-4'>
-                            {addresses.map((address) => (
-                              <div className='col-xxl-6 col-lg-12 col-md-6' key={address.id}>
-                                <div
-                                  className={`delivery-address-box ${
-                                    selectedAddressId === address.id ? 'selected' : ''
-                                  }`}
-                                  onClick={() => handleAddressSelect(address.id)}
-                                >
-                                  <div>
-                                    <div className='form-check'>
-                                      <input
-                                        className='form-check-input'
-                                        type='radio'
-                                        name='address'
-                                        id={`address-${address.id}`}
-                                        checked={selectedAddressId === address.id}
-                                        onChange={() => handleAddressSelect(address.id)}
-                                      />
+                          {addresses.length === 0 ? (
+                            <div className='text-center'>
+                              <button
+                                className='btn theme-bg-color text-white btn-md'
+                                onClick={() => setAddAddressModalOpen(true)}
+                              >
+                                Add Address
+                              </button>
+                            </div>
+                          ) : (
+                            <div className='row g-4'>
+                              {addresses.map((address) => (
+                                <div className='col-xxl-6 col-lg-12 col-md-6' key={address.id}>
+                                  <div
+                                    className={`delivery-address-box ${
+                                      selectedAddressId === address.id ? 'selected' : ''
+                                    }`}
+                                    onClick={() => handleAddressSelect(address.id)}
+                                  >
+                                    <div>
+                                      <div className='form-check'>
+                                        <input
+                                          className='form-check-input'
+                                          type='radio'
+                                          name='address'
+                                          id={`address-${address.id}`}
+                                          checked={selectedAddressId === address.id}
+                                          onChange={() => handleAddressSelect(address.id)}
+                                        />
+                                      </div>
+
+                                      <ul className='delivery-address-detail'>
+                                        <li>
+                                          <h4 className='fw-500'>{`${address.firstName} ${address.lastName}`}</h4>
+                                        </li>
+
+                                        <li>
+                                          <p className='text-content'>
+                                            <span className='text-title'>Address : </span>
+                                            {`${address.addressLine1}, ${
+                                              address.addressLine2 || ''
+                                            }, ${address.city}, ${address.state}, ${
+                                              address.country
+                                            }`}
+                                          </p>
+                                        </li>
+
+                                        <li>
+                                          <h6 className='text-content'>
+                                            <span className='text-title'>Pin Code :</span>{' '}
+                                            {address.postalCode}
+                                          </h6>
+                                        </li>
+
+                                        <li>
+                                          <h6 className='text-content mb-0'>
+                                            <span className='text-title'>Phone :</span>{' '}
+                                            {address.phone}
+                                          </h6>
+                                        </li>
+                                      </ul>
+
+                                      <button
+                                        className='btn theme-bg-color text-white btn-md !absolute top-0 right-0 p-2 !rounded-full'
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleEditAddress(address);
+                                        }}
+                                      >
+                                        <Edit size={16} />
+                                      </button>
                                     </div>
-
-                                    {/* <div className='label'>
-                                      <label>{address.type}</label>
-                                    </div> */}
-
-                                    <ul className='delivery-address-detail'>
-                                      <li>
-                                        <h4 className='fw-500'>{`${address.firstName} ${address.lastName}`}</h4>
-                                      </li>
-
-                                      <li>
-                                        <p className='text-content'>
-                                          <span className='text-title'>Address : </span>
-                                          {`${address.addressLine1}, ${
-                                            address.addressLine2 || ''
-                                          }, ${address.city}, ${address.state}, ${address.country}`}
-                                        </p>
-                                      </li>
-
-                                      <li>
-                                        <h6 className='text-content'>
-                                          <span className='text-title'>Pin Code :</span>{' '}
-                                          {address.postalCode}
-                                        </h6>
-                                      </li>
-
-                                      <li>
-                                        <h6 className='text-content mb-0'>
-                                          <span className='text-title'>Phone :</span>{' '}
-                                          {address.phone}
-                                        </h6>
-                                      </li>
-                                    </ul>
                                   </div>
                                 </div>
-                              </div>
-                            ))}
-                          </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </li>
@@ -639,7 +686,8 @@ const Checkout = () => {
                           {item.title} <span>X {item.quantity}</span>
                         </h4>
                         <h4 className='price'>
-                          {currency.sign}{item.total.toFixed(2)}
+                          {currency.sign}
+                          {item.total.toFixed(2)}
                         </h4>
                       </li>
                     ))}
@@ -649,21 +697,24 @@ const Checkout = () => {
                     <li>
                       <h4>Gross Total</h4>
                       <h4 className='price'>
-                        {currency.sign}{subtotal.toFixed(2)}
+                        {currency.sign}
+                        {subtotal.toFixed(2)}
                       </h4>
                     </li>
 
                     <li>
                       <h4>Shipping</h4>
                       <h4 className='price'>
-                        {currency.sign}{shipping.toFixed(2)}
+                        {currency.sign}
+                        {shipping.toFixed(2)}
                       </h4>
                     </li>
 
                     <li>
                       <h4>GST/Tax</h4>
                       <h4 className='price'>
-                        {currency.sign}{tax.toFixed(2)}
+                        {currency.sign}
+                        {tax.toFixed(2)}
                       </h4>
                     </li>
 
@@ -677,7 +728,8 @@ const Checkout = () => {
                     <li className='list-total'>
                       <h4>Total ({currency.sign})</h4>
                       <h4 className='price'>
-                        {currency.sign}{total.toFixed(2)}
+                        {currency.sign}
+                        {total.toFixed(2)}
                       </h4>
                     </li>
                   </ul>
@@ -713,6 +765,16 @@ const Checkout = () => {
           </div>
         </div>
       </section>
+
+      <AddAddressModal
+        isOpen={isAddAddressModalOpen}
+        onClose={() => {
+          setAddAddressModalOpen(false);
+          setAddressToEdit(null);
+        }}
+        address={addressToEdit}
+        onSave={handleAddAddress}
+      />
     </div>
   );
 };

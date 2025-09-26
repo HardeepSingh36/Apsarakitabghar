@@ -221,9 +221,8 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
         >
           <DialogHeader>
             <DialogTitle style={{ fontWeight: 600, fontSize: 22, marginBottom: 8 }}>
-              {authView === 'choice' ? (
-                <>Join{selectedRole ? ` as ${selectedRole}` : ''}</>
-              ) : authView === 'signin' ? (
+              {authView === 'choice' ? // <>Join{selectedRole ? ` as ${selectedRole}` : ''}</>
+              null : authView === 'signin' ? (
                 <>Sign In</>
               ) : authView === 'signup' ? (
                 <>Create Account</>
@@ -246,24 +245,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
             </DialogDescription>
           </DialogHeader>
 
-          {authView === 'choice' ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <button
-                className='btn btn-sm cart-button theme-bg-color text-white'
-                style={{ width: '100%' }}
-                onClick={() => setAuthView('signin')}
-              >
-                Sign In
-              </button>
-              <button
-                className='btn btn-sm cart-button'
-                style={{ width: '100%' }}
-                onClick={() => setAuthView('signup')}
-              >
-                Sign Up
-              </button>
-            </div>
-          ) : authView === 'forgot' ? (
+          {authView === 'choice' ? null : authView === 'forgot' ? (
             <>
               <div
                 style={{
@@ -423,7 +405,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
                 className='d-flex justify-content-between align-items-center'
                 style={{ marginTop: 8 }}
               >
-                <button className='btn btn-link p-0' onClick={() => setAuthView('choice')}>
+                <button className='btn btn-link p-0' onClick={() => setDialogOpen(false)}>
                   ← Back
                 </button>
                 {authView === 'signin' ? (
