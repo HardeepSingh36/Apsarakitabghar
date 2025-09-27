@@ -7,9 +7,9 @@ export const API_INDEX = `${API_BASE_URL}/index`;
 export const API_HEALTH = `${API_BASE_URL}/health`;
 
 // ------------- Authentication -------------
-export const AUTH_REGISTER = `${API_BASE_URL}/auth/register`;
-export const AUTH_LOGIN = `${API_BASE_URL}/auth/login`;
-export const AUTH_ME = `${API_BASE_URL}/auth/me`;
+export const AUTH_REGISTER = `${API_BASE_URL}/register`;
+export const AUTH_LOGIN = `${API_BASE_URL}/login`;
+export const AUTH_ME = `${API_BASE_URL}/profile`;
 
 // ------------- Public Books -------------
 export const BOOKS_LIST = `${API_BASE_URL}/books-list`;

@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { SimpleCaptcha } from '@/components/SimpleCaptcha';
+import { login as loginApi, getProfile, register } from '@/services/authService';
 
 import {
   Dialog,
@@ -14,8 +15,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import type { RootState } from '@/app/store';
-import { useRef } from 'react';
-// import type { User } from '@/features/auth/authSlice';
+import { useRef, useEffect } from 'react';
 
 type AuthView = 'choice' | 'signin' | 'signup' | 'forgot';
 
@@ -151,51 +151,128 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     setTimeout(async () => {
       try {
         if (authView === 'signin') {
-          const valid = email === 'demo@demo.com' && password === 'Password@123';
-          if (valid) {
-            dispatch(
-              login({
-                username: 'demo_user',
-                email,
-                full_name: 'Demo User',
-                first_name: 'Demo',
-                last_name: 'User',
-                phone_number: '+1234567890',
-                role: 'customer',
-              })
-            );
-            toast.success('Successfully signed in!');
-            setDialogOpen(false);
-            if (redirectPath) navigate(redirectPath); // Explicitly use navigate
-          } else {
-            toast.error('Invalid credentials. Use demo@demo.com / Password@123');
+          const response = await loginApi(email, password);
+
+          if (response.status === 'error') {
+            toast.error(response.message || 'An error occurred. Please try again.');
+            return;
           }
-        } else if (authView === 'signup') {
+
+          const { user, token, expires_in } = response.data;
+
+          // Dispatch login with updated user details
           dispatch(
             login({
-              username,
-              email,
-              full_name: `${firstName} ${lastName}`,
-              first_name: firstName,
-              last_name: lastName,
-              phone_number: phoneNumber,
-              role: 'customer',
+              username: user.username,
+              email: user.email,
+              full_name: `${user.username}`,
+              first_name: user.username.split('_')[0],
+              last_name: user.username.split('_')[1] || '',
+              phone_number: user.phone_number || '',
+              role: user.role,
+              status: user.status,
+              created_at: user.created_at,
             })
           );
-          toast.success('Account created successfully!');
+
+          // Store token in local storage
+          localStorage.setItem('auth_token', token);
+          localStorage.setItem('token_expires_in', expires_in);
+
+          toast.success('Successfully signed in!');
           setDialogOpen(false);
-          if (redirectPath) navigate(redirectPath); // Explicitly use navigate
+          if (redirectPath && redirectPath !== '/') navigate(redirectPath);
+        } else if (authView === 'signup') {
+          try {
+            const response = await register({
+              username,
+              email,
+              password,
+              first_name: firstName,
+              last_name: lastName,
+              mobile: phoneNumber,
+            });
+
+            if (response.status === 'error') {
+              toast.error(response.message || 'An error occurred. Please try again.');
+              return;
+            }
+
+            const { user, token, expires_in } = response.data;
+
+            // Dispatch login with updated user details
+            dispatch(
+              login({
+                username: user.username,
+                email: user.email,
+                full_name: user.full_name,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                phone_number: user.mobile,
+                role: user.role,
+                status: user.status,
+                created_at: user.created_at,
+              })
+            );
+
+            // Store token in local storage
+            localStorage.setItem('auth_token', token);
+            localStorage.setItem('token_expires_in', expires_in);
+
+            toast.success('Account created successfully!');
+            setDialogOpen(false);
+            if (redirectPath) navigate(redirectPath); // Explicitly use navigate
+          } catch (error: any) {
+            toast.error(error.message || 'An unexpected error occurred. Please try again.');
+          } finally {
+            setLoading(false);
+          }
         } else if (authView === 'forgot') {
           toast.success('Reset link sent (dummy).');
           setAuthView('signin');
         }
-      } catch (error) {
-        toast.error('An error occurred. Please try again.');
+      } catch (error: any) {
+        toast.error('An unexpected error occurred. Please try again.');
       } finally {
         setLoading(false);
       }
     }, 1500); // Simulate a delay of 1.5 seconds
   };
+
+  // Add useEffect to fetch profile on component mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem('auth_token');
+      if (!token) return;
+
+      try {
+        const response = await getProfile(token);
+        if (response.status === 'success') {
+          const user = response.data;
+
+          dispatch(
+            login({
+              username: user.username,
+              email: user.email,
+              full_name: user.full_name,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              phone_number: user.phone || '',
+              role: user.role,
+              status: user.is_verified ? 'verified' : 'unverified',
+              created_at: user.created_at,
+            })
+          );
+        } else {
+          toast.error(response.message || 'Failed to fetch profile');
+        }
+      } catch (error: any) {
+        toast.error(error.message || 'An error occurred while fetching profile');
+      }
+    };
+
+    fetchProfile();
+  }, [dispatch]);
 
   const ctxValue: AuthDialogContextValue = {
     openChoice,

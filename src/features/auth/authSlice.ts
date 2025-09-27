@@ -8,9 +8,11 @@ export type User = {
   email: string;
   full_name: string;
   first_name: string; // Added first name
-  last_name: string;  // Added last name
+  last_name: string; // Added last name
   phone_number: string;
   role: UserRole;
+  status?: string; 
+  created_at?: string; // Added created_at
 };
 
 interface AuthState {
@@ -36,7 +38,6 @@ const authSlice = createSlice({
     login: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
       state.isAuthenticated = true;
-      localStorage.setItem('auth_user', JSON.stringify(action.payload));
     },
     logout: (state) => {
       state.user = null;
