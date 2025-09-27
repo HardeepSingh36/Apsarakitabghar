@@ -21,7 +21,6 @@ const AllCategories = ({ show, setShow }: AllCategoriesProps) => {
       const res = await fetch(BOOKS_CATEGORIES);
       if (!res.ok) throw new Error('Failed to fetch categories');
       const { data } = await res.json();
-      console.log('Categories data:', data.categories);
       setCategories(data.categories);
       setIsLoading(false);
     } catch (err) {
@@ -68,7 +67,9 @@ const AllCategories = ({ show, setShow }: AllCategoriesProps) => {
                   className='flex items-center flex-col text-center !text-black hover:!text-gray-700 hover:scale-105'
                 >
                   <BookOpen className='hover:!text-gray-700' />
-                  <p className='category-title !text-[clamp(0.985rem,2vw,1rem)]'>{category.category_name}</p>
+                  <p className='category-title !text-[clamp(0.985rem,2vw,1rem)]'>
+                    {category.category_name}
+                  </p>
                 </Link>
               ))
             ) : (

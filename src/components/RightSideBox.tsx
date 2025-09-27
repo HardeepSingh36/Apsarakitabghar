@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import { removeFromCart } from '@/features/cart/cartSlice';
 import { logout } from '@/features/auth/authSlice';
+import { IMAGE_BASE_URL } from '@/constants';
 
 const RightSideBox = () => {
   // ✅ Auth UI actions (from dialog context)
@@ -111,7 +112,7 @@ const RightSideBox = () => {
                             onClick={() => handleProtectedNav('/cart')}
                           >
                             <img
-                              src={item.cover_image_url}
+                              src={IMAGE_BASE_URL + item.cover_image_name || ''}
                               className='blur-up lazyload notranslate'
                               alt={item.title}
                             />

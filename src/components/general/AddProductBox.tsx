@@ -9,6 +9,7 @@ import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { IMAGE_BASE_URL } from '@/constants';
 
 interface AddProductBoxProps {
   product: Book;
@@ -85,7 +86,7 @@ const AddProductBox = ({
         <div className='product-image p-0 md:!mb-0 w-full '>
           <Link to={`/books/${product.slug}`} state={{ item: product }}>
             <img
-              src={product.cover_image_name || ''}
+              src={IMAGE_BASE_URL + product.cover_image_name || ''}
               onError={(e) => {
                 e.currentTarget.src = '/assets/images/book/product/1.jpg';
               }}
@@ -142,13 +143,13 @@ const AddProductBox = ({
             <h5 className='name'>{product.description}</h5>
           </Link>
           <h6 className='byers text-muted'>
-            <span>By</span> {product.author_names || 'Unknown Author'}
+            <span>By</span> {product.author_name || 'Unknown Author'}
           </h6>
           <h6 className='price'>
             {currency.sign}
-            <span className=''>{product.discounted_price}</span>
+            <span className=''>{product.discounted_price.toFixed(2)}</span>
             {'  '}
-            <span className='text-muted line-through ms-2'>{product.price}</span>
+            <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
           </h6>
           <div className='add-to-cart-box bg-white hidden md:block'>
             {cartItem ? (

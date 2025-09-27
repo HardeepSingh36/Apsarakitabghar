@@ -1,6 +1,7 @@
 // Base URL (local or production)
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost/apsra/simple-api';
+  import.meta.env.VITE_API_BASE_URL + '/api' || 'http://localhost/apsra/simple-api';
+
 // ------------- Health & Info -------------
 export const API_INDEX = `${API_BASE_URL}/index`;
 export const API_HEALTH = `${API_BASE_URL}/health`;

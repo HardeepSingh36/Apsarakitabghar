@@ -5,6 +5,7 @@ import { Bookmark, Minus, Plus, X } from 'react-feather';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Tooltip } from 'react-tooltip';
 import { Link } from 'react-router-dom';
+import { IMAGE_BASE_URL } from '@/constants';
 
 const Cart = () => {
   const { currency } = useCurrency();
@@ -49,7 +50,7 @@ const Cart = () => {
                               <div className='product border-0'>
                                 <a href={`/books/${item.slug}`} className='product-image'>
                                   <img
-                                    src={item.cover_image_url || ''}
+                                    src={IMAGE_BASE_URL + item.cover_image_name || ''}
                                     className='img-fluid blur-up lazyload notranslate'
                                     alt={item.title}
                                   />
@@ -62,8 +63,7 @@ const Cart = () => {
                                       </a>
                                     </li>
                                     <li className='text-content'>
-                                      <span className='text-title'>Author:</span>{' '}
-                                      {item.author_names}
+                                      <span className='text-title'>Author:</span> {item.author_name}
                                     </li>
                                     <li className='text-content'>
                                       <span className='text-title'>Sold By:</span>{' '}
@@ -143,7 +143,8 @@ const Cart = () => {
                                 {currency.sign}
                                 {item.discounted_price}{' '}
                                 <del className='text-center'>
-                                  {currency.sign}{item.price}
+                                  {currency.sign}
+                                  {item.price}
                                 </del>
                               </h5>
                               <h6 className='theme-color'>

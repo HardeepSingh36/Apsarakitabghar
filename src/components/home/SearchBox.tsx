@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Button } from '../ui/button';
 import { Search } from 'lucide-react';
-import { Book, Pencil, Building2 } from 'lucide-react';
+import { Book, Pencil } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { getAuthors, searchBooks } from '@/services/bookService';
@@ -20,60 +20,13 @@ const searchTabs = [
     placeholder: 'Search for authors...',
     icon: Pencil,
   },
-  {
-    value: 'publisher',
-    label: 'Publisher',
-    placeholder: 'Search for publishers...',
-    icon: Building2,
-  },
+  // {
+  //   value: 'publisher',
+  //   label: 'Publisher',
+  //   placeholder: 'Search for publishers...',
+  //   icon: Building2,
+  // },
 ];
-
-// Mock data for suggestions
-// const mockSuggestions = {
-//   book: [
-//     'The Great Gatsby',
-//     'To Kill a Mockingbird',
-//     'Pride and Prejudice',
-//     '1984',
-//     'The Catcher in the Rye',
-//     'Lord of the Flies',
-//     'The Chronicles of Narnia',
-//     "Harry Potter and the Sorcerer's Stone",
-//     'The Hobbit',
-//     'Game of Thrones',
-//     'The Alchemist',
-//     'One Hundred Years of Solitude',
-//   ],
-//   author: [
-//     'F. Scott Fitzgerald',
-//     'Harper Lee',
-//     'Jane Austen',
-//     'George Orwell',
-//     'J.D. Salinger',
-//     'William Golding',
-//     'C.S. Lewis',
-//     'J.K. Rowling',
-//     'J.R.R. Tolkien',
-//     'George R.R. Martin',
-//     'Paulo Coelho',
-//     'Gabriel García Márquez',
-//   ],
-//   publisher: [
-//     'Penguin Random House',
-//     'HarperCollins',
-//     'Macmillan Publishers',
-//     'Simon & Schuster',
-//     'Hachette Book Group',
-//     'Scholastic Corporation',
-//     'Oxford University Press',
-//     'Cambridge University Press',
-//     'Wiley',
-//     'Springer Nature',
-//     'Pearson Education',
-//     'McGraw-Hill Education',
-//   ],
-// };
-
 interface SearchFieldProps {
   placeholder: string;
   ariaLabel: string;
@@ -88,21 +41,6 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const [inputRect, setInputRect] = useState<DOMRect | null>(null);
-
-  // useEffect(() => {
-  //   if (query.length > 0) {
-  //     const suggestions = mockSuggestions[activeTab as keyof typeof mockSuggestions] || [];
-  //     const filtered = suggestions.filter((item) =>
-  //       item.toLowerCase().includes(query.toLowerCase())
-  //     );
-  //     setFilteredSuggestions(filtered);
-  //     setShowSuggestions(filtered.length > 0);
-  //   } else {
-  //     setShowSuggestions(false);
-  //     setFilteredSuggestions([]);
-  //   }
-  //   setSelectedIndex(-1);
-  // }, [query, activeTab]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showSuggestions) return;

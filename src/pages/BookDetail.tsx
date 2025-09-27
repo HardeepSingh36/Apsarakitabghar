@@ -11,6 +11,7 @@ import { addToWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { Tooltip } from 'react-tooltip';
 import toast from 'react-hot-toast';
+import { IMAGE_BASE_URL } from '@/constants';
 
 const fallbackBook: Book = {
   id: 51,
@@ -23,9 +24,10 @@ const fallbackBook: Book = {
   discount_percent: 18,
   stock_quantity: 52,
   pages: 423,
+  author_name: 'ਅਮਰਜੀਤ ਸਿੰਘ',
   publisher_name: 'ਵੀਰ ਗਾਥਾ ਪ੍ਰਕਾਸ਼ਨ',
   publish_date: '2023-05-25',
-  cover_image_name: 'warriors_cover.jpg',
+  cover_image_name: '3.jpg',
   featured: 1,
   views_count: 1567,
   sales_count: 124,
@@ -37,7 +39,6 @@ const fallbackBook: Book = {
   category_id: 5,
   genre_id: 49,
   author_table_id: null,
-  author_name: null,
   author_pen_name: null,
   category_table_id: 5,
   category_name: 'रहस्य कहानी',
@@ -128,6 +129,8 @@ const BookDetail = () => {
     navigate('/cart', { state: { isBuyNow: true } });
   };
 
+  console.log(IMAGE_BASE_URL + book?.cover_image_name);
+
   if (!book) return null;
 
   return (
@@ -145,12 +148,11 @@ const BookDetail = () => {
                           <div>
                             <div className='slider-image relative'>
                               <img
-                                src={
-                                  book.cover_image_url || '/assets/images/book/product/1.jpg'
-                                }
+                                src={`${IMAGE_BASE_URL + book?.cover_image_name}` || ''}
                                 id='img-1'
                                 data-zoom-image={
-                                  book.cover_image_url || '/assets/images/book/product/1.jpg'
+                                  IMAGE_BASE_URL + book.cover_image_name ||
+                                  '/assets/images/book/product/1.jpg'
                                 }
                                 className='img-fluid image_zoom_cls-0 blur-up lazyload notranslate'
                                 alt={book.title || ''}
@@ -555,7 +557,7 @@ const BookDetail = () => {
                         <div className='offer-product'>
                           <a href={`/books/${fallbackBook.slug}`} className='offer-image'>
                             <img
-                              src={fallbackBook.cover_image_url}
+                              src={IMAGE_BASE_URL + fallbackBook.cover_image_name || ''}
                               className='img-fluid blur-up lazyload notranslate'
                               alt={fallbackBook.title}
                             />
@@ -578,11 +580,13 @@ const BookDetail = () => {
                       <li>
                         <div className='offer-product'>
                           <a href={`/books/${fallbackBook.slug}`} className='offer-image'>
-                            <img
-                              src={fallbackBook.cover_image_url}
-                              className='img-fluid blur-up lazyload notranslate'
-                              alt={fallbackBook.title}
-                            />
+                            {book.cover_image_name && (
+                              <img
+                                src={IMAGE_BASE_URL + fallbackBook.cover_image_name}
+                                className='img-fluid blur-up lazyload notranslate'
+                                alt={fallbackBook.title}
+                              />
+                            )}
                           </a>
                           <div className='offer-detail'>
                             <div>
@@ -601,7 +605,7 @@ const BookDetail = () => {
                         <div className='offer-product'>
                           <a href={`/books/${fallbackBook.slug}`} className='offer-image'>
                             <img
-                              src={fallbackBook.cover_image_url}
+                              src={IMAGE_BASE_URL + fallbackBook.cover_image_name}
                               className='img-fluid blur-up lazyload notranslate'
                               alt={fallbackBook.title}
                             />

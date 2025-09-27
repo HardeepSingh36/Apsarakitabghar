@@ -7,6 +7,8 @@ export type User = {
   username: string;
   email: string;
   full_name: string;
+  first_name: string; // Added first name
+  last_name: string;  // Added last name
   phone_number: string;
   role: UserRole;
 };

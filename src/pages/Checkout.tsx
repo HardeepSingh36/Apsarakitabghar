@@ -10,6 +10,7 @@ import type { RootState } from '@/app/store';
 import AddAddressModal from '@/components/dashboard/AddAddressModal';
 import { useState } from 'react';
 import { Edit } from 'react-feather';
+import { IMAGE_BASE_URL } from '@/constants';
 
 const Checkout = () => {
   const { currency } = useCurrency();
@@ -678,7 +679,7 @@ const Checkout = () => {
                     {cartItems.map((item) => (
                       <li key={item.id}>
                         <img
-                          src={item.cover_image_url}
+                          src={IMAGE_BASE_URL + item.cover_image_name || ''}
                           className='img-fluid blur-up lazyloaded checkout-image notranslate'
                           alt={item.title}
                         />

@@ -15,18 +15,11 @@ import {
 } from '@/components/ui/dialog';
 import type { RootState } from '@/app/store';
 import { useRef } from 'react';
+// import type { User } from '@/features/auth/authSlice';
 
 type AuthView = 'choice' | 'signin' | 'signup' | 'forgot';
 
 export type UserRole = 'customer' | 'publisher' | 'reseller';
-
-export type User = {
-  username: string;
-  email: string;
-  full_name: string;
-  phone_number: string;
-  role: UserRole;
-};
 
 type AuthDialogContextValue = {
   openChoice: (role: UserRole) => void;
@@ -54,7 +47,8 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
-  const [fullName, setFullName] = React.useState('');
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [redirectPath, setRedirectPath] = React.useState<string | null>(null); // Track origin page
@@ -108,7 +102,8 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     setEmail('');
     setPassword('');
     setConfirmPassword('');
-    setFullName('');
+    setFirstName('');
+    setLastName('');
     setPhoneNumber('');
   };
 
@@ -123,7 +118,15 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
         return;
       }
     } else if (authView === 'signup') {
-      if (!username || !email || !password || !confirmPassword || !fullName || !phoneNumber) {
+      if (
+        !username ||
+        !email ||
+        !password ||
+        !confirmPassword ||
+        !firstName ||
+        !lastName ||
+        !phoneNumber
+      ) {
         toast.error('Please fill in all fields.');
         return;
       }
@@ -155,6 +158,8 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
                 username: 'demo_user',
                 email,
                 full_name: 'Demo User',
+                first_name: 'Demo',
+                last_name: 'User',
                 phone_number: '+1234567890',
                 role: 'customer',
               })
@@ -170,7 +175,9 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
             login({
               username,
               email,
-              full_name: fullName || 'New User',
+              full_name: `${firstName} ${lastName}`,
+              first_name: firstName,
+              last_name: lastName,
               phone_number: phoneNumber,
               role: 'customer',
             })
@@ -330,13 +337,24 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
                         />
                       </div>
                       <div className='form-group'>
-                        <label className='form-label'>Full Name</label>
+                        <label className='form-label'>First Name</label>
                         <input
                           type='text'
                           className='form-control'
-                          placeholder='Enter your name'
-                          value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder='Enter your first name'
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className='form-group'>
+                        <label className='form-label'>Last Name</label>
+                        <input
+                          type='text'
+                          className='form-control'
+                          placeholder='Enter your last name'
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
                           required
                         />
                       </div>

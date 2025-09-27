@@ -18,7 +18,8 @@ const BooksPage = () => {
     setIsLoading(true);
     getBooks({ page: 1, limit: 20 })
       .then(({ data }) => {
-        setBooks(data);
+        const { books } = data;
+        setBooks(books);
         setIsLoading(false);
       })
       .catch((err) => {
