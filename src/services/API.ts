@@ -29,6 +29,12 @@ export const ADMIN_CREATE_BOOK = `${API_BASE_URL}/admin/create-book`;
 export const ADMIN_UPDATE_BOOK = `${API_BASE_URL}/admin/update-book`; // use ?id=
 export const ADMIN_DELETE_BOOK = `${API_BASE_URL}/admin/delete-book`; // use ?id=
 
+// ------------- Cart Operations -------------
+export const CART_ADD = `${API_BASE_URL}/cart-add`;
+export const CART_LIST = `${API_BASE_URL}/cart-list`;
+export const CART_UPDATE = `${API_BASE_URL}/cart-update`;
+export const CART_REMOVE = `${API_BASE_URL}/cart-remove`;
+export const CART_CLEAR = `${API_BASE_URL}/cart-clear`;
 
 // ------------- CAPTCHA -------------
 export const CAPTCHA_CONFIG = `${API_BASE_URL}/captcha-config`;

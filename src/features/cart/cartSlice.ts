@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { CartItem } from '@/types/types';
-import { addToCart as addToCartAPI, getCartList, updateCartItem, removeCartItem, clearCartAPI } from '@/services/cartService';
+import {
+  addToCart as addToCartAPI,
+  getCartList,
+  updateCartItem,
+  removeCartItem,
+  clearCartAPI,
+} from '@/services/cartService';
 
 interface CartState {
   items: CartItem[];
@@ -49,7 +55,10 @@ export const fetchCartList = createAsyncThunk(
 
 export const updateCartItemAsync = createAsyncThunk(
   'cart/updateCartItem',
-  async ({ cartItemId, quantity }: { cartItemId: number; quantity: number }, { rejectWithValue }) => {
+  async (
+    { cartItemId, quantity }: { cartItemId: number; quantity: number },
+    { rejectWithValue }
+  ) => {
     try {
       const token = localStorage.getItem('auth_token');
       if (!token) throw new Error('Authentication token is missing');
@@ -77,20 +86,17 @@ export const removeCartItemAsync = createAsyncThunk(
   }
 );
 
-export const clearCartAsync = createAsyncThunk(
-  'cart/clearCart',
-  async (_, { rejectWithValue }) => {
-    try {
-      const token = localStorage.getItem('auth_token');
-      if (!token) throw new Error('Authentication token is missing');
+export const clearCartAsync = createAsyncThunk('cart/clearCart', async (_, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem('auth_token');
+    if (!token) throw new Error('Authentication token is missing');
 
-      const response = await clearCartAPI(token);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to clear cart');
-    }
+    const response = await clearCartAPI(token);
+    return response;
+  } catch (error: any) {
+    return rejectWithValue(error.message || 'Failed to clear cart');
   }
-);
+});
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -107,31 +113,9 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(addToCartAsync.fulfilled, (state, action) => {
-        const data = action.payload;
-        if (data) {
-          const existingItem = state.items.find((item) => item.book_id === data.book_id);
-
-          if (existingItem) {
-            existingItem.quantity = data.quantity;
-            existingItem.line_total = data.line_total;
-          } else {
-            state.items.push({
-              cart_id: data.cart_id,
-              book_id: data.book_id,
-              title: data.title,
-              slug: data.slug,
-              price: data.price,
-              discount_percent: data.discount_percent,
-              discounted_price: data.discounted_price,
-              quantity: data.quantity,
-              line_total: data.line_total,
-              stock_quantity: data.stock_quantity,
-              cover_image_name: data.cover_image_name,
-            });
-          }
-        }
-
+      .addCase(addToCartAsync.fulfilled, (state) => {
+        // After adding to cart, we should refetch the cart list
+        // to get the updated cart with all necessary fields
         state.loading = false;
       })
       .addCase(addToCartAsync.rejected, (state, action) => {
@@ -155,13 +139,8 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateCartItemAsync.fulfilled, (state, action) => {
-        const { cartItemId, quantity } = action.payload;
-        const existingItem = state.items.find((item) => item.cart_item_id === cartItemId);
-        if (existingItem) {
-          existingItem.quantity = quantity;
-          existingItem.line_total = existingItem.discounted_price * quantity;
-        }
+      .addCase(updateCartItemAsync.fulfilled, (state) => {
+        // After updating cart item, we should refetch the cart list
         state.loading = false;
       })
       .addCase(updateCartItemAsync.rejected, (state, action) => {
@@ -172,9 +151,8 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(removeCartItemAsync.fulfilled, (state, action) => {
-        const { cartItemId } = action.payload;
-        state.items = state.items.filter((item) => item.cart_item_id !== cartItemId);
+      .addCase(removeCartItemAsync.fulfilled, (state) => {
+        // After removing cart item, we should refetch the cart list
         state.loading = false;
       })
       .addCase(removeCartItemAsync.rejected, (state, action) => {

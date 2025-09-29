@@ -22,17 +22,13 @@ const Cart = () => {
     dispatch(fetchCartList());
   }, [dispatch]);
 
-  const subtotal =
-    summary?.cart_subtotal ||
-    cartItems.reduce((sum, item) => {
-      const lineTotal =
-        item.current_line_total ||
-        item.line_total ||
-        (item?.current_discounted_price || item?.discounted_price) * item.quantity;
-      return sum + (isNaN(lineTotal) ? 0 : lineTotal);
-    }, 0);
-  const shipping = 6.9; // example fixed shipping
-  const total = subtotal + shipping;
+  // Use backend calculated values
+  const subtotal = summary?.cart_subtotal || 0;
+  const totalItems = summary?.total_items || 0;
+  const itemsCount = summary?.items_count || 0;
+  const cartDiscount = summary?.cart_discount || 0;
+  const shipping = 0; // Will be calculated by backend
+  const total = summary?.cart_total || 0;
 
   return (
     <div>
@@ -93,12 +89,20 @@ const Cart = () => {
                                       {item.author_name || 'Unknown'}
                                     </li>
                                     <li className='text-content'>
-                                      <span className='text-title'>Sold By:</span>{' '}
-                                      {item.publisher_name || 'Unknown Publisher'}
+                                      <span className='text-title'>Stock:</span>{' '}
+                                      {item.stock_quantity} available
                                     </li>
                                     <li className='text-content'>
-                                      <span className='text-title'>Pages:</span>{' '}
-                                      {item.pages || 'N/A'}
+                                      <span className='text-title'>Status:</span>{' '}
+                                      <span
+                                        className={`badge ${
+                                          item.availability_status === 'available'
+                                            ? 'bg-success'
+                                            : 'bg-warning'
+                                        }`}
+                                      >
+                                        {item.availability_status}
+                                      </span>
                                     </li>
                                     <li className='text-content'>
                                       <span className='text-title'>Quantity:</span> {item.quantity}
@@ -107,9 +111,7 @@ const Cart = () => {
                                       <h5 className='text-content d-inline-block'>Price :</h5>
                                       <span>
                                         {currency.sign}
-                                        {(
-                                          item?.current_discounted_price || item?.discounted_price
-                                        ).toFixed(2)}
+                                        {item.current_discounted_price.toFixed(2)}
                                       </span>
                                       <span className='text-content'>
                                         {currency.sign}
@@ -120,11 +122,8 @@ const Cart = () => {
                                       <h5 className='saving theme-color'>
                                         Saving : {currency.sign}
                                         {(
-                                          item.saving ||
-                                          (item.price -
-                                            (item?.current_discounted_price ||
-                                              item?.discounted_price)) *
-                                            item.quantity
+                                          (item.price - item.current_discounted_price) *
+                                          item.quantity
                                         ).toFixed(2)}
                                       </h5>
                                     </li>
@@ -139,7 +138,7 @@ const Cart = () => {
                                                 try {
                                                   await dispatch(
                                                     updateCartItemAsync({
-                                                      cartItemId: item.cart_item_id || 0,
+                                                      cartItemId: item.cart_item_id,
                                                       quantity: item.quantity - 1,
                                                     })
                                                   ).unwrap();
@@ -163,16 +162,18 @@ const Cart = () => {
                                             type='button'
                                             className='btn qty-right-plus'
                                             onClick={async () => {
-                                              try {
-                                                await dispatch(
-                                                  updateCartItemAsync({
-                                                    cartItemId: item.cart_item_id || 0,
-                                                    quantity: item.quantity + 1,
-                                                  })
-                                                ).unwrap();
-                                                dispatch(fetchCartList());
-                                              } catch (error) {
-                                                console.error('Failed to update cart:', error);
+                                              if (item.quantity < item.max_quantity) {
+                                                try {
+                                                  await dispatch(
+                                                    updateCartItemAsync({
+                                                      cartItemId: item.cart_item_id,
+                                                      quantity: item.quantity + 1,
+                                                    })
+                                                  ).unwrap();
+                                                  dispatch(fetchCartList());
+                                                } catch (error) {
+                                                  console.error('Failed to update cart:', error);
+                                                }
                                               }
                                             }}
                                           >
@@ -184,12 +185,7 @@ const Cart = () => {
                                     <li>
                                       <h5>
                                         Total: {currency.sign}
-                                        {(
-                                          item.current_line_total ||
-                                          item.line_total ||
-                                          (item?.current_discounted_price ||
-                                            item?.discounted_price) * item.quantity
-                                        ).toFixed(2)}
+                                        {item.current_line_total.toFixed(2)}
                                       </h5>
                                     </li>
                                   </ul>
@@ -200,18 +196,15 @@ const Cart = () => {
                               <h4 className='table-title text-content'>Price</h4>
                               <h5>
                                 {currency.sign}
-                                {item?.current_discounted_price}{' '}
+                                {item.current_discounted_price.toFixed(2)}{' '}
                                 <del className='text-center'>
                                   {currency.sign}
-                                  {item.price}
+                                  {item.price.toFixed(2)}
                                 </del>
                               </h5>
                               <h6 className='theme-color'>
                                 You Save : {currency.sign}
-                                {(
-                                  item.price -
-                                  (item?.current_discounted_price || item?.discounted_price)
-                                ).toFixed(2)}
+                                {(item.price - item.current_discounted_price).toFixed(2)}
                               </h6>
                             </td>
                             <td className='quantity'>
@@ -227,7 +220,7 @@ const Cart = () => {
                                           try {
                                             await dispatch(
                                               updateCartItemAsync({
-                                                cartItemId: item.cart_item_id || 0,
+                                                cartItemId: item.cart_item_id,
                                                 quantity: item.quantity - 1,
                                               })
                                             ).unwrap();
@@ -254,7 +247,7 @@ const Cart = () => {
                                         try {
                                           await dispatch(
                                             updateCartItemAsync({
-                                              cartItemId: item.cart_item_id || 0,
+                                              cartItemId: item.cart_item_id,
                                               quantity: item.quantity + 1,
                                             })
                                           ).unwrap();
@@ -274,12 +267,7 @@ const Cart = () => {
                               <h4 className='table-title text-content'>Total</h4>
                               <h5>
                                 {currency.sign}
-                                {(
-                                  item.current_line_total ||
-                                  item.line_total ||
-                                  (item?.current_discounted_price || item?.discounted_price) *
-                                    item.quantity
-                                ).toFixed(2)}
+                                {item.current_line_total.toFixed(2)}
                               </h5>
                             </td>
                             <td className='save-remove'>
@@ -296,9 +284,7 @@ const Cart = () => {
                                   className='remove close_button'
                                   href='javascript:void(0)'
                                   onClick={() =>
-                                    dispatch(
-                                      removeCartItemAsync({ cartItemId: item.cart_item_id || 0 })
-                                    )
+                                    dispatch(removeCartItemAsync({ cartItemId: item.cart_item_id }))
                                   }
                                   data-tooltip-id='remove-tooltip'
                                 >
@@ -339,7 +325,7 @@ const Cart = () => {
                   </div>
                   <ul>
                     <li>
-                      <h4>Subtotal</h4>
+                      <h4>Subtotal ({itemsCount} items)</h4>
                       <h4 className='price'>
                         {currency.sign}
                         {subtotal.toFixed(2)}
@@ -347,8 +333,11 @@ const Cart = () => {
                     </li>
 
                     <li>
-                      <h4>Coupon Discount</h4>
-                      <h4 className='price'>(-) 0.00</h4>
+                      <h4>Discount</h4>
+                      <h4 className='price'>
+                        (-) {currency.sign}
+                        {cartDiscount.toFixed(2)}
+                      </h4>
                     </li>
 
                     <li className='align-items-start'>
@@ -363,7 +352,7 @@ const Cart = () => {
 
                 <ul className='summery-total'>
                   <li className='list-total border-top-0'>
-                    <h4>Total (USD)</h4>
+                    <h4>Total ({totalItems} total items)</h4>
                     <h4 className='price theme-color'>
                       {currency.sign}
                       {total.toFixed(2)}

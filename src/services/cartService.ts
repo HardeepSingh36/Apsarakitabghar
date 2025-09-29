@@ -1,4 +1,4 @@
-import { API_BASE_URL } from './API';
+import { CART_ADD, CART_LIST, CART_UPDATE, CART_REMOVE, CART_CLEAR } from './API';
 import type { CartItem } from '@/types/types';
 
 interface AddToCartRequest {
@@ -28,7 +28,7 @@ export const addToCart = async (
   payload: AddToCartRequest,
   token: string
 ): Promise<AddToCartResponse> => {
-  const response = await fetch(`${API_BASE_URL}/cart-add`, {
+  const response = await fetch(CART_ADD, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ export const addToCart = async (
 export const getCartList = async (
   token: string
 ): Promise<{ cart_items: CartItem[]; summary: any }> => {
-  const response = await fetch(`${API_BASE_URL}/cart-list`, {
+  const response = await fetch(CART_LIST, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ export const updateCartItem = async (
   quantity: number,
   token: string
 ): Promise<{ status: string; message: string; data?: any }> => {
-  const response = await fetch(`${API_BASE_URL}/cart-update?id=${cartItemId}`, {
+  const response = await fetch(`${CART_UPDATE}?id=${cartItemId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export const removeCartItem = async (
   cartItemId: number,
   token: string
 ): Promise<{ status: string; message: string; data?: any }> => {
-  const response = await fetch(`${API_BASE_URL}/cart-remove?id=${cartItemId}`, {
+  const response = await fetch(`${CART_REMOVE}?id=${cartItemId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ export const removeCartItem = async (
 export const clearCartAPI = async (
   token: string
 ): Promise<{ status: string; message: string; data?: any }> => {
-  const response = await fetch(`${API_BASE_URL}/cart-clear`, {
+  const response = await fetch(CART_CLEAR, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

@@ -2,7 +2,7 @@ import RelatedProducts from '@/components/bookdetail/RelatedProducts';
 import Reviews from '@/components/bookdetail/Reviews';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import type { Book, CartItem } from '@/types/types';
+import type { Book } from '@/types/types';
 import { getBooks } from '@/services/bookService';
 import { Heart } from 'react-feather';
 import { useAppDispatch } from '@/app/hooks';

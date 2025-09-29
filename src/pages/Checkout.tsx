@@ -23,10 +23,10 @@ const Checkout = () => {
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
   const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
-  const shipping = 6.9; // static or calculate based on rules
-  const tax = subtotal * 0.1; // example 10% GST
-  const coupon = 20; // example static coupon discount
+  const subtotal = cartItems.reduce((sum, item) => sum + item.current_line_total, 0);
+  const shipping = 6.9;
+  const tax = subtotal * 0.1;
+  const coupon = 20;
   const total = subtotal + shipping + tax - coupon;
 
   const handleAddressSelect = (id: string) => {
@@ -677,7 +677,7 @@ const Checkout = () => {
 
                   <ul className='summery-contain'>
                     {cartItems.map((item) => (
-                      <li key={item.id}>
+                      <li key={item.cart_item_id}>
                         <img
                           src={IMAGE_BASE_URL + item.cover_image_name || ''}
                           className='img-fluid blur-up lazyloaded checkout-image notranslate'
@@ -688,7 +688,7 @@ const Checkout = () => {
                         </h4>
                         <h4 className='price'>
                           {currency.sign}
-                          {item.total.toFixed(2)}
+                          {item.current_line_total.toFixed(2)}
                         </h4>
                       </li>
                     ))}

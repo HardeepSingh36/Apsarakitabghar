@@ -14,7 +14,7 @@ const RightSideBox = () => {
 
   // ✅ Redux state for user + auth
   const { isAuthenticated, user } = useAppSelector((state: RootState) => state.auth);
-  const cartItems = useAppSelector((state: RootState) => state.cart.items);
+  const { items: cartItems, summary } = useAppSelector((state: RootState) => state.cart);
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const RightSideBox = () => {
     }
   }, [isAuthenticated, dispatch]);
 
-  const cartTotal = 0;
+  const cartTotal = summary?.cart_total || 0;
 
   // Handle protected navigation
   const handleProtectedNav = (path: string) => {
@@ -133,7 +133,8 @@ const RightSideBox = () => {
                               <h5>{item.title}</h5>
                             </button>
                             <h6>
-                              <span>{item.quantity} x</span> ${item.price.toFixed(2)}
+                              <span>{item.quantity} x</span> $
+                              {item.current_discounted_price.toFixed(2)}
                             </h6>
                           </div>
                         </div>
