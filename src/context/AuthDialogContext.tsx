@@ -5,7 +5,6 @@ import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { login as loginApi, getProfile, register } from '@/services/authService';
-import ReCAPTCHA from 'react-google-recaptcha';
 import { getCaptchaConfig } from '@/services/captchaService';
 
 import {
@@ -18,6 +17,7 @@ import {
 import type { RootState } from '@/app/store';
 import { useEffect, useState, createContext, type FC } from 'react';
 import type { CaptchaConfig } from '@/types/types';
+import Captcha from '@/components/general/Captcha';
 
 type AuthView = 'choice' | 'signin' | 'signup' | 'forgot';
 
@@ -337,7 +337,7 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
     openSignUp,
     openForgot,
     isAuthenticated,
-    logout: handleLogout, // Use the new logout function
+    logout: handleLogout,
     loading,
     captchaConfig,
   };
@@ -544,27 +544,9 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
                   {authView === 'signup' && captchaConfig && (
                     <div className='form-group'>
                       <label className='form-label'>Captcha</label>
-                      <ReCAPTCHA
-                        sitekey={captchaConfig.site_key}
-                        theme='light'
-                        size='normal'
-                        onChange={(token) => {
-                          if (token) {
-                            setCaptchaValid(true);
-                            localStorage.setItem('captcha_token', token);
-                          } else {
-                            setCaptchaValid(false);
-                            localStorage.removeItem('captcha_token');
-                          }
-                        }}
-                        onExpired={() => {
-                          setCaptchaValid(false);
-                          localStorage.removeItem('captcha_token');
-                        }}
-                        onErrored={() => {
-                          setCaptchaValid(false);
-                          localStorage.removeItem('captcha_token');
-                        }}
+                      <Captcha
+                        config={captchaConfig}
+                        onVerify={(token: string | null) => setCaptchaValid(!!token)}
                       />
                     </div>
                   )}

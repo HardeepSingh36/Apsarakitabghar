@@ -1,5 +1,7 @@
 import React from 'react';
-import { SimpleCaptcha } from '../SimpleCaptcha';
+import { getCaptchaConfig } from '@/services/captchaService';
+import type { CaptchaConfig } from '@/types/types';
+import Captcha from '../general/Captcha';
 
 interface PublishBookModalProps {
   isOpen: boolean;
@@ -8,6 +10,22 @@ interface PublishBookModalProps {
 
 const PublishBookModal: React.FC<PublishBookModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
+
+  const [captchaConfig, setCaptchaConfig] = React.useState<CaptchaConfig | null>(null);
+  const [_, setCaptchaValid] = React.useState(false);
+  React.useEffect(() => {
+    if (isOpen) {
+      const fetchConfig = async () => {
+        try {
+          const config = await getCaptchaConfig();
+          setCaptchaConfig(config);
+        } catch (err) {
+          console.error('Failed to load captcha config', err);
+        }
+      };
+      fetchConfig();
+    }
+  }, []);
 
   return (
     <div
@@ -96,11 +114,15 @@ const PublishBookModal: React.FC<PublishBookModalProps> = ({ isOpen, onClose }) 
                 </form>
               </div>
               <div className='col-12'>
-                <SimpleCaptcha
-                  onChange={(isValid: boolean) => {
-                    console.log('Captcha valid:', isValid);
-                  }}
-                />
+                {captchaConfig && (
+                  <Captcha
+                    config={captchaConfig}
+                    onVerify={(token: string | null) => {
+                      setCaptchaValid(!!token);
+                      console.log('Captcha verified, token:', token);
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>

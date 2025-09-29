@@ -1,6 +1,23 @@
-import { SimpleCaptcha } from '../components/SimpleCaptcha';
+import Captcha from '@/components/general/Captcha';
+import { getCaptchaConfig } from '@/services/captchaService';
+import type { CaptchaConfig } from '@/types/types';
+import React from 'react';
 
 const Contact = () => {
+  const [captchaConfig, setCaptchaConfig] = React.useState<CaptchaConfig | null>(null);
+  const [_captchaValid, setCaptchaValid] = React.useState(false);
+
+  React.useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const config = await getCaptchaConfig();
+        setCaptchaConfig(config);
+      } catch (err) {
+        console.error('Failed to load captcha config', err);
+      }
+    };
+    fetchConfig();
+  }, []);
   return (
     <div>
       <section className='contact-box-section'>
@@ -160,8 +177,6 @@ const Contact = () => {
                           id='exampleFormControlInput3'
                           placeholder='Enter Your Phone Number'
                           maxLength={10}
-                          // onInput='javascript: if (this.value.length > this.maxLength) this.value =
-                          //                   this.value.slice(0, this.maxLength);'
                         />
                         <i className='fa-solid fa-mobile-screen-button'></i>
                       </div>
@@ -186,12 +201,15 @@ const Contact = () => {
                   </div>
 
                   <div className='col-12'>
-                    <SimpleCaptcha
-                      onChange={(isValid) => {
-                        console.log('Captcha valid:', isValid);
-                      }}
-                      captchaBgColor='bg-gray-200'
-                    />
+                    {captchaConfig && (
+                      <Captcha
+                        config={captchaConfig}
+                        onVerify={(token: string | null) => {
+                          setCaptchaValid(!!token);
+                          console.log('Captcha verified, token:', token);
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
                 <button className='btn btn-animation btn-md fw-bold ms-auto'>Send Message</button>
