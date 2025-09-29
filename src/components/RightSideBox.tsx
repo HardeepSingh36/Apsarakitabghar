@@ -4,12 +4,11 @@ import { useAuthDialog } from '@/context/AuthDialogContext';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import { removeFromCart } from '@/features/cart/cartSlice';
-import { logout } from '@/features/auth/authSlice';
 import { IMAGE_BASE_URL } from '@/constants';
 
 const RightSideBox = () => {
   // ✅ Auth UI actions (from dialog context)
-  const { openSignIn, openSignUp, openForgot } = useAuthDialog();
+  const { openSignIn, openSignUp, openForgot, logout } = useAuthDialog();
 
   // ✅ Redux state for user + auth
   const { isAuthenticated, user } = useAppSelector((state: RootState) => state.auth);
@@ -207,7 +206,7 @@ const RightSideBox = () => {
                     <button
                       type='button'
                       className='!no-underline bg-transparent border-0 p-0'
-                      onClick={() => dispatch(logout())}
+                      onClick={() => logout()}
                     >
                       Logout
                     </button>

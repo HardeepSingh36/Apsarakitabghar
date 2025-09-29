@@ -6,6 +6,8 @@ import { Book, Pencil } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { getAuthors, searchBooks } from '@/services/bookService';
+import { searchAuthors } from '@/services/AuthorsService';
+import { IMAGE_BASE_URL } from '@/constants';
 
 const searchTabs = [
   {
@@ -36,7 +38,9 @@ interface SearchFieldProps {
 const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) => {
   const [query, setQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState<
+    { title: string; image: string }[]
+  >([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
@@ -57,7 +61,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
       case 'Enter':
         e.preventDefault();
         if (selectedIndex >= 0) {
-          setQuery(filteredSuggestions[selectedIndex]);
+          setQuery(filteredSuggestions[selectedIndex].title);
           setShowSuggestions(false);
         }
         break;
@@ -88,34 +92,39 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
-    if (e.target.value.trim() === '') {
+    if (e.target.value.trim() === '' || e.target.value.trim().length < 2) {
       setShowSuggestions(false);
       setFilteredSuggestions([]);
       return;
     }
+
     // Get input position for portal dropdown
     if (inputRef.current) {
       setInputRect(inputRef.current.getBoundingClientRect());
     }
+
     if (activeTab === 'book') {
       try {
         searchBooks({ q: e.target.value }).then(({ data }) => {
-          const titles = data.map((book: { title: string }) => book.title);
-          setFilteredSuggestions(titles);
-          setShowSuggestions(titles.length > 0);
+          const books = data.books.map((book: { title: string; cover_image_name: string }) => ({
+            title: book.title,
+            image: book.cover_image_name,
+          }));
+          setFilteredSuggestions(books);
+          setShowSuggestions(books.length > 0);
         });
       } catch (err) {
         console.log(err);
       }
     } else if (e.target.value.trim() !== '' && activeTab === 'author') {
       try {
-        getAuthors().then(({ data }) => {
-          const authors = data.map((author: { name: string }) => author.name);
-          const filtered = authors.filter((name: string) =>
-            name.toLowerCase().includes(e.target.value.toLowerCase())
-          );
-          setFilteredSuggestions(filtered);
-          setShowSuggestions(filtered.length > 0);
+        searchAuthors({ q: e.target.value }).then(({ data }) => {
+          const authors = data.authors.map((author: { name: string; image_name: string }) => ({
+            title: author.name,
+            image: author.image_name,
+          }));
+          setFilteredSuggestions(authors);
+          setShowSuggestions(authors.length > 0);
         });
       } catch (err) {
         console.log(err);
@@ -168,20 +177,23 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
           >
             <div className='max-h-64 py-2'>
               {filteredSuggestions.map((suggestion, index) => {
-                const Icon = searchTabs.find((tab) => tab.value === activeTab)?.icon || Search;
                 return (
                   <button
-                    key={suggestion}
+                    key={suggestion.title}
                     type='button'
-                    onClick={() => handleSuggestionClick(suggestion)}
+                    onClick={() => handleSuggestionClick(suggestion.title)}
                     className={`w-full text-left px-4 py-3 hover:bg-accent transition-colors duration-150 flex items-center gap-3 text-sm ${
                       index === selectedIndex
                         ? 'bg-accent text-accent-foreground'
                         : 'text-foreground'
                     }`}
                   >
-                    <Icon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
-                    <span className='truncate notranslate'>{suggestion}</span>
+                    <img
+                      src={`${IMAGE_BASE_URL}/${suggestion.image}`}
+                      alt={suggestion.title}
+                      className='h-10 w-10 flex-shrink-0 object-cover'
+                    />
+                    <span className='truncate notranslate'>{suggestion.title}</span>
                   </button>
                 );
               })}

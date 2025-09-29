@@ -14,10 +14,14 @@ export const AUTH_ME = `${API_BASE_URL}/profile`;
 // ------------- Public Books -------------
 export const BOOKS_LIST = `${API_BASE_URL}/books-list`;
 export const BOOKS_SINGLE = `${API_BASE_URL}/books/single`;
-export const BOOKS_SEARCH = `${API_BASE_URL}/books/search`;
-export const BOOKS_AUTHORS = `${API_BASE_URL}/books/authors`;
+export const BOOKS_SEARCH = `${API_BASE_URL}/books-search`;
+export const BOOKS_AUTHORS = `${API_BASE_URL}/books-by-author`;
 export const BOOKS_CATEGORIES = `${API_BASE_URL}/categories-list`;
 export const IMAGE_PATH = 'https://apsrakitabghar.com/uploads/';
+
+// ------------- Authors -------------
+export const AUTHORS_LIST = `${API_BASE_URL}/authors-list`;
+export const AUTHORS_SEARCH = `${API_BASE_URL}/authors-search`;
 
 // ------------- Admin / Publisher -------------
 export const ADMIN_BOOKS = `${API_BASE_URL}/admin/books`;

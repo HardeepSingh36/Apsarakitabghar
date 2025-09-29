@@ -193,8 +193,8 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
               mobile: phoneNumber,
             });
 
-            if (response.status === 'error') {
-              toast.error(response.message || 'An error occurred. Please try again.');
+            if (response.status !== 'success') {
+              toast.error(response?.message || 'An error occurred. Please try again.');
               return;
             }
 
@@ -223,7 +223,10 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
             setDialogOpen(false);
             if (redirectPath) navigate(redirectPath); // Explicitly use navigate
           } catch (error: any) {
-            toast.error(error.message || 'An unexpected error occurred. Please try again.');
+            // Update the error handling in the signup flow
+            const errorMessage =
+              error?.message || 'An unexpected error occurred. Please try again.';
+            toast.error(errorMessage);
           } finally {
             setLoading(false);
           }
@@ -274,13 +277,29 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     fetchProfile();
   }, [dispatch]);
 
+  // Update the logout function to handle proper logout
+  const handleLogout = () => {
+    // Clear local storage
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('token_expires_in');
+
+    // Dispatch logout action
+    dispatch(logout());
+
+    // Show a success message
+    toast.success('You have been logged out successfully.');
+
+    // Optionally redirect to the home page or login page
+    navigate('/');
+  };
+
   const ctxValue: AuthDialogContextValue = {
     openChoice,
     openSignIn,
     openSignUp,
     openForgot,
     isAuthenticated,
-    logout: () => dispatch(logout()),
+    logout: handleLogout, // Use the new logout function
     loading,
   };
 
