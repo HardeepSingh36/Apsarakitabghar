@@ -23,6 +23,7 @@ const Captcha: React.FC<CaptchaProps> = ({ config, onVerify }) => {
   return (
     <ReCAPTCHA
       sitekey={config.site_key}
+      className='!z-[99999] mx-auto'
       theme={theme}
       size={size}
       onChange={(token) => {

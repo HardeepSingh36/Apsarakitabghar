@@ -45,10 +45,38 @@ export interface Book {
   discounted_price: number;
 }
 
-export interface CartItem extends Book {
+export interface CartItem {
+  cart_item_id?: number;
+  cart_id: number;
+  book_id: number;
+  title: string;
+  slug: string;
+  price: number;
+  discount_percent: number;
+  discounted_price: number;
   quantity: number;
-  total: number;
-  saving: number;
+  line_total: number;
+  stock_quantity: number;
+  cover_image_name: string;
+  author_name?: string;
+  author_pen_name?: string;
+  publisher_name?: string;
+  pages?: number;
+  saving?: number;
+  price_at_add?: number;
+  added_at?: string;
+  cart_subtotal?: string;
+  cart_discount?: string;
+  cart_total?: string;
+  current_discounted_price?: number;
+  discounted_price_at_add?: number;
+  current_line_total?: number;
+  price_changed?: boolean;
+  price_difference?: number;
+  in_stock?: boolean;
+  max_quantity?: number;
+  availability_status?: string;
+  book_status?: string;
 }
 
 export interface WishlistItem extends Book {

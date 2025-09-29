@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, User } from 'react-feather';
 import { useAuthDialog } from '@/context/AuthDialogContext';
-import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import type { RootState } from '@/app/store';
-import { removeFromCart } from '@/features/cart/cartSlice';
+import type { CartItem } from '@/types/types';
+import { fetchCartList } from '@/features/cart/cartSlice';
+import { useEffect } from 'react';
 import { IMAGE_BASE_URL } from '@/constants';
 
 const RightSideBox = () => {
@@ -13,11 +15,17 @@ const RightSideBox = () => {
   // ✅ Redux state for user + auth
   const { isAuthenticated, user } = useAppSelector((state: RootState) => state.auth);
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
-
   const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
 
-  const cartTotal = cartItems.reduce((acc, item) => acc + item.total, 0);
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCartList());
+    }
+  }, [isAuthenticated, dispatch]);
+
+  const cartTotal = 0;
 
   // Handle protected navigation
   const handleProtectedNav = (path: string) => {
@@ -102,13 +110,13 @@ const RightSideBox = () => {
                 <>
                   {/* Cart items */}
                   <ul className='cart-list'>
-                    {cartItems.map((item) => (
-                      <li className='product-box-contain !w-full' key={item.id}>
+                    {cartItems.map((item: CartItem) => (
+                      <li className='product-box-contain !w-full' key={item.book_id}>
                         <div className='drop-cart'>
                           <button
                             type='button'
                             className='drop-image'
-                            onClick={() => handleProtectedNav('/cart')}
+                            onClick={() => navigate('/cart')}
                           >
                             <img
                               src={IMAGE_BASE_URL + item.cover_image_name || ''}
@@ -120,20 +128,13 @@ const RightSideBox = () => {
                             <button
                               type='button'
                               className='!no-underline bg-transparent border-0 p-0 notranslate'
-                              onClick={() => handleProtectedNav('/cart')}
+                              onClick={() => navigate('/cart')}
                             >
                               <h5>{item.title}</h5>
                             </button>
                             <h6>
                               <span>{item.quantity} x</span> ${item.price.toFixed(2)}
                             </h6>
-                            {/* Remove item */}
-                            <button
-                              className='close-button close_button'
-                              onClick={() => dispatch(removeFromCart(item.id as number))}
-                            >
-                              <i className='fa-solid fa-xmark'></i>
-                            </button>
                           </div>
                         </div>
                       </li>

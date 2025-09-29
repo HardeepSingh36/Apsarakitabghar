@@ -6,7 +6,7 @@ import type { Book, CartItem } from '@/types/types';
 import { getBooks } from '@/services/bookService';
 import { Heart } from 'react-feather';
 import { useAppDispatch } from '@/app/hooks';
-import { addToCart } from '@/features/cart/cartSlice';
+import { addToCartAsync } from '@/features/cart/cartSlice';
 import { addToWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { Tooltip } from 'react-tooltip';
@@ -78,7 +78,7 @@ const BookDetail = () => {
     }
   }, [id, passedBook]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!isAuthenticated) {
       openSignIn('/cart'); // Pass redirect path
       return;
@@ -86,16 +86,14 @@ const BookDetail = () => {
 
     if (!book) return;
 
-    const cartItem: CartItem = {
-      ...book,
-      quantity: quantity,
-      total: (book.discounted_price || book.price) * quantity,
-      saving: book.price - (book.discounted_price || book.price),
-    };
-
-    dispatch(addToCart(cartItem));
-    setQuantity(1);
-    toast.success(quantity > 1 ? 'Books added to cart' : 'Book added to cart');
+    try {
+      await dispatch(addToCartAsync({ book_id: book.id, quantity: quantity })).unwrap();
+      setQuantity(1);
+      toast.success(quantity > 1 ? 'Books added to cart' : 'Book added to cart');
+    } catch (error) {
+      console.error('Failed to add item to cart:', error);
+      toast.error('Failed to add item to cart. Please try again.');
+    }
   };
 
   const handleAddToWishlist = () => {
@@ -116,17 +114,22 @@ const BookDetail = () => {
     navigate('/wishlist');
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
+    if (!isAuthenticated) {
+      openSignIn('/cart'); // Pass redirect path
+      return;
+    }
+
     if (!book) return;
 
-    const item: CartItem = {
-      ...book,
-      quantity: 1,
-      total: book.discounted_price || book.price,
-      saving: book.price - (book.discounted_price || book.price),
-    };
-    dispatch(addToCart(item));
-    navigate('/cart', { state: { isBuyNow: true } });
+    try {
+      await dispatch(addToCartAsync({ book_id: book.id, quantity: 1 })).unwrap();
+      toast.success('Item added to cart!');
+      navigate('/cart', { state: { isBuyNow: true } });
+    } catch (error) {
+      console.error('Failed to add item to cart:', error);
+      toast.error('Failed to add item to cart. Please try again.');
+    }
   };
 
   console.log(IMAGE_BASE_URL + book?.cover_image_name);

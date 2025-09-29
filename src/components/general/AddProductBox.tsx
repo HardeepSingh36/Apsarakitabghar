@@ -3,14 +3,13 @@ import { X } from 'react-feather';
 // import { Tooltip } from 'react-tooltip';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
-import { addToCart } from '@/features/cart/cartSlice';
+import { addToCartAsync } from '@/features/cart/cartSlice';
 import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { IMAGE_BASE_URL } from '@/constants';
-import { addToCart as addToCartAPI } from '@/services/cartService';
 
 interface AddProductBoxProps {
   product: Book;
@@ -33,7 +32,7 @@ const AddProductBox = ({
 
   // Get cart state for this product
   const cartItem = useAppSelector((state: RootState) =>
-    state.cart.items.find((item) => item.id === product.id)
+    state.cart.items.find((item) => item.book_id === product.id)
   );
   // const handleDecrease = () => {
   //   if (cartItem) {
@@ -51,21 +50,7 @@ const AddProductBox = ({
     }
 
     try {
-      const token = localStorage.getItem('auth_token');
-      if (!token) {
-        throw new Error('Authentication token is missing');
-      }
-
-      const response = await addToCartAPI({ book_id: product.id, quantity: 1 }, token);
-
-      dispatch(
-        addToCart({
-          ...product,
-          quantity: response.data?.quantity || 1,
-          total: response.data?.line_total || product.price,
-          saving: (response.data?.discounted_price || product.price) - product.price,
-        })
-      );
+      await dispatch(addToCartAsync({ book_id: product.id, quantity: 1 })).unwrap();
     } catch (error) {
       console.error('Failed to add item to cart:', error);
       if (error instanceof Error) {

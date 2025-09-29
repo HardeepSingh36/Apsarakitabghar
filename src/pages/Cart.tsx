@@ -1,6 +1,12 @@
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import { type RootState } from '@/app/store'; // store type
-import { addToCart, decreaseQuantity, removeFromCart } from '@/features/cart/cartSlice';
+import {
+  updateCartItemAsync,
+  removeCartItemAsync,
+  clearCartAsync,
+  fetchCartList,
+} from '@/features/cart/cartSlice';
+import { useEffect } from 'react';
 import { Bookmark, Minus, Plus, X } from 'react-feather';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Tooltip } from 'react-tooltip';
@@ -10,9 +16,21 @@ import { IMAGE_BASE_URL } from '@/constants';
 const Cart = () => {
   const { currency } = useCurrency();
   const dispatch = useAppDispatch();
-  const cartItems = useAppSelector((state: RootState) => state.cart.items);
+  const { items: cartItems, summary } = useAppSelector((state: RootState) => state.cart);
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+  useEffect(() => {
+    dispatch(fetchCartList());
+  }, [dispatch]);
+
+  const subtotal =
+    summary?.cart_subtotal ||
+    cartItems.reduce((sum, item) => {
+      const lineTotal =
+        item.current_line_total ||
+        item.line_total ||
+        (item?.current_discounted_price || item?.discounted_price) * item.quantity;
+      return sum + (isNaN(lineTotal) ? 0 : lineTotal);
+    }, 0);
   const shipping = 6.9; // example fixed shipping
   const total = subtotal + shipping;
 
@@ -23,6 +41,14 @@ const Cart = () => {
         <div className='container-fluid-lg'>
           <div className='row g-sm-5 g-3'>
             <div className='col-xxl-9'>
+              <div>
+                <button
+                  onClick={() => dispatch(clearCartAsync())}
+                  className='btn btn-danger !text-sm mb-2 !ml-auto'
+                >
+                  Clear Cart
+                </button>
+              </div>
               <div className='cart-table'>
                 {cartItems.length === 0 ? (
                   <div className='flex flex-col items-center py-5'>
@@ -45,7 +71,7 @@ const Cart = () => {
                     <table className='table'>
                       <tbody>
                         {cartItems.map((item) => (
-                          <tr className='product-box-contain' key={item.id}>
+                          <tr className='product-box-contain' key={item.book_id}>
                             <td className='product-detail'>
                               <div className='product border-0'>
                                 <a href={`/books/${item.slug}`} className='product-image'>
@@ -63,14 +89,16 @@ const Cart = () => {
                                       </a>
                                     </li>
                                     <li className='text-content'>
-                                      <span className='text-title'>Author:</span> {item.author_name}
+                                      <span className='text-title'>Author:</span>{' '}
+                                      {item.author_name || 'Unknown'}
                                     </li>
                                     <li className='text-content'>
                                       <span className='text-title'>Sold By:</span>{' '}
-                                      {item.publisher_name}
+                                      {item.publisher_name || 'Unknown Publisher'}
                                     </li>
                                     <li className='text-content'>
-                                      <span className='text-title'>Pages:</span> {item.pages}
+                                      <span className='text-title'>Pages:</span>{' '}
+                                      {item.pages || 'N/A'}
                                     </li>
                                     <li className='text-content'>
                                       <span className='text-title'>Quantity:</span> {item.quantity}
@@ -79,7 +107,9 @@ const Cart = () => {
                                       <h5 className='text-content d-inline-block'>Price :</h5>
                                       <span>
                                         {currency.sign}
-                                        {item.discounted_price}
+                                        {(
+                                          item?.current_discounted_price || item?.discounted_price
+                                        ).toFixed(2)}
                                       </span>
                                       <span className='text-content'>
                                         {currency.sign}
@@ -89,7 +119,13 @@ const Cart = () => {
                                     <li>
                                       <h5 className='saving theme-color'>
                                         Saving : {currency.sign}
-                                        {item.saving}
+                                        {(
+                                          item.saving ||
+                                          (item.price -
+                                            (item?.current_discounted_price ||
+                                              item?.discounted_price)) *
+                                            item.quantity
+                                        ).toFixed(2)}
                                       </h5>
                                     </li>
                                     <li className='quantity-price-box'>
@@ -98,7 +134,21 @@ const Cart = () => {
                                           <button
                                             type='button'
                                             className='btn qty-left-minus'
-                                            onClick={() => dispatch(decreaseQuantity(item.id))}
+                                            onClick={async () => {
+                                              if (item.quantity > 1) {
+                                                try {
+                                                  await dispatch(
+                                                    updateCartItemAsync({
+                                                      cartItemId: item.cart_item_id || 0,
+                                                      quantity: item.quantity - 1,
+                                                    })
+                                                  ).unwrap();
+                                                  dispatch(fetchCartList());
+                                                } catch (error) {
+                                                  console.error('Failed to update cart:', error);
+                                                }
+                                              }
+                                            }}
                                           >
                                             <i className='fa fa-minus ms-0'></i>
                                           </button>
@@ -112,15 +162,19 @@ const Cart = () => {
                                           <button
                                             type='button'
                                             className='btn qty-right-plus'
-                                            onClick={() =>
-                                              dispatch(
-                                                addToCart({
-                                                  ...item,
-                                                  quantity: 1,
-                                                  total: (item.quantity + 1) * item.price,
-                                                })
-                                              )
-                                            }
+                                            onClick={async () => {
+                                              try {
+                                                await dispatch(
+                                                  updateCartItemAsync({
+                                                    cartItemId: item.cart_item_id || 0,
+                                                    quantity: item.quantity + 1,
+                                                  })
+                                                ).unwrap();
+                                                dispatch(fetchCartList());
+                                              } catch (error) {
+                                                console.error('Failed to update cart:', error);
+                                              }
+                                            }}
                                           >
                                             <i className='fa fa-plus ms-0'></i>
                                           </button>
@@ -130,7 +184,12 @@ const Cart = () => {
                                     <li>
                                       <h5>
                                         Total: {currency.sign}
-                                        {item.total.toFixed(2)}
+                                        {(
+                                          item.current_line_total ||
+                                          item.line_total ||
+                                          (item?.current_discounted_price ||
+                                            item?.discounted_price) * item.quantity
+                                        ).toFixed(2)}
                                       </h5>
                                     </li>
                                   </ul>
@@ -141,7 +200,7 @@ const Cart = () => {
                               <h4 className='table-title text-content'>Price</h4>
                               <h5>
                                 {currency.sign}
-                                {item.discounted_price}{' '}
+                                {item?.current_discounted_price}{' '}
                                 <del className='text-center'>
                                   {currency.sign}
                                   {item.price}
@@ -149,7 +208,10 @@ const Cart = () => {
                               </h5>
                               <h6 className='theme-color'>
                                 You Save : {currency.sign}
-                                {(item.price - item.discounted_price).toFixed(2)}
+                                {(
+                                  item.price -
+                                  (item?.current_discounted_price || item?.discounted_price)
+                                ).toFixed(2)}
                               </h6>
                             </td>
                             <td className='quantity'>
@@ -160,7 +222,21 @@ const Cart = () => {
                                     <button
                                       type='button'
                                       className='btn qty-left-minus !h-6 !w-6'
-                                      onClick={() => dispatch(decreaseQuantity(item.id))}
+                                      onClick={async () => {
+                                        if (item.quantity > 1) {
+                                          try {
+                                            await dispatch(
+                                              updateCartItemAsync({
+                                                cartItemId: item.cart_item_id || 0,
+                                                quantity: item.quantity - 1,
+                                              })
+                                            ).unwrap();
+                                            dispatch(fetchCartList());
+                                          } catch (error) {
+                                            console.error('Failed to update cart:', error);
+                                          }
+                                        }
+                                      }}
                                     >
                                       <Minus className='w-4 h-4' />
                                     </button>
@@ -174,15 +250,19 @@ const Cart = () => {
                                     <button
                                       type='button'
                                       className='btn qty-right-plus !h-6 !w-6'
-                                      onClick={() =>
-                                        dispatch(
-                                          addToCart({
-                                            ...item,
-                                            quantity: 1,
-                                            total: (item.quantity + 1) * item.price,
-                                          })
-                                        )
-                                      }
+                                      onClick={async () => {
+                                        try {
+                                          await dispatch(
+                                            updateCartItemAsync({
+                                              cartItemId: item.cart_item_id || 0,
+                                              quantity: item.quantity + 1,
+                                            })
+                                          ).unwrap();
+                                          dispatch(fetchCartList());
+                                        } catch (error) {
+                                          console.error('Failed to update cart:', error);
+                                        }
+                                      }}
                                     >
                                       <Plus className='w-4 h-4' />
                                     </button>
@@ -194,7 +274,12 @@ const Cart = () => {
                               <h4 className='table-title text-content'>Total</h4>
                               <h5>
                                 {currency.sign}
-                                {item.total.toFixed(2)}
+                                {(
+                                  item.current_line_total ||
+                                  item.line_total ||
+                                  (item?.current_discounted_price || item?.discounted_price) *
+                                    item.quantity
+                                ).toFixed(2)}
                               </h5>
                             </td>
                             <td className='save-remove'>
@@ -210,7 +295,11 @@ const Cart = () => {
                                 <a
                                   className='remove close_button'
                                   href='javascript:void(0)'
-                                  onClick={() => dispatch(removeFromCart(item.id))}
+                                  onClick={() =>
+                                    dispatch(
+                                      removeCartItemAsync({ cartItemId: item.cart_item_id || 0 })
+                                    )
+                                  }
                                   data-tooltip-id='remove-tooltip'
                                 >
                                   <X className='w-5 h-5' />
