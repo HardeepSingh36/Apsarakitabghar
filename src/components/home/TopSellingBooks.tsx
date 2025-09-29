@@ -37,8 +37,8 @@ const TopSellingBooks = () => {
     }
   };
 
-  const top = Array.isArray(books) ? books.filter((b) => b.top).slice(0, 6) : [];
-  const trending = Array.isArray(books) ? books.filter((b) => b.trending).slice(0, 6) : [];
+  const top = Array.isArray(books) ? books.filter((b) => b).slice(0, 6) : [];
+  const trending = Array.isArray(books) ? books.filter((b) => b).slice(0, 6) : [];
   const recent = Array.isArray(books)
     ? [...books]
         .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())

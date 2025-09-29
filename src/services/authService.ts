@@ -1,4 +1,4 @@
-import { AUTH_LOGIN, API_BASE_URL, AUTH_ME, AUTH_REGISTER } from './API';
+import { AUTH_LOGIN, AUTH_ME, AUTH_REGISTER } from './API';
 
 export const login = async (email: string, password: string) => {
   const res = await fetch(AUTH_LOGIN, {

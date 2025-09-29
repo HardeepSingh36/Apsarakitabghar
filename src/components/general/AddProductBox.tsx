@@ -10,6 +10,7 @@ import type { Book } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { IMAGE_BASE_URL } from '@/constants';
+import { addToCart as addToCartAPI } from '@/services/cartService';
 
 interface AddProductBoxProps {
   product: Book;
@@ -43,20 +44,36 @@ const AddProductBox = ({
   //   }
   // };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!isAuthenticated) {
       openSignIn('/cart');
       return;
     }
 
-    dispatch(
-      addToCart({
-        ...product,
-        quantity: 1,
-        total: product.price,
-        saving: product.discounted_price - product.price,
-      })
-    );
+    try {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        throw new Error('Authentication token is missing');
+      }
+
+      const response = await addToCartAPI({ book_id: product.id, quantity: 1 }, token);
+
+      dispatch(
+        addToCart({
+          ...product,
+          quantity: response.data?.quantity || 1,
+          total: response.data?.line_total || product.price,
+          saving: (response.data?.discounted_price || product.price) - product.price,
+        })
+      );
+    } catch (error) {
+      console.error('Failed to add item to cart:', error);
+      if (error instanceof Error) {
+        alert(error.message || 'Failed to add item to cart');
+      } else {
+        alert('An unknown error occurred');
+      }
+    }
   };
 
   const handleWishlistToggle = () => {

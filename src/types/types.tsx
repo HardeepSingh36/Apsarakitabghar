@@ -54,3 +54,21 @@ export interface CartItem extends Book {
 export interface WishlistItem extends Book {
   rating: number;
 }
+
+// captcha config
+export interface CaptchaConfig {
+  site_key: string;
+  version: string;
+  theme: string;
+  size: string;
+  callback: string | null;
+  expired_callback: string | null;
+  error_callback: string | null;
+  badge: string;
+  instructions: {
+    frontend_integration: string;
+    script_url: string;
+    verification_endpoint: string;
+    required_fields: string[];
+  };
+}

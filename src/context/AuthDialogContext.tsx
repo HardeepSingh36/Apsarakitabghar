@@ -4,8 +4,9 @@ import { login, logout } from '@/features/auth/authSlice';
 import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
-import { SimpleCaptcha } from '@/components/SimpleCaptcha';
 import { login as loginApi, getProfile, register } from '@/services/authService';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { getCaptchaConfig } from '@/services/captchaService';
 
 import {
   Dialog,
@@ -15,7 +16,8 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import type { RootState } from '@/app/store';
-import { useRef, useEffect } from 'react';
+import { useEffect, useState, createContext, type FC } from 'react';
+import type { CaptchaConfig } from '@/types/types';
 
 type AuthView = 'choice' | 'signin' | 'signup' | 'forgot';
 
@@ -29,9 +31,10 @@ type AuthDialogContextValue = {
   isAuthenticated: boolean;
   logout: () => void;
   loading: boolean;
+  captchaConfig: CaptchaConfig | null;
 };
 
-const AuthDialogContext = React.createContext<AuthDialogContextValue | undefined>(undefined);
+const AuthDialogContext = createContext<AuthDialogContextValue | undefined>(undefined);
 
 export const useAuthDialog = (): AuthDialogContextValue => {
   const ctx = React.useContext(AuthDialogContext);
@@ -39,7 +42,7 @@ export const useAuthDialog = (): AuthDialogContextValue => {
   return ctx;
 };
 
-export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [authView, setAuthView] = React.useState<AuthView>('choice');
   const [selectedRole, setSelectedRole] = React.useState<UserRole | null>(null);
@@ -53,11 +56,11 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
   const [loading, setLoading] = React.useState(false);
   const [redirectPath, setRedirectPath] = React.useState<string | null>(null); // Track origin page
   const [captchaValid, setCaptchaValid] = React.useState(false);
+  const [captchaConfig, setCaptchaConfig] = useState<CaptchaConfig | null>(null);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
-  const captchaRef = useRef<{ generateCaptcha: () => void } | null>(null);
 
   const handleClose = (open: boolean) => {
     setDialogOpen(open);
@@ -136,7 +139,12 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
       }
       if (!captchaValid) {
         toast.error('Captcha validation failed. Please try again.');
-        captchaRef.current?.generateCaptcha(); // Refresh captcha
+        return;
+      }
+
+      const captchaToken = localStorage.getItem('captcha_token');
+      if (!captchaToken) {
+        toast.error('Captcha token missing, please try again.');
         return;
       }
     } else if (authView === 'forgot') {
@@ -184,6 +192,24 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
           if (redirectPath && redirectPath !== '/') navigate(redirectPath);
         } else if (authView === 'signup') {
           try {
+            const captchaToken = localStorage.getItem('captcha_token');
+            if (!captchaToken) {
+              toast.error('Captcha token missing, please try again.');
+              return;
+            }
+
+            // ✅ Verify captcha with backend
+            const captchaRes = await fetch('/api/captcha-verify.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ captcha_token: captchaToken }),
+            });
+            const captchaData = await captchaRes.json();
+            if (!captchaRes.ok || captchaData.status !== 'success' || !captchaData.data?.verified) {
+              toast.error(captchaData.message || 'Captcha verification failed.');
+              return;
+            }
+
             const response = await register({
               username,
               email,
@@ -221,12 +247,10 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
 
             toast.success('Account created successfully!');
             setDialogOpen(false);
-            if (redirectPath) navigate(redirectPath); // Explicitly use navigate
+            if (redirectPath) navigate(redirectPath);
           } catch (error: any) {
-            // Update the error handling in the signup flow
-            const errorMessage =
-              error?.message || 'An unexpected error occurred. Please try again.';
-            toast.error(errorMessage);
+            console.log(error);
+            toast.error('Signup failed. Please try again.');
           } finally {
             setLoading(false);
           }
@@ -277,6 +301,20 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     fetchProfile();
   }, [dispatch]);
 
+  // Fetch CAPTCHA configuration on component mount
+  useEffect(() => {
+    const fetchCaptchaConfig = async () => {
+      try {
+        const config = await getCaptchaConfig();
+        setCaptchaConfig(config);
+      } catch (error) {
+        console.error('Failed to fetch CAPTCHA configuration:', error);
+      }
+    };
+
+    fetchCaptchaConfig();
+  }, []);
+
   // Update the logout function to handle proper logout
   const handleLogout = () => {
     // Clear local storage
@@ -301,6 +339,7 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
     isAuthenticated,
     logout: handleLogout, // Use the new logout function
     loading,
+    captchaConfig,
   };
 
   return (
@@ -502,12 +541,30 @@ export const AuthDialogProvider: React.FC<React.PropsWithChildren<{}>> = ({ chil
                       />
                     </div>
                   )}
-                  {authView === 'signup' && (
+                  {authView === 'signup' && captchaConfig && (
                     <div className='form-group'>
                       <label className='form-label'>Captcha</label>
-                      <SimpleCaptcha
-                        ref={captchaRef}
-                        onChange={(isValid) => setCaptchaValid(isValid)}
+                      <ReCAPTCHA
+                        sitekey={captchaConfig.site_key}
+                        theme='light'
+                        size='normal'
+                        onChange={(token) => {
+                          if (token) {
+                            setCaptchaValid(true);
+                            localStorage.setItem('captcha_token', token);
+                          } else {
+                            setCaptchaValid(false);
+                            localStorage.removeItem('captcha_token');
+                          }
+                        }}
+                        onExpired={() => {
+                          setCaptchaValid(false);
+                          localStorage.removeItem('captcha_token');
+                        }}
+                        onErrored={() => {
+                          setCaptchaValid(false);
+                          localStorage.removeItem('captcha_token');
+                        }}
                       />
                     </div>
                   )}

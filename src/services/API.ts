@@ -28,3 +28,8 @@ export const ADMIN_BOOKS = `${API_BASE_URL}/admin/books`;
 export const ADMIN_CREATE_BOOK = `${API_BASE_URL}/admin/create-book`;
 export const ADMIN_UPDATE_BOOK = `${API_BASE_URL}/admin/update-book`; // use ?id=
 export const ADMIN_DELETE_BOOK = `${API_BASE_URL}/admin/delete-book`; // use ?id=
+
+
+// ------------- CAPTCHA -------------
+export const CAPTCHA_CONFIG = `${API_BASE_URL}/captcha-config`;
+export const CAPTCHA_VERIFY = `${API_BASE_URL}/captcha-verify`;

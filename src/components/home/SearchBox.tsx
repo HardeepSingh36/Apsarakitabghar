@@ -5,7 +5,7 @@ import { Search } from 'lucide-react';
 import { Book, Pencil } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { getAuthors, searchBooks } from '@/services/bookService';
+import {searchBooks } from '@/services/bookService';
 import { searchAuthors } from '@/services/AuthorsService';
 import { IMAGE_BASE_URL } from '@/constants';
 
