@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Edit, Trash2 } from 'react-feather';
+import toast from 'react-hot-toast';
 import type { RootState } from '../../app/store';
 import type { Address } from '../../features/user/userSlice';
 import EditProfileModal from './EditProfileModal';
 import AddAddressModal from './AddAddressModal';
 import RemoveConfirmationModal from './RemoveConfirmationModal';
 import RemoveDoneModal from './RemoveDoneModal';
-import { addAddress, updateAddress, removeAddress } from '../../features/user/userSlice';
+import { 
+  fetchAddresses, 
+  createAddress, 
+  updateAddressAsync, 
+  deleteAddressAsync,
+  clearError 
+} from '../../features/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 const DashboardAddress: React.FC = () => {
@@ -18,7 +25,7 @@ const DashboardAddress: React.FC = () => {
   const [addressToRemove, setAddressToRemove] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
-  const addresses = useAppSelector((state: RootState) => state.user.addresses);
+  const { addresses, loading, error } = useAppSelector((state: RootState) => state.user);
 
   const openEditModal = (address: Address) => {
     setEditAddress(address);
@@ -40,20 +47,47 @@ const DashboardAddress: React.FC = () => {
 
   const closeRemoveDone = () => setRemoveDoneOpen(false);
 
-  const handleSaveAddress = (updatedAddress: Address) => {
-    if (editAddress) {
-      dispatch(updateAddress({ ...editAddress, ...updatedAddress })); // Merge changes with existing address
-    } else {
-      dispatch(addAddress(updatedAddress));
+  const handleSaveAddress = async (updatedAddress: Address) => {
+    try {
+      if (editAddress) {
+        await dispatch(updateAddressAsync({ 
+          id: editAddress.id, 
+          addressData: { ...editAddress, ...updatedAddress } 
+        })).unwrap();
+        toast.success('Address updated successfully!');
+      } else {
+        await dispatch(createAddress(updatedAddress)).unwrap();
+        toast.success('Address added successfully!');
+      }
+      setAddAddressModalOpen(false);
+      setEditAddress(null);
+    } catch (error: any) {
+      toast.error(error || 'Failed to save address');
     }
-    setAddAddressModalOpen(false);
-    setEditAddress(null);
   };
 
-  const handleRemoveAddress = (id: string) => {
-    dispatch(removeAddress(id));
-    setRemoveConfirmationOpen(false);
+  const handleRemoveAddress = async (id: string) => {
+    try {
+      await dispatch(deleteAddressAsync(id)).unwrap();
+      toast.success('Address removed successfully!');
+      setRemoveConfirmationOpen(false);
+    } catch (error: any) {
+      toast.error(error || 'Failed to remove address');
+    }
   };
+
+  // Fetch addresses on component mount
+  useEffect(() => {
+    dispatch(fetchAddresses());
+  }, [dispatch]);
+
+  // Handle API errors
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
 
   // Toggle body scroll based on modal states
   useEffect(() => {
@@ -82,7 +116,14 @@ const DashboardAddress: React.FC = () => {
         </button>
       </div>
       <div className='row g-sm-4 g-3'>
-        {addresses.length === 0 ? (
+        {loading ? (
+          <div className='text-center'>
+            <div className='spinner-border text-primary' role='status'>
+              <span className='visually-hidden'>Loading...</span>
+            </div>
+            <p className='mt-2'>Loading addresses...</p>
+          </div>
+        ) : addresses.length === 0 ? (
           <p className='text-center'>No addresses found. Please add a new address.</p>
         ) : (
           addresses.map((address: Address) => (

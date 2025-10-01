@@ -72,6 +72,26 @@ const SignUp = () => {
       return;
     }
 
+    // Password validation - minimum 8 characters
+    if (password.length < 8) {
+      toast.error('Password must be at least 8 characters long.');
+      return;
+    }
+
+    // Phone number validation - exactly 10 digits
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      toast.error('Phone number must be exactly 10 digits.');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
     if (!captchaValid) {
       toast.error('Captcha validation failed. Please try again.');
       return;
@@ -86,18 +106,6 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      // ✅ Verify captcha with backend
-      const captchaRes = await fetch('/api/captcha-verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ captcha_token: captchaToken }),
-      });
-      const captchaData = await captchaRes.json();
-      if (!captchaRes.ok || captchaData.status !== 'success' || !captchaData.data?.verified) {
-        toast.error(captchaData.message || 'Captcha verification failed.');
-        return;
-      }
-
       const response = await register({
         username,
         email,
@@ -246,6 +254,8 @@ const SignUp = () => {
                         placeholder='Phone Number'
                         value={formData.phoneNumber}
                         onChange={handleInputChange}
+                        maxLength={10}
+                        pattern='[0-9]{10}'
                         required
                       />
                       <label htmlFor='phoneNumber'>Phone Number</label>
@@ -262,10 +272,12 @@ const SignUp = () => {
                         placeholder='Password'
                         value={formData.password}
                         onChange={handleInputChange}
+                        minLength={8}
                         required
                       />
                       <label htmlFor='password'>Password</label>
                     </div>
+                    <small className='text-muted'>Minimum 8 characters required</small>
                   </div>
 
                   <div className='col-xxl-6 col-lg-12 col-md-6'>

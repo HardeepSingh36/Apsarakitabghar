@@ -1,27 +1,44 @@
 import { useCurrency } from '@/context/CurrencyContext';
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import {
-  addAddress,
+  fetchAddresses,
+  createAddress,
+  updateAddressAsync,
   setSelectedAddress,
+  clearError,
   type Address,
-  updateAddress,
 } from '@/features/user/userSlice';
 import type { RootState } from '@/app/store';
 import AddAddressModal from '@/components/dashboard/AddAddressModal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Edit } from 'react-feather';
 import { IMAGE_BASE_URL } from '@/constants';
+import toast from 'react-hot-toast';
 
 const Checkout = () => {
   const { currency } = useCurrency();
   const dispatch = useAppDispatch();
 
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
-  const addresses = useAppSelector((state: RootState) => state.user.addresses);
-  const selectedAddressId = useAppSelector((state: RootState) => state.user.selectedAddressId);
+  const { addresses, selectedAddressId, loading, error } = useAppSelector(
+    (state: RootState) => state.user
+  );
 
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
   const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
+
+  // Fetch addresses on component mount
+  useEffect(() => {
+    dispatch(fetchAddresses());
+  }, [dispatch]);
+
+  // Handle API errors
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.current_line_total, 0);
   const shipping = 6.9;
@@ -33,16 +50,27 @@ const Checkout = () => {
     dispatch(setSelectedAddress(id));
   };
 
-  const handleAddAddress = (newAddress: Address) => {
-    if (addressToEdit) {
-      // Update the existing address
-      dispatch(updateAddress({ ...addressToEdit, ...newAddress }));
-    } else {
-      // Add a new address
-      dispatch(addAddress(newAddress));
+  const handleAddAddress = async (newAddress: Address) => {
+    try {
+      if (addressToEdit) {
+        // Update the existing address
+        await dispatch(
+          updateAddressAsync({
+            id: addressToEdit.id,
+            addressData: { ...addressToEdit, ...newAddress },
+          })
+        ).unwrap();
+        toast.success('Address updated successfully!');
+      } else {
+        // Add a new address
+        await dispatch(createAddress(newAddress)).unwrap();
+        toast.success('Address added successfully!');
+      }
+      setAddAddressModalOpen(false);
+      setAddressToEdit(null);
+    } catch (error: any) {
+      toast.error(error || 'Failed to save address');
     }
-    setAddAddressModalOpen(false);
-    setAddressToEdit(null);
   };
 
   const handleEditAddress = (address: Address) => {
@@ -77,7 +105,14 @@ const Checkout = () => {
                         </div>
 
                         <div className='checkout-detail'>
-                          {addresses.length === 0 ? (
+                          {loading ? (
+                            <div className='text-center'>
+                              <div className='spinner-border text-primary' role='status'>
+                                <span className='visually-hidden'>Loading...</span>
+                              </div>
+                              <p className='mt-2'>Loading addresses...</p>
+                            </div>
+                          ) : addresses.length === 0 ? (
                             <div className='text-center'>
                               <button
                                 className='btn theme-bg-color text-white btn-md'

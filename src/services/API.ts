@@ -46,3 +46,9 @@ export const CART_CLEAR = `${API_BASE_URL}/cart-clear`;
 // ------------- CAPTCHA -------------
 export const CAPTCHA_CONFIG = `${API_BASE_URL}/captcha-config`;
 export const CAPTCHA_VERIFY = `${API_BASE_URL}/captcha-verify`;
+
+// ------------- Addresses -------------
+export const ADDRESSES_LIST = `${API_BASE_URL}/addresses-list`;
+export const ADDRESSES_ADD = `${API_BASE_URL}/addresses-add`;
+export const ADDRESSES_UPDATE = `${API_BASE_URL}/addresses-update`;
+export const ADDRESSES_DELETE = `${API_BASE_URL}/addresses-delete`;

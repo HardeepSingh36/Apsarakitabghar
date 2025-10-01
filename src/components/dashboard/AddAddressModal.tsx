@@ -15,6 +15,7 @@ interface Address {
   phone: string;
   // type: 'billing' | 'shipping';
   country: string;
+  isDefault?: boolean;
 }
 
 interface AddAddressModalProps {
@@ -42,6 +43,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
       postalCode: '',
       phone: '',
       country: '',
+      isDefault: false,
     }
   );
   const [selectedCode, setSelectedCode] = useState('+91');
@@ -64,6 +66,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
         postalCode: '',
         phone: '',
         country: '',
+        isDefault: false,
       });
       setIsEdit(false);
     }
@@ -122,6 +125,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
         postalCode: '',
         phone: '',
         country: '',
+        isDefault: false,
       });
       setErrors({});
     }
