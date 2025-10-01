@@ -113,10 +113,62 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(addToCartAsync.fulfilled, (state) => {
-        // After adding to cart, we should refetch the cart list
-        // to get the updated cart with all necessary fields
+      .addCase(addToCartAsync.fulfilled, (state, action) => {
         state.loading = false;
+
+        // Add the returned cart item to the state
+        if (action.payload && action.payload) {
+          const payload = action.payload;
+          const newCartItem: CartItem = {
+            cart_item_id: payload.cart_item_id,
+            cart_id: payload.cart_id,
+            book_id: payload.book_id,
+            quantity: payload.quantity,
+            price_at_add: payload.price_at_add,
+            added_at: new Date().toISOString(), // API doesn't return this, so use current time
+            cart_subtotal: payload.line_total.toString(), // Use line_total as subtotal
+            cart_discount: '0', // Will be updated when cart list is fetched
+            cart_total: payload.line_total.toString(), // Use line_total as total
+            title: payload.title,
+            slug: payload.slug,
+            price: payload.price,
+            discount_percent: payload.discount_percent,
+            cover_image_name: payload.cover_image_name,
+            stock_quantity: payload.stock_quantity,
+            book_status: 'active', // Assuming active since it was added
+            author_name: '', // API doesn't return this in add response
+            author_pen_name: '', // API doesn't return this in add response
+            current_discounted_price: payload.discounted_price,
+            discounted_price_at_add: payload.discounted_price,
+            line_total: payload.line_total,
+            current_line_total: payload.line_total,
+            price_changed: false,
+            price_difference: 0,
+            in_stock: payload.stock_quantity > 0,
+            max_quantity: payload.stock_quantity,
+            availability_status: payload.stock_quantity > 0 ? 'in_stock' : 'out_of_stock',
+          };
+
+          // Check if item already exists in cart
+          const existingItemIndex = state.items.findIndex(
+            (item) => item.book_id === payload.book_id
+          );
+
+          if (existingItemIndex >= 0) {
+            // Update existing item quantity and totals
+            state.items[existingItemIndex] = {
+              ...state.items[existingItemIndex],
+              quantity: payload.quantity,
+              line_total: payload.line_total,
+              current_line_total: payload.line_total,
+              cart_subtotal: payload.line_total.toString(),
+              cart_total: payload.line_total.toString(),
+            };
+          } else {
+            // Add new item to cart
+            state.items.push(newCartItem);
+          }
+        }
       })
       .addCase(addToCartAsync.rejected, (state, action) => {
         state.loading = false;
@@ -139,9 +191,30 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateCartItemAsync.fulfilled, (state) => {
-        // After updating cart item, we should refetch the cart list
+      .addCase(updateCartItemAsync.fulfilled, (state, action) => {
         state.loading = false;
+
+        // Update the cart item quantity in state
+        if (action.payload && action.payload.cartItemId) {
+          const itemIndex = state.items.findIndex(
+            (item) => item.cart_item_id === action.payload.cartItemId
+          );
+
+          if (itemIndex >= 0) {
+            const item = state.items[itemIndex];
+            const newQuantity = action.payload.quantity;
+            const newLineTotal = item.price_at_add * newQuantity;
+
+            state.items[itemIndex] = {
+              ...item,
+              quantity: newQuantity,
+              line_total: newLineTotal,
+              current_line_total: newLineTotal,
+              cart_subtotal: newLineTotal.toString(),
+              cart_total: newLineTotal.toString(),
+            };
+          }
+        }
       })
       .addCase(updateCartItemAsync.rejected, (state, action) => {
         state.loading = false;
@@ -151,9 +224,15 @@ const cartSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(removeCartItemAsync.fulfilled, (state) => {
-        // After removing cart item, we should refetch the cart list
+      .addCase(removeCartItemAsync.fulfilled, (state, action) => {
         state.loading = false;
+
+        // Remove the cart item from state
+        if (action.payload && action.payload.cartItemId) {
+          state.items = state.items.filter(
+            (item) => item.cart_item_id !== action.payload.cartItemId
+          );
+        }
       })
       .addCase(removeCartItemAsync.rejected, (state, action) => {
         state.loading = false;

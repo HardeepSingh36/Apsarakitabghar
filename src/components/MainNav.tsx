@@ -37,17 +37,6 @@ const navItems = [
     className: 'lg:!ml-4',
     isDropdown: false,
   },
-  // {
-  //   type: 'dropdown',
-  //   label: 'Special Collections',
-  //   className: 'dropdown lg:!ml-4',
-  //   dropdownMenu: [
-  //     { label: 'New & Trending', to: '/books?is_new=1&is_trending=1' },
-  //     { label: 'Popular Bestsellers', to: '/books?is_popular=1&is_best_seller=1' },
-  //     { label: 'Featured New Arrivals', to: '/books?featured=1&is_new=1' },
-  //     { label: 'Trending Bestsellers', to: '/books?is_trending=1&is_best_seller=1' },
-  //   ],
-  // },
   {
     type: 'dropdown',
     label: 'Categories',

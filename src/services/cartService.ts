@@ -10,17 +10,19 @@ interface AddToCartResponse {
   status: string;
   message: string;
   data?: {
+    cart_item_id: number;
     cart_id: number;
     book_id: number;
+    quantity: number;
+    price_at_add: number;
     title: string;
     slug: string;
     price: number;
     discount_percent: number;
-    discounted_price: number;
-    quantity: number;
-    line_total: number;
     stock_quantity: number;
     cover_image_name: string;
+    discounted_price: number;
+    line_total: number;
   };
 }
 

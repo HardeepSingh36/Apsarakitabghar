@@ -622,7 +622,7 @@ const BooksPage = () => {
                 <p className='text-sm text-gray-600'>Loading books...</p>
               ) : (
                 <p className='text-sm text-gray-600'>
-                  {books.length > 0 ? `Showing ${books.length} books` : 'No books found'}
+                  {books.length > 0 ? `Showing ${books.length} books` : ''}
                 </p>
               )}
               {!isLoading && (searchQuery || authorId || categoryId || genreId || tagId) && (
@@ -660,7 +660,7 @@ const BooksPage = () => {
                   {(searchQuery || authorId || categoryId || genreId || tagId) && (
                     <button
                       onClick={() => navigate('/books')}
-                      className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors'
+                      className='btn theme-bg-color text-white m-0 mx-auto'
                     >
                       Browse All Books
                     </button>
