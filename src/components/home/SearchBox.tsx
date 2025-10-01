@@ -5,9 +5,11 @@ import { Search } from 'lucide-react';
 import { Book, Pencil } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import {searchBooks } from '@/services/bookService';
+import { searchBooks, getBookById } from '@/services/bookService';
 import { searchAuthors } from '@/services/AuthorsService';
 import { IMAGE_BASE_URL } from '@/constants';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const searchTabs = [
   {
@@ -39,15 +41,17 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
   const [query, setQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<
-    { title: string; image: string }[]
+    { id: string; title: string; image: string; slug: string }[]
   >([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const [inputRect, setInputRect] = useState<DOMRect | null>(null);
+  const navigate = useNavigate();
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!showSuggestions) return;
+    if (!showSuggestions && e.key !== 'Enter') return;
 
     switch (e.key) {
       case 'ArrowDown':
@@ -60,9 +64,12 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
         break;
       case 'Enter':
         e.preventDefault();
-        if (selectedIndex >= 0) {
-          setQuery(filteredSuggestions[selectedIndex].title);
-          setShowSuggestions(false);
+        if (selectedIndex >= 0 && filteredSuggestions[selectedIndex]) {
+          // Navigate to selected suggestion
+          handleSuggestionNavigation(filteredSuggestions[selectedIndex]);
+        } else if (query.trim()) {
+          // Search with current query
+          handleSearch(query.trim());
         }
         break;
       case 'Escape':
@@ -72,17 +79,119 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setQuery(suggestion);
+  const validateAndNavigateToBook = async (book: {
+    id: string;
+    title: string;
+    image: string;
+    slug?: string;
+  }) => {
+    try {
+      // Validate book exists by fetching it
+      const response = await getBookById(book.id);
+      if (response.status === 'success' && response.data) {
+        // Book exists, navigate to book detail page with complete book data
+        const completeBook = response.data;
+        navigate(`/books/${book.slug || book.id}`, { state: { item: completeBook } });
+      } else {
+        toast.error('Book not found.');
+      }
+    } catch (error) {
+      console.error('Book validation error:', error);
+      toast.error('Book not found or unavailable.');
+    }
+  };
+
+  const handleSuggestionNavigation = async (suggestion: {
+    id: string;
+    title: string;
+    image: string;
+    slug?: string;
+  }) => {
     setShowSuggestions(false);
-    inputRef.current?.focus();
+    setIsLoading(true);
+
+    try {
+      if (activeTab === 'book') {
+        // Validate book exists before navigation
+        await validateAndNavigateToBook(suggestion);
+      } else if (activeTab === 'author') {
+        // Navigate to author page or books by author
+        navigate(`/books?author=${suggestion.id}`);
+      }
+    } catch (error) {
+      console.error('Navigation error:', error);
+      toast.error('Failed to navigate. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion: {
+    id: string;
+    title: string;
+    image: string;
+    slug?: string;
+  }) => {
+    handleSuggestionNavigation(suggestion);
+  };
+
+  const handleSearch = async (searchQuery: string) => {
+    if (!searchQuery.trim()) return;
+
+    setIsLoading(true);
+    setShowSuggestions(false);
+
+    try {
+      if (activeTab === 'book') {
+        // Search for books and redirect to books page with search query
+        const results = await searchBooks({ q: searchQuery });
+        if (results.data.books.length > 0) {
+          // If there's an exact match by title, navigate to that book
+          const exactMatch = results.data.books.find(
+            (book: { title: string }) => book.title.toLowerCase() === searchQuery.toLowerCase()
+          );
+
+          if (exactMatch) {
+            // Navigate directly to the book detail page
+            await validateAndNavigateToBook(exactMatch);
+          } else {
+            // Navigate to books page with search query
+            navigate(`/books?search=${encodeURIComponent(searchQuery)}`);
+          }
+        } else {
+          toast.error('No books found for your search.');
+        }
+      } else if (activeTab === 'author') {
+        // Search for authors and redirect to books by author
+        const results = await searchAuthors({ q: searchQuery });
+        if (results.data.authors.length > 0) {
+          const exactMatch = results.data.authors.find(
+            (author: { name: string }) => author.name.toLowerCase() === searchQuery.toLowerCase()
+          );
+
+          if (exactMatch) {
+            // Navigate to books by this specific author
+            navigate(`/books?author=${exactMatch.id}`);
+          } else {
+            // Navigate to books page with author search
+            navigate(`/books?search=${encodeURIComponent(searchQuery)}&type=author`);
+          }
+        } else {
+          toast.error('No authors found for your search.');
+        }
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      toast.error('Search failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      console.log(`Searching for ${activeTab}: ${query}`);
-      setShowSuggestions(false);
+      handleSearch(query.trim());
     }
   };
 
@@ -105,29 +214,53 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
 
     if (activeTab === 'book') {
       try {
-        searchBooks({ q: e.target.value }).then(({ data }) => {
-          const books = data.books.map((book: { title: string; cover_image_name: string }) => ({
-            title: book.title,
-            image: book.cover_image_name,
-          }));
-          setFilteredSuggestions(books);
-          setShowSuggestions(books.length > 0);
-        });
+        searchBooks({ q: e.target.value })
+          .then(({ data }) => {
+            console.log('The data is: ', data);
+            const books = data.books.map(
+              (book: { id: string; title: string; cover_image_name: string; slug?: string }) => ({
+                id: book.id,
+                title: book.title,
+                image: book.cover_image_name,
+                slug: book.slug,
+              })
+            );
+            setFilteredSuggestions(books);
+            setShowSuggestions(books.length > 0);
+          })
+          .catch((err) => {
+            console.error('Book search error:', err);
+            setFilteredSuggestions([]);
+            setShowSuggestions(false);
+          });
       } catch (err) {
-        console.log(err);
+        console.error('Book search error:', err);
+        setFilteredSuggestions([]);
+        setShowSuggestions(false);
       }
     } else if (e.target.value.trim() !== '' && activeTab === 'author') {
       try {
-        searchAuthors({ q: e.target.value }).then(({ data }) => {
-          const authors = data.authors.map((author: { name: string; image_name: string }) => ({
-            title: author.name,
-            image: author.image_name,
-          }));
-          setFilteredSuggestions(authors);
-          setShowSuggestions(authors.length > 0);
-        });
+        searchAuthors({ q: e.target.value })
+          .then(({ data }) => {
+            const authors = data.authors.map(
+              (author: { id: string; name: string; image_name: string }) => ({
+                id: author.id,
+                title: author.name,
+                image: author.image_name,
+              })
+            );
+            setFilteredSuggestions(authors);
+            setShowSuggestions(authors.length > 0);
+          })
+          .catch((err) => {
+            console.error('Author search error:', err);
+            setFilteredSuggestions([]);
+            setShowSuggestions(false);
+          });
       } catch (err) {
-        console.log(err);
+        console.error('Author search error:', err);
+        setFilteredSuggestions([]);
+        setShowSuggestions(false);
       }
     }
   };
@@ -153,10 +286,15 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
         <Button
           size='icon'
           variant='ghost'
-          className='absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg transition-all duration-200 hover:scale-105'
+          disabled={isLoading}
+          className='absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50'
           aria-label={ariaLabel}
         >
-          <Search className='h-5 w-5' />
+          {isLoading ? (
+            <div className='animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full' />
+          ) : (
+            <Search className='h-5 w-5' />
+          )}
         </Button>
       </form>
       {/* Suggestions Dropdown via Portal */}
@@ -179,10 +317,11 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
               {filteredSuggestions.map((suggestion, index) => {
                 return (
                   <button
-                    key={suggestion.title}
+                    key={suggestion.id}
                     type='button'
-                    onClick={() => handleSuggestionClick(suggestion.title)}
-                    className={`w-full text-left px-4 py-3 hover:bg-accent transition-colors duration-150 flex items-center gap-3 text-sm ${
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    disabled={isLoading}
+                    className={`w-full text-left px-4 py-3 hover:bg-accent transition-colors duration-150 flex items-center gap-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${
                       index === selectedIndex
                         ? 'bg-accent text-accent-foreground'
                         : 'text-foreground'
@@ -191,7 +330,11 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
                     <img
                       src={`${IMAGE_BASE_URL}/${suggestion.image}`}
                       alt={suggestion.title}
-                      className='h-10 w-10 flex-shrink-0 object-cover'
+                      className='h-10 w-10 flex-shrink-0 object-cover rounded'
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/assets/images/book/placeholder.jpg'; // fallback image
+                      }}
                     />
                     <span className='truncate notranslate'>{suggestion.title}</span>
                   </button>

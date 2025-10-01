@@ -2,31 +2,132 @@ import AddProductBox from '../components/general/AddProductBox';
 import ProductCardSkeleton from '../components/ProductSkeleton';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Slider } from '@/components/ui/slider';
 import type { Book } from '@/types/types';
-import { getBooks } from '@/services/bookService';
+import {
+  getBooks,
+  searchBooks,
+  getBooksByCategory,
+  getBooksByAuthor,
+  getBooksByGenre,
+  getBooksByTags,
+} from '@/services/bookService';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+
+// Search Form Component
+const SearchForm = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/books?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  return (
+    <div className='search-box'>
+      <form onSubmit={handleSearch}>
+        <div className='input-group'>
+          <input
+            type='text'
+            className='form-control'
+            placeholder='Search books, authors, categories...'
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button className='btn theme-bg-color text-white m-0' type='submit'>
+            Search
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
 const BooksPage = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showFilter] = useState(false);
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [pageTitle, setPageTitle] = useState('Find Your Next Read');
   const min = 0;
   const max = 1000000;
   const [value, setValue] = useState([550000]);
 
-  useEffect(() => {
+  // Get search parameters
+  const searchQuery = searchParams.get('search');
+  const authorId = searchParams.get('author');
+  const categoryId = searchParams.get('category');
+  const genreId = searchParams.get('genre');
+  const tagId = searchParams.get('tag');
+  const searchType = searchParams.get('type');
+
+  const fetchBooks = async () => {
     setIsLoading(true);
-    getBooks({ page: 1, limit: 20 })
-      .then(({ data }) => {
-        const { books } = data;
-        setBooks(books);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setIsLoading(false);
-      });
-  }, []);
+
+    try {
+      let response;
+      let title = 'Find Your Next Read';
+
+      // Determine which API call to make based on search parameters
+      if (searchQuery && searchType === 'author') {
+        // Search for books by author name/query
+        response = await searchBooks({ q: searchQuery });
+        title = `Books by Authors matching "${searchQuery}"`;
+      } else if (searchQuery) {
+        // General book search
+        response = await searchBooks({ q: searchQuery });
+        title = `Search Results for "${searchQuery}"`;
+      } else if (authorId) {
+        // Books by specific author ID
+        response = await getBooksByAuthor(authorId, { page: 1, limit: 20 });
+        title = `Books by Author (ID: ${authorId})`;
+      } else if (categoryId) {
+        // Books by category
+        response = await getBooksByCategory(categoryId, { page: 1, limit: 20 });
+        title = `Books in Category (ID: ${categoryId})`;
+      } else if (genreId) {
+        // Books by genre
+        response = await getBooksByGenre(genreId, { page: 1, limit: 20 });
+        title = `Books in Genre (ID: ${genreId})`;
+      } else if (tagId) {
+        // Books by tag
+        response = await getBooksByTags(tagId, { page: 1, limit: 20 });
+        title = `Books with Tag (ID: ${tagId})`;
+      } else {
+        // Default: get all books
+        response = await getBooks({ page: 1, limit: 20 });
+      }
+
+      if (response?.data?.books) {
+        setBooks(response.data.books);
+        setPageTitle(title);
+      } else if (response?.data && Array.isArray(response.data)) {
+        // Some APIs might return books directly in data array
+        setBooks(response.data);
+        setPageTitle(title);
+      } else {
+        setBooks([]);
+        setPageTitle('No Books Found');
+      }
+    } catch (error) {
+      console.error('Error fetching books:', error);
+      toast.error('Failed to load books. Please try again.');
+      setBooks([]);
+      setPageTitle('Error Loading Books');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, [searchQuery, authorId, categoryId, genreId, tagId, searchType]);
   return (
     <section className='section-b-space shop-section -mt-8 md:-mt-16'>
       <div className='container-fluid-lg'>
@@ -38,7 +139,7 @@ const BooksPage = () => {
                 <div className='row'>
                   <div className=' mx-auto'>
                     <div className='title d-block text-center mb-0'>
-                      <h2>Find Your Next Read</h2>
+                      <h2>{pageTitle}</h2>
                       <span className='title-leaf'>
                         <svg className='icon-width'>
                           <use xlinkHref='/assets/svg/leaf.svg#leaf'></use>
@@ -46,18 +147,7 @@ const BooksPage = () => {
                       </span>
                     </div>
 
-                    <div className='search-box'>
-                      <div className='input-group'>
-                        <input type='text' className='form-control' placeholder='' />
-                        <button
-                          className='btn theme-bg-color text-white m-0'
-                          type='button'
-                          id='button-addon1'
-                        >
-                          Search
-                        </button>
-                      </div>
-                    </div>
+                    <SearchForm />
                   </div>
                 </div>
               </div>
@@ -479,8 +569,27 @@ const BooksPage = () => {
                 </div>
               </div>
             </div>
+            {/* Loading/Results Counter */}
+            <div className='flex justify-between items-center mt-6 mb-4'>
+              {isLoading ? (
+                <p className='text-sm text-gray-600'>Loading books...</p>
+              ) : (
+                <p className='text-sm text-gray-600'>
+                  {books.length > 0 ? `Showing ${books.length} books` : 'No books found'}
+                </p>
+              )}
+              {!isLoading && (searchQuery || authorId || categoryId || genreId || tagId) && (
+                <button
+                  onClick={() => navigate('/books')}
+                  className='text-sm text-blue-600 hover:underline'
+                >
+                  Clear filters
+                </button>
+              )}
+            </div>
+
             {/* Product List Section */}
-            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:!gap-4 product-list-section mt-10'>
+            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:!gap-4 product-list-section mt-4'>
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} className='col'>
@@ -494,7 +603,22 @@ const BooksPage = () => {
                   </div>
                 ))
               ) : (
-                <p className='text-center col-span-full'>No books found.</p>
+                <div className='col-span-full text-center py-12'>
+                  <h3 className='text-lg font-semibold text-gray-600 mb-2'>No books found</h3>
+                  <p className='text-gray-500 mb-4'>
+                    {searchQuery || authorId || categoryId || genreId || tagId
+                      ? 'Try adjusting your search criteria or browse all books.'
+                      : 'No books are currently available.'}
+                  </p>
+                  {(searchQuery || authorId || categoryId || genreId || tagId) && (
+                    <button
+                      onClick={() => navigate('/books')}
+                      className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors'
+                    >
+                      Browse All Books
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>

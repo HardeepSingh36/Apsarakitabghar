@@ -14,6 +14,12 @@ export const AUTH_ME = `${API_BASE_URL}/profile`;
 // ------------- Public Books -------------
 export const BOOKS_LIST = `${API_BASE_URL}/books-list`;
 export const BOOKS_SINGLE = `${API_BASE_URL}/books/single`;
+export const BOOKS_GET = `${API_BASE_URL}/books-get`;
+export const BOOKS_BY_SLUG = `${API_BASE_URL}/books-by-slug`;
+export const BOOKS_BY_CATEGORY = `${API_BASE_URL}/books-by-category`;
+export const BOOKS_BY_AUTHOR = `${API_BASE_URL}/books-by-author`;
+export const BOOKS_BY_GENRE = `${API_BASE_URL}/books-by-genre`;
+export const BOOKS_BY_TAGS = `${API_BASE_URL}/books-by-tags`;
 export const BOOKS_SEARCH = `${API_BASE_URL}/books-search`;
 export const BOOKS_AUTHORS = `${API_BASE_URL}/books-by-author`;
 export const BOOKS_CATEGORIES = `${API_BASE_URL}/categories-list`;
