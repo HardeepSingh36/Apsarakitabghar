@@ -22,6 +22,9 @@ import TermConditions from './pages/TermConditions';
 import ScrollToTop from './components/scrollToTop';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
+import ForgotPassword from './pages/ForgotPassword';
 
 // define once globally
 defineElement(Lottie.loadAnimation);
@@ -35,11 +38,19 @@ const App = () => {
   return (
     <AuthDialogProvider>
       {/* Conditionally render Header */}
-      {location.pathname !== '/dashboard' && <Header />}
+      {location.pathname !== '/dashboard' &&
+      location.pathname !== '/signin' &&
+      location.pathname !== '/signup' &&
+      location.pathname !== '/forgot-password' ? (
+        <Header />
+      ) : null}
       <MobileFixMenu />
       <ScrollToTop />
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='/signin' element={<SignIn />} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/books/:id' element={<BookDetail />} />
         <Route path='/books' element={<BooksPage />} />
         {/* Protected routes */}
@@ -79,10 +90,12 @@ const App = () => {
         <Route path='/contact-us' element={<Contact />} />
         <Route path='/query-form' element={<QueryForm />} />
         <Route path='/privacy-policy' element={<PrivacyPolicy />} />
-        <Route path='/term-conditions' element={<TermConditions />} />
+        <Route path='/terms-conditions' element={<TermConditions />} />
         <Route path='*' element={<div>404 Not Found</div>} />
       </Routes>
-      <Footer />
+      {location.pathname !== '/dashboard' &&
+      location.pathname !== '/signin' &&
+      location.pathname !== '/signup' && location.pathname !== '/forgot-password' && <Footer />}
       <Toaster position='top-right' />
     </AuthDialogProvider>
   );
