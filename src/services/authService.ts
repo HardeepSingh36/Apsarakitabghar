@@ -40,6 +40,7 @@ export const register = async (userData: {
   first_name: string;
   last_name: string;
   mobile: string;
+  captcha_token?: string;
 }) => {
   const res = await fetch(AUTH_REGISTER, {
     method: 'POST',

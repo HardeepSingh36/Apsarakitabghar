@@ -229,7 +229,7 @@ const RightSideBox = () => {
                     <button
                       type='button'
                       className='!no-underline bg-transparent border-0 p-0'
-                      onClick={openSignUp}
+                      onClick={() => openSignUp('')}
                     >
                       Register
                     </button>

@@ -105,6 +105,7 @@ const SignUp = () => {
         first_name: firstName,
         last_name: lastName,
         mobile: phoneNumber,
+        captcha_token: captchaToken,
       });
 
       if (response.status !== 'success') {
@@ -154,6 +155,16 @@ const SignUp = () => {
 
           <div className='col-xxl-5 col-xl-5 col-lg-6 col-sm-8 mx-auto'>
             <div className='log-in-box'>
+              <div className='text-center mb-4'>
+                <Link to='/' className='web-logo'>
+                  <img
+                    src='/assets/logo/apsra.svg'
+                    className='img-fluid !mx-auto'
+                    alt='Apsara Kitab Ghar'
+                    style={{ maxHeight: '50px' }}
+                  />
+                </Link>
+              </div>
               <div className='log-in-title'>
                 <h3>Welcome</h3>
                 <h4>Create Your Account</h4>

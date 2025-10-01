@@ -47,6 +47,16 @@ const ForgotPassword = () => {
 
             <div className='col-xxl-4 col-xl-5 col-lg-6 col-sm-8 mx-auto'>
               <div className='log-in-box'>
+                <div className='text-center mb-4'>
+                  <Link to='/' className='web-logo'>
+                    <img
+                      src='/assets/logo/apsra.svg'
+                      className='img-fluid mx-auto'
+                      alt='Apsara Kitab Ghar'
+                      style={{ maxHeight: '50px' }}
+                    />
+                  </Link>
+                </div>
                 <div className='log-in-title text-center'>
                   <h3>Email Sent!</h3>
                   <h4>Check Your Inbox</h4>
@@ -121,6 +131,16 @@ const ForgotPassword = () => {
 
           <div className='col-xxl-4 col-xl-5 col-lg-6 col-sm-8 mx-auto'>
             <div className='log-in-box'>
+              <div className='text-center mb-4'>
+                <Link to='/' className='web-logo'>
+                  <img
+                    src='/assets/logo/apsra.svg'
+                    className='img-fluid'
+                    alt='Apsara Kitab Ghar'
+                    style={{ maxHeight: '60px' }}
+                  />
+                </Link>
+              </div>
               <div className='log-in-title'>
                 <h3>Forgot Password</h3>
                 <h4>Reset Your Password</h4>
