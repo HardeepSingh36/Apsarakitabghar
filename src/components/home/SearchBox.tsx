@@ -336,7 +336,7 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
                         target.src = '/assets/images/book/placeholder.jpg'; // fallback image
                       }}
                     />
-                    <span className='truncate notranslate'>{suggestion.title}</span>
+                    <span className='truncate notranslate text-base font-medium'>{suggestion.title}</span>
                   </button>
                 );
               })}

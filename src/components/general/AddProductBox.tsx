@@ -130,7 +130,9 @@ const AddProductBox = ({
       </div>
       <div className='product-footer'>
         <div className='product-detail position-relative md:mt-4'>
-          <h6 className='weight notranslate'>{product.title}</h6>
+          <h6 className='name !font-semibold notranslate !text-xl leading-6 !text-gray-900 mb-1'>
+            {product.title}
+          </h6>
           {/* <div className='product-rating mt-2'>
             <ul className='rating'>
               {[...Array(5)].map((_, i) => (
@@ -142,9 +144,9 @@ const AddProductBox = ({
             <span>(5)</span>
           </div> */}
           <Link to={`/books/${product.slug}`} className='!no-underline' state={{ item: product }}>
-            <h5 className='name'>{product.description}</h5>
+            <h5 className='name !font-medium text-muted !text-sm'>{product.description}</h5>
           </Link>
-          <h6 className='byers text-muted'>
+          <h6 className='byers text-base !text-emerald-600'>
             <span>By</span> {product.author_name || 'Unknown Author'}
           </h6>
           <h6 className='price'>
