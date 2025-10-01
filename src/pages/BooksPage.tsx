@@ -13,6 +13,7 @@ import {
   getBooksByGenre,
   getBooksByTags,
 } from '@/services/bookService';
+import { booksByFlagsService, getFlagDisplayName } from '@/services/booksByFlagsService';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -67,6 +68,13 @@ const BooksPage = () => {
   const tagId = searchParams.get('tag');
   const searchType = searchParams.get('type');
 
+  // Get flag parameters
+  const isNew = searchParams.get('is_new');
+  const isTrending = searchParams.get('is_trending');
+  const isPopular = searchParams.get('is_popular');
+  const isBestSeller = searchParams.get('is_best_seller');
+  const featured = searchParams.get('featured');
+
   const fetchBooks = async () => {
     setIsLoading(true);
 
@@ -74,8 +82,35 @@ const BooksPage = () => {
       let response;
       let title = 'Find Your Next Read';
 
+      // Check for flag-based filtering first
+      if (isNew || isTrending || isPopular || isBestSeller || featured) {
+        const flagParams = {
+          is_new: isNew === '1',
+          is_trending: isTrending === '1',
+          is_popular: isPopular === '1',
+          is_best_seller: isBestSeller === '1',
+          featured: featured === '1',
+          page: 1,
+          limit: 20,
+          sort: 'created_at' as const,
+          order: 'DESC' as const,
+        };
+
+        response = await booksByFlagsService.getBooksByFlags(flagParams);
+
+        // Create title based on active flags
+        const activeFlags = [];
+        if (isNew === '1') activeFlags.push(getFlagDisplayName('is_new'));
+        if (isTrending === '1') activeFlags.push(getFlagDisplayName('is_trending'));
+        if (isPopular === '1') activeFlags.push(getFlagDisplayName('is_popular'));
+        if (isBestSeller === '1') activeFlags.push(getFlagDisplayName('is_best_seller'));
+        if (featured === '1') activeFlags.push(getFlagDisplayName('featured'));
+
+        title =
+          activeFlags.length > 1 ? `${activeFlags.join(' & ')} Books` : `${activeFlags[0]} Books`;
+      }
       // Determine which API call to make based on search parameters
-      if (searchQuery && searchType === 'author') {
+      else if (searchQuery && searchType === 'author') {
         // Search for books by author name/query
         response = await searchBooks({ q: searchQuery });
         title = `Books by Authors matching "${searchQuery}"`;
@@ -127,7 +162,19 @@ const BooksPage = () => {
 
   useEffect(() => {
     fetchBooks();
-  }, [searchQuery, authorId, categoryId, genreId, tagId, searchType]);
+  }, [
+    searchQuery,
+    authorId,
+    categoryId,
+    genreId,
+    tagId,
+    searchType,
+    isNew,
+    isTrending,
+    isPopular,
+    isBestSeller,
+    featured,
+  ]);
   return (
     <section className='section-b-space shop-section -mt-8 md:-mt-16'>
       <div className='container-fluid-lg'>

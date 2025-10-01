@@ -5,96 +5,60 @@ const navItems = [
   {
     type: 'link',
     label: 'New',
-    to: '/books',
+    to: '/books?is_new=1',
     className: '',
     isDropdown: false,
   },
-  { type: 'link', label: 'Trending', to: '/books', className: 'lg:!ml-4', isDropdown: false },
-  // {
-  //   type: 'dropdown',
-  //   label: 'Books By Genre',
-  //   className: 'dropdown lg:mx-2 lg:!ml-4',
-  //   dropdownContent: [
-  //     {
-  //       header: 'Agriculture and Industry',
-  //       items: [
-  //         'Agriculture and Rural Affairs',
-  //         'Allied Agricultural Occupations',
-  //         'Crop & Horticulture',
-  //         'Industrial Sectors',
-  //         'Product Accordion',
-  //       ],
-  //       subHeader: 'Applied Arts',
-  //       subItems: [
-  //         'Advertising & Branding Design',
-  //         'Architecture & Interior Design',
-  //         'Digital Arts & New Media',
-  //         'Fashion & Textile Design',
-  //       ],
-  //     },
-  //     {
-  //       header: 'Biographical Writings',
-  //       items: [
-  //         'Autobiographies & Memoirs',
-  //         'Biographical Analyses & Work',
-  //         'Biographie Artists & Writers',
-  //         'Biographie Artists & Writers',
-  //         'Biographie Artists & Writers',
-  //         'Biographie Artists & Writers',
-  //       ],
-  //       subHeader: 'Health And Fitness',
-  //       subItems: [
-  //         'Mental Health & Well being',
-  //         'Personal & Reproductive Health',
-  //         'Physical Health & Fitness',
-  //         'Public Health',
-  //         'Child Health',
-  //       ],
-  //     },
-  //     {
-  //       header: 'History',
-  //       items: [
-  //         'Historiography & Historical Methods',
-  //         'General & World History',
-  //         'Indian History',
-  //         'Religious History',
-  //         'Specific History',
-  //         'Regional History of India',
-  //       ],
-  //       subHeader: 'Career & Skill Development',
-  //       subItems: [
-  //         { label: 'Entrepreneurship & Business Skills', href: '/books' },
-  //         { label: 'Job Market & Employment', href: '/' },
-  //         { label: 'Professional & Vocational Training', href: '/books' },
-  //         {
-  //           label: 'Technology & Automation in Careers',
-  //           href: '/books',
-  //           hot: true,
-  //         },
-  //         { label: 'Workplace & Corporate Growth', href: '/books' },
-  //       ],
-  //     },
-  //   ],
-  // },
   {
     type: 'link',
-    label: 'Popular',
-    to: '/books',
+    label: 'Trending',
+    to: '/books?is_trending=1',
     className: 'lg:!ml-4',
     isDropdown: false,
   },
-  { type: 'link', label: 'Best Sellers', to: '/books', className: 'lg:!ml-4', isDropdown: false },
+  {
+    type: 'link',
+    label: 'Popular',
+    to: '/books?is_popular=1',
+    className: 'lg:!ml-4',
+    isDropdown: false,
+  },
+  {
+    type: 'link',
+    label: 'Best Sellers',
+    to: '/books?is_best_seller=1',
+    className: 'lg:!ml-4',
+    isDropdown: false,
+  },
+  {
+    type: 'link',
+    label: 'Featured',
+    to: '/books?featured=1',
+    className: 'lg:!ml-4',
+    isDropdown: false,
+  },
+  // {
+  //   type: 'dropdown',
+  //   label: 'Special Collections',
+  //   className: 'dropdown lg:!ml-4',
+  //   dropdownMenu: [
+  //     { label: 'New & Trending', to: '/books?is_new=1&is_trending=1' },
+  //     { label: 'Popular Bestsellers', to: '/books?is_popular=1&is_best_seller=1' },
+  //     { label: 'Featured New Arrivals', to: '/books?featured=1&is_new=1' },
+  //     { label: 'Trending Bestsellers', to: '/books?is_trending=1&is_best_seller=1' },
+  //   ],
+  // },
   {
     type: 'dropdown',
     label: 'Categories',
     className: 'dropdown dropdown-mega lg:!ml-4',
     dropdownMenu: [
-      { label: 'Fiction', to: '/books' },
-      { label: 'Non-Fiction', to: '/books' },
-      { label: 'Science Fiction', to: '/books' },
-      { label: 'Fantasy', to: '/books' },
-      { label: 'Mystery', to: '/books' },
-      { label: 'Biography', to: '/books' },
+      { label: 'Fiction', to: '/books?category=fiction' },
+      { label: 'Non-Fiction', to: '/books?category=non-fiction' },
+      { label: 'Science Fiction', to: '/books?category=science-fiction' },
+      { label: 'Fantasy', to: '/books?category=fantasy' },
+      { label: 'Mystery', to: '/books?category=mystery' },
+      { label: 'Biography', to: '/books?category=biography' },
     ],
   },
 ];
@@ -167,13 +131,19 @@ const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJo
           <ul className='dropdown-menu'>
             {dropdownMenu.map((item: any, idx: number) => (
               <li key={idx}>
-                <a
-                  className='dropdown-item'
-                  href='javascript:void(0)'
-                  onClick={() => onJoinClick && onJoinClick(item.label)}
-                >
-                  {item.label}
-                </a>
+                {item.to ? (
+                  <Link className='dropdown-item' to={item.to}>
+                    {item.label}
+                  </Link>
+                ) : (
+                  <a
+                    className='dropdown-item'
+                    href='javascript:void(0)'
+                    onClick={() => onJoinClick && onJoinClick(item.label)}
+                  >
+                    {item.label}
+                  </a>
+                )}
               </li>
             ))}
           </ul>

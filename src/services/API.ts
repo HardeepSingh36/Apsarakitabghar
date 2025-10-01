@@ -20,6 +20,7 @@ export const BOOKS_BY_CATEGORY = `${API_BASE_URL}/books-by-category`;
 export const BOOKS_BY_AUTHOR = `${API_BASE_URL}/books-by-author`;
 export const BOOKS_BY_GENRE = `${API_BASE_URL}/books-by-genre`;
 export const BOOKS_BY_TAGS = `${API_BASE_URL}/books-by-tags`;
+export const BOOKS_BY_FLAGS = `${API_BASE_URL}/books-by-flags`;
 export const BOOKS_SEARCH = `${API_BASE_URL}/books-search`;
 export const BOOKS_AUTHORS = `${API_BASE_URL}/books-by-author`;
 export const BOOKS_CATEGORIES = `${API_BASE_URL}/categories-list`;
