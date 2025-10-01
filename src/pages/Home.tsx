@@ -1,4 +1,4 @@
-import BooksCategories from '@/components/home/BooksCategories';
+import BooksGenres from '@/components/home/BooksGenres';
 import HomeSection from '@/components/home/HomeSection';
 import PopularBooksByYear from '@/components/home/PopularBooksByYear';
 import TopSellingBooks from '@/components/home/TopSellingBooks';
@@ -7,10 +7,9 @@ const Home = () => {
   return (
     <>
       <HomeSection />
-      <BooksCategories />
+      <BooksGenres />
       <PopularBooksByYear />
       <TopSellingBooks />
-      
     </>
   );
 };

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { login, logout } from '@/features/auth/authSlice';
 import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { login as loginApi, getProfile, register } from '@/services/authService';
 import { getCaptchaConfig } from '@/services/captchaService';
 
@@ -571,6 +571,21 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
                 {authView === 'signin' ? 'Sign In' : 'Create Account'}
                 {loading && <Loader className='animate-spin' size={16} />}
               </button>
+              {/* Forgot Password Button for Sign In View */}
+              {authView === 'signin' && (
+                <div className='text-center'>
+                  <Link
+                    to={'#'}
+                    className='!mx-auto'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setAuthView('forgot');
+                    }}
+                  >
+                    Forgot your password?
+                  </Link>
+                </div>
+              )}
               <div
                 className='d-flex justify-content-between align-items-center'
                 style={{ marginTop: 8 }}

@@ -10,6 +10,22 @@ export interface Category {
   children: Category[];
 }
 
+export interface Genre {
+  id: number;
+  genre_name: string;
+  slug: string;
+  description: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  book_count: number;
+  avg_rating: number;
+  avg_price: number;
+  min_price: number;
+  max_price: number;
+  total_sales: number;
+}
+
 export interface Book {
   id: number;
   title: string;
