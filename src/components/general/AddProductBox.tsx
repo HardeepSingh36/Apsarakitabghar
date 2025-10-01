@@ -130,7 +130,7 @@ const AddProductBox = ({
       </div>
       <div className='product-footer'>
         <div className='product-detail position-relative md:mt-4'>
-          <h6 className='name !font-semibold notranslate !text-xl leading-6 !text-gray-900 mb-1'>
+          <h6 className='name !font-semibold notranslate !text-xl leading-6 !text-gray-900 mb-1 cursor-pointer'>
             {product.title}
           </h6>
           {/* <div className='product-rating mt-2'>

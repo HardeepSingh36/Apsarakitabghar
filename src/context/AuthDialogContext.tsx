@@ -57,6 +57,7 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
   const [redirectPath, setRedirectPath] = React.useState<string | null>(null); // Track origin page
   const [captchaValid, setCaptchaValid] = React.useState(false);
   const [captchaConfig, setCaptchaConfig] = useState<CaptchaConfig | null>(null);
+  const [rememberMe, setRememberMe] = React.useState(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -108,6 +109,7 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
     setFirstName('');
     setLastName('');
     setPhoneNumber('');
+    setRememberMe(false);
   };
 
   // Ensure `navigate` is used explicitly in `handleSubmit` to avoid lint errors
@@ -183,9 +185,19 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
             })
           );
 
-          // Store token in local storage
+          // Store token in local storage with extended expiration if remember me is checked
           localStorage.setItem('auth_token', token);
-          localStorage.setItem('token_expires_in', expires_in);
+          if (rememberMe) {
+            // Extend token expiration to 3 months (90 days)
+            const threeMonthsFromNow = new Date();
+            threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3);
+            const extendedExpiration = Math.floor(threeMonthsFromNow.getTime() / 1000);
+            localStorage.setItem('token_expires_in', extendedExpiration.toString());
+            localStorage.setItem('remember_me', 'true');
+          } else {
+            localStorage.setItem('token_expires_in', expires_in);
+            localStorage.removeItem('remember_me');
+          }
 
           toast.success('Successfully signed in!');
           setDialogOpen(false);
@@ -199,7 +211,7 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
             }
 
             // ✅ Verify captcha with backend
-            const captchaRes = await fetch('/api/captcha-verify.php', {
+            const captchaRes = await fetch('/api/captcha-verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ captcha_token: captchaToken }),
@@ -250,7 +262,6 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
             if (redirectPath) navigate(redirectPath);
           } catch (error: any) {
             console.log(error);
-            toast.error('Signup failed. Please try again.');
           } finally {
             setLoading(false);
           }
@@ -266,7 +277,7 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
     }, 1500); // Simulate a delay of 1.5 seconds
   };
 
-  // Add useEffect to fetch profile on component mount
+  // Add useEffect to fetch profile on component mount and restore remember me state
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem('auth_token');
@@ -298,6 +309,12 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
       }
     };
 
+    // Restore remember me state from localStorage
+    const rememberMeValue = localStorage.getItem('remember_me');
+    if (rememberMeValue === 'true') {
+      setRememberMe(true);
+    }
+
     fetchProfile();
   }, [dispatch]);
 
@@ -320,6 +337,7 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
     // Clear local storage
     localStorage.removeItem('auth_token');
     localStorage.removeItem('token_expires_in');
+    localStorage.removeItem('remember_me');
 
     // Dispatch logout action
     dispatch(logout());
@@ -528,6 +546,41 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
                       required
                     />
                   </div>
+                  {authView === 'signin' && (
+                    <div className='form-group'>
+                      <div
+                        className='form-check d-flex align-items-center !ml-1'
+                        style={{ gap: '8px' }}
+                      >
+                        <input
+                          className='form-check-input'
+                          type='checkbox'
+                          id='rememberMe'
+                          checked={rememberMe}
+                          onChange={(e) => setRememberMe(e.target.checked)}
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            marginTop: '0',
+                            accentColor: '#0da487',
+                          }}
+                        />
+                        <label
+                          className='form-check-label'
+                          htmlFor='rememberMe'
+                          style={{
+                            fontSize: '14px',
+                            fontWeight: '400',
+                            color: '#666',
+                            cursor: 'pointer',
+                            userSelect: 'none',
+                          }}
+                        >
+                          Remember me
+                        </label>
+                      </div>
+                    </div>
+                  )}
                   {authView === 'signup' && (
                     <div className='form-group'>
                       <label className='form-label'>Confirm Password</label>
@@ -559,7 +612,7 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
                 }`}
                 style={{
                   width: '100%',
-                  marginTop: 12,
+                  marginTop: 0,
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
