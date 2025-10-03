@@ -1,3 +1,4 @@
+import { QR_CODE_BASE_URL } from '@/constants';
 import { GET_QR } from '@/services/API';
 import React, { useEffect, useState } from 'react';
 
@@ -56,23 +57,21 @@ const PaymentOptions: React.FC = () => {
 
   return (
     <div className='space-y-6'>
-      <h2 className='text-xl font-bold'>Payment Options</h2>
-
       {/* Show QR Codes */}
       {paymentData.data.qr_codes.length > 0 && (
         <div>
-          <h3 className='text-lg font-semibold mb-2'>Scan QR Code</h3>
-          <div className='flex flex-wrap gap-6'>
+          <h3 className='text-lg font-semibold mb-2 text-center'>Scan QR Code</h3>
+          <div className='flex flex-wrap justify-center gap-6'>
             {paymentData.data.qr_codes.map((qr, idx) =>
-              qr.available ? (
-                <div key={idx} className='border p-4 rounded-lg shadow-sm text-center'>
+              !qr.available ? (
+                <div key={idx} className='border rounded-lg shadow-sm text-center'>
                   <img
-                    src={qr.qr_code_url.replace('../', '/')}
+                    src={`${QR_CODE_BASE_URL}${qr.qr_code_file}`}
                     alt={`QR for ${qr.admin_name}`}
-                    className='w-40 h-40 mx-auto'
+                    className='h-80'
                   />
-                  <p className='mt-2 font-medium'>{qr.admin_name}</p>
-                  <p className='text-sm text-gray-600'>{qr.upi_id}</p>
+                  {/* <p className='mt-2 font-medium'>{qr.admin_name}</p>
+                  <p className='text-sm text-gray-600'>{qr.upi_id}</p> */}
                 </div>
               ) : null
             )}
@@ -83,8 +82,8 @@ const PaymentOptions: React.FC = () => {
       {/* Show UPI IDs */}
       {paymentData.data.upi_ids.length > 0 && (
         <div>
-          <h3 className='text-lg font-semibold mb-2'>UPI IDs</h3>
-          <ul className='list-disc list-inside'>
+          <h3 className='text-lg font-semibold mb-2 text-center'>UPI IDs</h3>
+          <ul className='list-disc list-inside text-center'>
             {paymentData.data.upi_ids.map((upi, idx) => (
               <li key={idx}>
                 {upi.display_text} <span className='font-bold'>{upi.upi_id}</span>
@@ -95,15 +94,19 @@ const PaymentOptions: React.FC = () => {
       )}
 
       {/* Show Instructions */}
-      {paymentData.data && (
-        <div className='bg-gray-100 p-4 rounded-lg mt-4'>
+      {paymentData.data && paymentData.data.payment_instructions && (
+        <div className='bg-gray-100 p-4 rounded-lg mt-4 '>
           <h3 className='text-lg font-semibold mb-2'>Payment Instructions</h3>
-          <ol className='list-decimal list-inside space-y-1'>
-            <li>Scan QR code or use UPI ID below</li>
-            <li>Make payment for your order amount</li>
-            <li>Take screenshot of payment confirmation</li>
-            <li>Upload receipt screenshot when placing order</li>
-          </ol>
+          <ul className='flex flex-col !list-disc list-inside'>
+            {paymentData.data.payment_instructions ? (
+              <>
+                <li>{paymentData.data.payment_instructions.step1}</li>
+                <li>{paymentData.data.payment_instructions.step2}</li>
+                <li>{paymentData.data.payment_instructions.step3}</li>
+                <li>{paymentData.data.payment_instructions.step4}</li>
+              </>
+            ) : null}
+          </ul>
           <p className='mt-2 text-red-600 font-medium'>
             Note:All payments are verified manually by admin
           </p>

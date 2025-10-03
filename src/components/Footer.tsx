@@ -181,7 +181,7 @@ const Footer = () => {
         {/* Sub Footer */}
         <div className='sub-footer sub-footer-lite section-b-space section-t-space'>
           <div className='left-footer w-full text-center'>
-            <p className='light-text'>2024 Copyright By Apsra Kitab Ghar</p>
+            <p className='light-text'>© 2024 Apsra Kitab Ghar. All rights reserved.</p>
           </div>
         </div>
       </div>

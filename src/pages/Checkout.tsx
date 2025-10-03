@@ -387,6 +387,39 @@ const Checkout = () => {
                   </ul>
                 </div>
 
+                <div className='summery-box-2 mt-4'>
+                  {/* Transaction ID Input */}
+                  <div className='mb-3'>
+                    <label htmlFor='transactionId' className='form-label fw-semibold'>
+                      Transaction ID
+                    </label>
+                    <input
+                      type='text'
+                      id='transactionId'
+                      className='form-control'
+                      placeholder='Enter your transaction ID'
+                      required
+                    />
+                  </div>
+
+                  {/* Screenshot Upload */}
+                  <div className='mb-3'>
+                    <label htmlFor='paymentScreenshot' className='form-label fw-semibold'>
+                      Upload Payment Screenshot
+                    </label>
+                    <input
+                      type='file'
+                      id='paymentScreenshot'
+                      className='form-control'
+                      accept='image/*'
+                      required
+                    />
+                    <p className='text-muted small mt-1'>
+                      Please upload the screenshot of your UPI/QR payment confirmation.
+                    </p>
+                  </div>
+                </div>
+
                 {/* <div className='checkout-offer'>
                   <div className='offer-title'>
                     <div className='offer-icon'>
