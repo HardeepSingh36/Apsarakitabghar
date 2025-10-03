@@ -63,5 +63,8 @@ export const ADDRESSES_DELETE = `${API_BASE_URL}/addresses-delete`;
 // ------------- Orders -------------
 export const ORDERS_PLACE = `${API_BASE_URL}/orders-place`;
 
+// ------------- User Stats -------------
+export const USER_STATS = `${API_BASE_URL}/user-stats`;
+
 // ------------- QR -------------
 export const GET_QR = `${API_BASE_URL}/get-qr`;
