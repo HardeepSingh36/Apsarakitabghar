@@ -2,247 +2,12 @@ import Slider from 'react-slick';
 import AddProductBox from '../general/AddProductBox';
 import { useEffect, useState } from 'react';
 import type { Book } from '@/types/types';
+import { getRelatedBooks } from '@/services/bookService';
+import toast from 'react-hot-toast';
 
-const relatedProducts: Book[] = [
-  {
-    id: 1,
-    title: 'The Lost Tales',
-    slug: 'the-lost-tales',
-    description: 'A thrilling collection of stories set in mystical lands.',
-    isbn: '978-1234560001',
-    language: 'English',
-    price: 499,
-    discount_percent: 10,
-    stock_quantity: 50,
-    pages: 320,
-    publisher_name: 'Super Admin',
-    publish_date: '2021-05-10',
-    cover_image_name: '6.jpg',
-    featured: 1,
-    views_count: 0,
-    sales_count: 0,
-    rating_avg: 0,
-    rating_count: 0,
-    created_at: '2025-09-16 09:37:42',
-    updated_at: '2025-09-16 11:12:17',
-    author_id: 1,
-    category_id: 1,
-    genre_id: 0,
-    author_table_id: null,
-    author_name: 'Harbhajan Singh',
-    author_pen_name: null,
-    category_table_id: 1,
-    category_name: 'Fiction',
-    genre_table_id: null,
-    genre_name: null,
-    tags: [],
-    discounted_price: 449,
-  },
-  {
-    id: 2,
-    title: 'Whispers of the Wind',
-    slug: 'whispers-of-the-wind',
-    description: 'A captivating tale of love and loss.',
-    isbn: '978-1234560002',
-    language: 'English',
-    price: 450,
-    discount_percent: 10,
-    stock_quantity: 50,
-    pages: 280,
-    publisher_name: 'Super Admin',
-    publish_date: '2021-06-15',
-    cover_image_name: '2.jpg',
-    featured: 1,
-    views_count: 0,
-    sales_count: 0,
-    rating_avg: 0,
-    rating_count: 0,
-    created_at: '2025-09-16 09:37:42',
-    updated_at: '2025-09-16 11:12:17',
-    author_id: 2,
-    category_id: 1,
-    genre_id: 0,
-    author_table_id: null,
-    author_name: 'Amanpreet Kaur',
-    author_pen_name: null,
-    category_table_id: 1,
-    category_name: 'Fiction',
-    genre_table_id: null,
-    genre_name: null,
-    tags: [],
-    discounted_price: 399,
-  },
-  {
-    id: 3,
-    title: 'Echoes of Eternity',
-    slug: 'echoes-of-eternity',
-    description: 'A journey through time and space.',
-    isbn: '978-1234560003',
-    language: 'English',
-    price: 550,
-    discount_percent: 10,
-    stock_quantity: 50,
-    pages: 350,
-    publisher_name: 'Super Admin',
-    publish_date: '2021-07-20',
-    cover_image_name: '3.jpg',
-    featured: 1,
-    views_count: 0,
-    sales_count: 0,
-    rating_avg: 0,
-    rating_count: 0,
-    created_at: '2025-09-16 09:37:42',
-    updated_at: '2025-09-16 11:12:17',
-    author_id: 3,
-    category_id: 1,
-    genre_id: 0,
-    author_table_id: null,
-    author_name: 'Ravinder Singh',
-    author_pen_name: null,
-    category_table_id: 1,
-    category_name: 'Fiction',
-    genre_table_id: null,
-    genre_name: null,
-    tags: [],
-    discounted_price: 499,
-  },
-  {
-    id: 4,
-    title: 'Shadows and Light',
-    slug: 'shadows-and-light',
-    description: 'Exploring the duality of existence.',
-    isbn: '978-1234560004',
-    language: 'English',
-    price: 599,
-    discount_percent: 10,
-    stock_quantity: 50,
-    pages: 400,
-    publisher_name: 'Super Admin',
-    publish_date: '2021-08-25',
-    cover_image_name: '4.jpg',
-    featured: 1,
-    views_count: 0,
-    sales_count: 0,
-    rating_avg: 0,
-    rating_count: 0,
-    created_at: '2025-09-16 09:37:42',
-    updated_at: '2025-09-16 11:12:17',
-    author_id: 4,
-    category_id: 1,
-    genre_id: 0,
-    author_table_id: null,
-    author_name: 'Simranjeet Kaur',
-    author_pen_name: null,
-    category_table_id: 1,
-    category_name: 'Fiction',
-    genre_table_id: null,
-    genre_name: null,
-    tags: [],
-    discounted_price: 539,
-  },
-  {
-    id: 5,
-    title: 'Journey to the Stars',
-    slug: 'journey-to-the-stars',
-    description: 'An epic saga of interstellar exploration.',
-    isbn: '978-1234560005',
-    language: 'English',
-    price: 499,
-    discount_percent: 10,
-    stock_quantity: 50,
-    pages: 300,
-    publisher_name: 'Super Admin',
-    publish_date: '2021-09-30',
-    cover_image_name: '5.jpg',
-    featured: 1,
-    views_count: 0,
-    sales_count: 0,
-    rating_avg: 0,
-    rating_count: 0,
-    created_at: '2025-09-16 09:37:42',
-    updated_at: '2025-09-16 11:12:17',
-    author_id: 5,
-    category_id: 1,
-    genre_id: 0,
-    author_table_id: null,
-    author_name: 'Gurpreet Singh',
-    author_pen_name: null,
-    category_table_id: 1,
-    category_name: 'Fiction',
-    genre_table_id: null,
-    genre_name: null,
-    tags: [],
-    discounted_price: 449,
-  },
-  {
-    id: 6,
-    title: 'Mystic Realms',
-    slug: 'mystic-realms',
-    description: 'Discover the magic within the pages.',
-    isbn: '978-1234560006',
-    language: 'English',
-    price: 599,
-    discount_percent: 10,
-    stock_quantity: 50,
-    pages: 370,
-    publisher_name: 'Super Admin',
-    publish_date: '2021-10-15',
-    cover_image_name: '7.jpg',
-    featured: 1,
-    views_count: 0,
-    sales_count: 0,
-    rating_avg: 0,
-    rating_count: 0,
-    created_at: '2025-09-16 09:37:42',
-    updated_at: '2025-09-16 11:12:17',
-    author_id: 6,
-    category_id: 1,
-    genre_id: 0,
-    author_table_id: null,
-    author_name: 'Navjot Kaur',
-    author_pen_name: null,
-    category_table_id: 1,
-    category_name: 'Fiction',
-    genre_table_id: null,
-    genre_name: null,
-    tags: [],
-    discounted_price: 539,
-  },
-  {
-    id: 7,
-    title: 'Legends Unfold',
-    slug: 'legends-unfold',
-    description: 'Tales of valor and heroism await.',
-    isbn: '978-1234560007',
-    language: 'English',
-    price: 649,
-    discount_percent: 10,
-    stock_quantity: 50,
-    pages: 420,
-    publisher_name: 'Super Admin',
-    publish_date: '2021-11-20',
-    cover_image_name: '8.jpg',
-    featured: 1,
-    views_count: 0,
-    sales_count: 0,
-    rating_avg: 0,
-    rating_count: 0,
-    created_at: '2025-09-16 09:37:42',
-    updated_at: '2025-09-16 11:12:17',
-    author_id: 7,
-    category_id: 1,
-    genre_id: 0,
-    author_table_id: null,
-    author_name: 'Manpreet Singh',
-    author_pen_name: null,
-    category_table_id: 1,
-    category_name: 'Fiction',
-    genre_table_id: null,
-    genre_name: null,
-    tags: [],
-    discounted_price: 589,
-  },
-];
+interface RelatedProductsProps {
+  bookId?: string | number;
+}
 
 const getSlidesToShow = (width: number) => {
   if (width < 480) return 2;
@@ -258,10 +23,12 @@ const baseSliderSettings = {
   slidesToScroll: 1,
 };
 
-const RelatedProducts = () => {
+const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== 'undefined' ? window.innerWidth : 1200
   );
+  const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -269,10 +36,54 @@ const RelatedProducts = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    const fetchRelatedBooks = async () => {
+      if (!bookId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const response = await getRelatedBooks(bookId, {
+          limit: 8,
+          include_category: true,
+          include_genre: true,
+          include_tags: true,
+          include_author: false,
+        });
+
+        if (response.status === 'success' && response.data?.related_books) {
+          setRelatedBooks(response.data.related_books);
+        } else {
+          setRelatedBooks([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch related books:', error);
+        toast.error('Failed to load related books');
+        setRelatedBooks([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRelatedBooks();
+  }, [bookId]);
+
   const sliderSettings = {
     ...baseSliderSettings,
     slidesToShow: getSlidesToShow(windowWidth),
   };
+
+  // Don't render if no bookId provided
+  if (!bookId) {
+    return null;
+  }
+
+  // Don't render if no related books found and not loading
+  if (!isLoading && relatedBooks.length === 0) {
+    return null;
+  }
 
   return (
     <div className='container-fluid-lg'>
@@ -287,17 +98,24 @@ const RelatedProducts = () => {
       <div className='row'>
         <div className='col-12'>
           <div className='slider-6_1 product-wrapper'>
-            <Slider key={windowWidth} {...sliderSettings}>
-              {relatedProducts.map((product, idx) => (
-                <AddProductBox
-                  key={product.id}
-                  product={product}
-                  idx={idx}
-                  showOptions={true}
-                  className='!bg-secondary p-2 !block'
-                />
-              ))}
-            </Slider>
+            {isLoading ? (
+              <div className='flex justify-center items-center py-8'>
+                <div className='animate-spin h-8 w-8 border-2 border-current border-t-transparent rounded-full'></div>
+                <span className='ml-2'>Loading related books...</span>
+              </div>
+            ) : (
+              <Slider key={windowWidth} {...sliderSettings}>
+                {relatedBooks.map((product, idx) => (
+                  <AddProductBox
+                    key={product.id}
+                    product={product}
+                    idx={idx}
+                    showOptions={true}
+                    className='!bg-secondary p-2 !block'
+                  />
+                ))}
+              </Slider>
+            )}
           </div>
         </div>
       </div>

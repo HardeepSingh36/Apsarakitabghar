@@ -8,6 +8,7 @@ import {
   BOOKS_BY_AUTHOR,
   BOOKS_BY_GENRE,
   BOOKS_BY_TAGS,
+  BOOKS_RELATED,
   GENRES_SEARCH,
   TAGS_SEARCH,
 } from './API';
@@ -171,5 +172,29 @@ export const searchTags = async (params: { q?: string }) => {
 
   const res = await fetch(`${TAGS_SEARCH}?${query.toString()}`);
   if (!res.ok) throw new Error('Failed to search tags');
+  return res.json();
+};
+
+export const getRelatedBooks = async (
+  bookId: string | number,
+  params?: {
+    limit?: number;
+    include_category?: boolean;
+    include_genre?: boolean;
+    include_tags?: boolean;
+    include_author?: boolean;
+  }
+): Promise<{ status: string; data: any }> => {
+  const query = new URLSearchParams({
+    book_id: String(bookId),
+    limit: String(params?.limit ?? 12),
+    include_category: params?.include_category !== false ? '1' : '0',
+    include_genre: params?.include_genre !== false ? '1' : '0',
+    include_tags: params?.include_tags !== false ? '1' : '0',
+    include_author: params?.include_author === true ? '1' : '0',
+  });
+
+  const res = await fetch(`${BOOKS_RELATED}?${query.toString()}`);
+  if (!res.ok) throw new Error('Failed to fetch related books');
   return res.json();
 };

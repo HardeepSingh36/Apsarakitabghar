@@ -9,6 +9,7 @@ const HomeSection = () => {
             <div className='slider-animate skeleton-banner-xl'>
               <div>
                 <div className='!h-60 md:!h-80 bg-gradient-to-br from-teal-300 to-teal-500'>
+                  <img src='assets/images/book/banner/banner.jpg' alt='banner' className='w-full object-cover h-full'/>
                   <div></div>
                 </div>
               </div>

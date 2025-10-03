@@ -657,7 +657,7 @@ const BookDetail = () => {
         </div>
       </section>
       <section className='product-list-section section-b-space'>
-        <RelatedProducts />
+        <RelatedProducts bookId={book?.id} />
       </section>
     </>
   );

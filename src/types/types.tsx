@@ -112,3 +112,59 @@ export interface CaptchaConfig {
     required_fields: string[];
   };
 }
+
+// Related Books API Types
+export interface Tag {
+  id: number;
+  tag_name: string;
+  slug?: string;
+}
+
+export interface RelatedBook extends Book {
+  relation_type: 'category' | 'genre' | 'tags' | 'author';
+  relation_score: number;
+  savings: number;
+  in_stock: boolean;
+  stock_status: string;
+  author_display_name: string | null;
+  active_flags: string[];
+}
+
+export interface SourceBook {
+  id: number;
+  title: string;
+  author_name: string;
+  category_name: string;
+  genre_name: string;
+  tags: Tag[];
+}
+
+export interface RelatedBooksResponse {
+  status: string;
+  message: string;
+  data: {
+    source_book: SourceBook;
+    related_books: RelatedBook[];
+    books_by_relation: {
+      category: RelatedBook[];
+      genre: RelatedBook[];
+      tags: RelatedBook[];
+      author: RelatedBook[];
+    };
+    summary: {
+      total_related: number;
+      by_category: number;
+      by_genre: number;
+      by_tags: number;
+      by_author: number;
+      relations_used: string[];
+    };
+    filters_applied: {
+      include_category: boolean;
+      include_genre: boolean;
+      include_tags: boolean;
+      include_author: boolean;
+      limit: number;
+    };
+  };
+}
