@@ -1,10 +1,10 @@
 import { useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import React from 'react';
+import ChangePasswordForm from './ChangePasswordForm';
 
 const DashboardProfile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.auth.user);
-
   // Format date function
   const formatDate = (dateString: string) => {
     if (!dateString || dateString === '0000-00-00 00:00:00') return 'Not provided';
@@ -53,14 +53,14 @@ const DashboardProfile: React.FC = () => {
                   <tr>
                     <td>Phone Number :</td>
                     <td>
-                      <a href='javascript:void(0)'>{user?.mobile || user?.phone_number || 'Not provided'}</a>
+                      <a href='javascript:void(0)'>
+                        {user?.mobile || user?.phone_number || 'Not provided'}
+                      </a>
                     </td>
                   </tr>
                   <tr>
                     <td>Role :</td>
-                    <td style={{ textTransform: 'capitalize' }}>
-                      {user?.role || 'Not specified'}
-                    </td>
+                    <td style={{ textTransform: 'capitalize' }}>{user?.role || 'Not specified'}</td>
                   </tr>
                   <tr>
                     <td>Status :</td>
@@ -91,14 +91,7 @@ const DashboardProfile: React.FC = () => {
                   </tr>
                   <tr>
                     <td>Password :</td>
-                    <td>
-                      <a href='javascript:void(0)'>
-                        ●●●●●●{' '}
-                        <span data-bs-toggle='modal' data-bs-target='#editProfile'>
-                          Change Password
-                        </span>
-                      </a>
-                    </td>
+                    <td>●●●●●●</td>
                   </tr>
                 </tbody>
               </table>
@@ -107,9 +100,7 @@ const DashboardProfile: React.FC = () => {
           <div className='col-xxl-5'>
             <div className='profile-image'>
               <img
-                src={
-                    'assets/images/inner-page/dashboard-profile.png'
-                }
+                src={'assets/images/inner-page/dashboard-profile.png'}
                 className='img-fluid blur-up lazyload'
                 alt={user?.full_name || 'Profile'}
                 onError={(e) => {
@@ -121,6 +112,9 @@ const DashboardProfile: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Change Password Form */}
+      <ChangePasswordForm className='mt-4' />
     </div>
   );
 };

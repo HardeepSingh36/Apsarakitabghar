@@ -130,7 +130,7 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
     toast.success('You have been logged out successfully.');
 
     // Optionally redirect to the home page or login page
-    navigate('/');
+    navigate('/signin');
   };
 
   const ctxValue: AuthDialogContextValue = {

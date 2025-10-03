@@ -11,6 +11,7 @@ export const AUTH_REGISTER = `${API_BASE_URL}/register`;
 export const AUTH_LOGIN = `${API_BASE_URL}/login`;
 export const AUTH_ME = `${API_BASE_URL}/profile`;
 export const AUTH_FORGOT_PASSWORD = `${API_BASE_URL}/forgot-password`;
+export const AUTH_CHANGE_PASSWORD = `${API_BASE_URL}/change-password`;
 
 // ------------- Public Books -------------
 export const BOOKS_LIST = `${API_BASE_URL}/books-list`;

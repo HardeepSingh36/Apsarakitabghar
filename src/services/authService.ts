@@ -1,4 +1,4 @@
-import { AUTH_LOGIN, AUTH_ME, AUTH_REGISTER, AUTH_FORGOT_PASSWORD } from './API';
+import { AUTH_LOGIN, AUTH_ME, AUTH_REGISTER, AUTH_FORGOT_PASSWORD, AUTH_CHANGE_PASSWORD } from './API';
 import type { 
   ForgotPasswordRequest,
   ForgotPasswordResponse,
@@ -80,4 +80,31 @@ export const forgotPassword = async (
   }
 
   return res.json() as Promise<ForgotPasswordResponse>;
+};
+
+export const changePassword = async (passwordData: {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}) => {
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+
+  const res = await fetch(AUTH_CHANGE_PASSWORD, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(passwordData),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || 'Failed to change password');
+  }
+
+  return res.json();
 };
