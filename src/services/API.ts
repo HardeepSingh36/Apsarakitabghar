@@ -25,6 +25,8 @@ export const BOOKS_SEARCH = `${API_BASE_URL}/books-search`;
 export const BOOKS_AUTHORS = `${API_BASE_URL}/books-by-author`;
 export const BOOKS_CATEGORIES = `${API_BASE_URL}/categories-list`;
 export const BOOKS_GENRES = `${API_BASE_URL}/genres-list`;
+export const GENRES_SEARCH = `${API_BASE_URL}/genres-search`;
+export const TAGS_SEARCH = `${API_BASE_URL}/tags-search`;
 export const IMAGE_PATH = 'https://apsrakitabghar.com/uploads/';
 
 // ------------- Authors -------------

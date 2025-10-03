@@ -42,20 +42,32 @@ const navItems = [
     label: 'Categories',
     className: 'dropdown dropdown-mega lg:!ml-4',
     dropdownMenu: [
-      { label: 'Fiction', to: '/books?category=fiction' },
-      { label: 'Non-Fiction', to: '/books?category=non-fiction' },
-      { label: 'Science Fiction', to: '/books?category=science-fiction' },
-      { label: 'Fantasy', to: '/books?category=fantasy' },
-      { label: 'Mystery', to: '/books?category=mystery' },
-      { label: 'Biography', to: '/books?category=biography' },
+      { label: 'Fiction', to: '/books?category_name=Fiction', state: { categoryName: 'Fiction' } },
+      {
+        label: 'Non-Fiction',
+        to: '/books?category_name=Non-Fiction',
+        state: { categoryName: 'Non-Fiction' },
+      },
+      {
+        label: 'Science Fiction',
+        to: '/books?category_name=Science%20Fiction',
+        state: { categoryName: 'Science Fiction' },
+      },
+      { label: 'Fantasy', to: '/books?category_name=Fantasy', state: { categoryName: 'Fantasy' } },
+      { label: 'Mystery', to: '/books?category_name=Mystery', state: { categoryName: 'Mystery' } },
+      {
+        label: 'Biography',
+        to: '/books?category_name=Biography',
+        state: { categoryName: 'Biography' },
+      },
     ],
   },
 ];
 
-const NavItem = ({ label, to, href, className }: any) =>
+const NavItem = ({ label, to, href, className, state }: any) =>
   to ? (
     <li className={`nav-item ${className || ''}`}>
-      <Link className='nav-link no-dropdown ps-xl-2 ps-0' to={to}>
+      <Link className='nav-link no-dropdown ps-xl-2 ps-0' to={to} state={state}>
         {label}
       </Link>
     </li>
@@ -121,7 +133,7 @@ const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJo
             {dropdownMenu.map((item: any, idx: number) => (
               <li key={idx}>
                 {item.to ? (
-                  <Link className='dropdown-item' to={item.to}>
+                  <Link className='dropdown-item' to={item.to} state={item.state}>
                     {item.label}
                   </Link>
                 ) : (

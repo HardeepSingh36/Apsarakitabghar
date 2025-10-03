@@ -8,6 +8,8 @@ import {
   BOOKS_BY_AUTHOR,
   BOOKS_BY_GENRE,
   BOOKS_BY_TAGS,
+  GENRES_SEARCH,
+  TAGS_SEARCH,
 } from './API';
 
 export const getBooks = async (params: {
@@ -34,12 +36,20 @@ export const getBookById = async (id: string | number) => {
   return res.json();
 };
 
-export const searchBooks = async (params: { q?: string; category?: string; author?: string }) => {
+export const searchBooks = async (params: {
+  q?: string;
+  category?: string;
+  author?: string;
+  genre?: string;
+  tag?: string;
+}) => {
   const query = new URLSearchParams();
 
   if (params.q) query.append('q', params.q);
   if (params.category) query.append('category', params.category);
   if (params.author) query.append('author', params.author);
+  if (params.genre) query.append('genre', params.genre);
+  if (params.tag) query.append('tag', params.tag);
 
   const res = await fetch(`${BOOKS_SEARCH}?${query.toString()}`);
   if (!res.ok) throw new Error('Failed to search books');
@@ -143,5 +153,23 @@ export const getBooksByTags = async (
 
   const res = await fetch(`${BOOKS_BY_TAGS}?${query.toString()}`);
   if (!res.ok) throw new Error('Failed to fetch books by tags');
+  return res.json();
+};
+
+export const searchGenres = async (params: { q?: string }) => {
+  const query = new URLSearchParams();
+  if (params.q) query.append('q', params.q);
+
+  const res = await fetch(`${GENRES_SEARCH}?${query.toString()}`);
+  if (!res.ok) throw new Error('Failed to search genres');
+  return res.json();
+};
+
+export const searchTags = async (params: { q?: string }) => {
+  const query = new URLSearchParams();
+  if (params.q) query.append('q', params.q);
+
+  const res = await fetch(`${TAGS_SEARCH}?${query.toString()}`);
+  if (!res.ok) throw new Error('Failed to search tags');
   return res.json();
 };

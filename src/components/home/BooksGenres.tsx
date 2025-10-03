@@ -54,7 +54,14 @@ const BooksGenres = () => {
                 genres.map((genre, index) => (
                   <Link
                     key={genre.id || index}
-                    to={`/books?genre=${genre.id}`}
+                    to={`/books?genre_slug=${encodeURIComponent(
+                      genre.slug || genre.genre_name.toLowerCase().replace(/\s+/g, '-')
+                    )}`}
+                    state={{
+                      genreId: genre.id,
+                      genreName: genre.genre_name,
+                      genreSlug: genre.slug,
+                    }}
                     className='flex items-center flex-col text-center !text-black hover:!text-gray-700 hover:scale-105 transition-all duration-200'
                   >
                     <div className='p-3 mb-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors'>

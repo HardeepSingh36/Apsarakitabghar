@@ -115,8 +115,12 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
         // Validate book exists before navigation
         await validateAndNavigateToBook(suggestion);
       } else if (activeTab === 'author') {
-        // Navigate to author page or books by author
-        navigate(`/books?author=${suggestion.id}`);
+        // Navigate to author page or books by author using author name in URL and ID in state
+        const authorName = (suggestion as any).authorName || suggestion.title;
+        const authorId = suggestion.id;
+        navigate(`/books?author_name=${encodeURIComponent(authorName)}`, {
+          state: { authorId, authorName },
+        });
       }
     } catch (error) {
       console.error('Navigation error:', error);
@@ -170,8 +174,10 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
           );
 
           if (exactMatch) {
-            // Navigate to books by this specific author
-            navigate(`/books?author=${exactMatch.id}`);
+            // Navigate to books by this specific author using name in URL and ID in state
+            navigate(`/books?author_name=${encodeURIComponent(exactMatch.name)}`, {
+              state: { authorId: exactMatch.id, authorName: exactMatch.name },
+            });
           } else {
             // Navigate to books page with author search
             navigate(`/books?search=${encodeURIComponent(searchQuery)}&type=author`);
@@ -242,11 +248,14 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
       try {
         searchAuthors({ q: e.target.value })
           .then(({ data }) => {
+            console.log('The author data is: ', data);
             const authors = data.authors.map(
-              (author: { id: string; name: string; image_name: string }) => ({
+              (author: { id: string; name: string; pen_name?: string; image_name: string }) => ({
                 id: author.id,
                 title: author.name,
                 image: author.image_name,
+                authorName: author.name,
+                penName: author.pen_name,
               })
             );
             setFilteredSuggestions(authors);
@@ -336,7 +345,9 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
                         target.src = '/assets/images/book/placeholder.jpg'; // fallback image
                       }}
                     />
-                    <span className='truncate notranslate text-base font-medium'>{suggestion.title}</span>
+                    <span className='truncate notranslate text-base font-medium'>
+                      {suggestion.title}
+                    </span>
                   </button>
                 );
               })}

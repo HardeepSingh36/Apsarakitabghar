@@ -15,7 +15,7 @@ import {
 } from '@/services/bookService';
 import { booksByFlagsService, getFlagDisplayName } from '@/services/booksByFlagsService';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // Search Form Component
 const SearchForm = () => {
@@ -51,6 +51,7 @@ const SearchForm = () => {
 
 const BooksPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const [showFilter] = useState(false);
   const [books, setBooks] = useState<Book[]>([]);
@@ -63,9 +64,13 @@ const BooksPage = () => {
   // Get search parameters
   const searchQuery = searchParams.get('search');
   const authorId = searchParams.get('author');
+  const authorName = searchParams.get('author_name');
   const categoryId = searchParams.get('category');
+  const categoryName = searchParams.get('category_name');
   const genreId = searchParams.get('genre');
+  const genreSlug = searchParams.get('genre_slug');
   const tagId = searchParams.get('tag');
+  const tagSlug = searchParams.get('tag_slug');
   const searchType = searchParams.get('type');
 
   // Get flag parameters
@@ -118,20 +123,72 @@ const BooksPage = () => {
         // General book search
         response = await searchBooks({ q: searchQuery });
         title = `Search Results for "${searchQuery}"`;
+      } else if (authorName) {
+        // Books by specific author name - use ID from state if available, otherwise search by name
+        const authorIdFromState = location.state?.authorId;
+
+        if (authorIdFromState) {
+          // Use author ID for more efficient fetching
+          response = await getBooksByAuthor(authorIdFromState, { page: 1, limit: 20 });
+        } else {
+          // Fallback to search by name
+          response = await searchBooks({ author: authorName });
+        }
+        title = `Books by ${authorName}`;
       } else if (authorId) {
-        // Books by specific author ID
+        // Books by specific author ID (fallback)
         response = await getBooksByAuthor(authorId, { page: 1, limit: 20 });
         title = `Books by Author (ID: ${authorId})`;
+      } else if (categoryName) {
+        // Books by category name - use ID from state if available, otherwise search by name
+        const categoryIdFromState = location.state?.categoryId;
+
+        if (categoryIdFromState) {
+          // Use category ID for more efficient fetching
+          response = await getBooksByCategory(categoryIdFromState, { page: 1, limit: 20 });
+        } else {
+          // Fallback to search by name
+          response = await searchBooks({ category: categoryName });
+        }
+        title = `Books in ${categoryName}`;
       } else if (categoryId) {
-        // Books by category
+        // Books by category ID (fallback)
         response = await getBooksByCategory(categoryId, { page: 1, limit: 20 });
         title = `Books in Category (ID: ${categoryId})`;
+      } else if (genreSlug) {
+        // Books by genre slug - use ID from state if available, otherwise search by slug/name
+        const genreIdFromState = location.state?.genreId;
+        const genreNameFromState = location.state?.genreName;
+
+        if (genreIdFromState) {
+          // Use genre ID for more efficient fetching
+          response = await getBooksByGenre(genreIdFromState, { page: 1, limit: 20 });
+        } else {
+          // Fallback to search by genre name (derived from slug)
+          const genreName = genreSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+          response = await searchBooks({ genre: genreName });
+        }
+        title = `Books in ${genreNameFromState || genreSlug.replace(/-/g, ' ')}`;
       } else if (genreId) {
-        // Books by genre
+        // Books by genre ID (fallback)
         response = await getBooksByGenre(genreId, { page: 1, limit: 20 });
         title = `Books in Genre (ID: ${genreId})`;
+      } else if (tagSlug) {
+        // Books by tag slug - use ID from state if available, otherwise search by slug/name
+        const tagIdFromState = location.state?.tagId;
+        const tagNameFromState = location.state?.tagName;
+
+        if (tagIdFromState) {
+          // Use tag ID for more efficient fetching
+          response = await getBooksByTags(tagIdFromState, { page: 1, limit: 20 });
+        } else {
+          // Fallback to search by tag name (derived from slug)
+          const tagName = tagSlug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+          response = await searchBooks({ tag: tagName });
+        }
+        title = `Books tagged with ${tagNameFromState || tagSlug.replace(/-/g, ' ')}`;
       } else if (tagId) {
-        // Books by tag
+        // Books by tag ID (fallback)
         response = await getBooksByTags(tagId, { page: 1, limit: 20 });
         title = `Books with Tag (ID: ${tagId})`;
       } else {
@@ -165,9 +222,14 @@ const BooksPage = () => {
   }, [
     searchQuery,
     authorId,
+    authorName,
     categoryId,
+    categoryName,
     genreId,
+    genreSlug,
     tagId,
+    tagSlug,
+    location.state,
     searchType,
     isNew,
     isTrending,
@@ -625,14 +687,23 @@ const BooksPage = () => {
                   {books.length > 0 ? `Showing ${books.length} books` : ''}
                 </p>
               )}
-              {!isLoading && (searchQuery || authorId || categoryId || genreId || tagId) && (
-                <button
-                  onClick={() => navigate('/books')}
-                  className='text-sm text-blue-600 hover:underline'
-                >
-                  Clear filters
-                </button>
-              )}
+              {!isLoading &&
+                (searchQuery ||
+                  authorId ||
+                  authorName ||
+                  categoryId ||
+                  categoryName ||
+                  genreId ||
+                  genreSlug ||
+                  tagId ||
+                  tagSlug) && (
+                  <button
+                    onClick={() => navigate('/books')}
+                    className='text-sm text-blue-600 hover:underline'
+                  >
+                    Clear filters
+                  </button>
+                )}
             </div>
 
             {/* Product List Section */}
@@ -653,11 +724,27 @@ const BooksPage = () => {
                 <div className='col-span-full text-center py-12'>
                   <h3 className='text-lg font-semibold text-gray-600 mb-2'>No books found</h3>
                   <p className='text-gray-500 mb-4'>
-                    {searchQuery || authorId || categoryId || genreId || tagId
+                    {searchQuery ||
+                    authorId ||
+                    authorName ||
+                    categoryId ||
+                    categoryName ||
+                    genreId ||
+                    genreSlug ||
+                    tagId ||
+                    tagSlug
                       ? 'Try adjusting your search criteria or browse all books.'
                       : 'No books are currently available.'}
                   </p>
-                  {(searchQuery || authorId || categoryId || genreId || tagId) && (
+                  {(searchQuery ||
+                    authorId ||
+                    authorName ||
+                    categoryId ||
+                    categoryName ||
+                    genreId ||
+                    genreSlug ||
+                    tagId ||
+                    tagSlug) && (
                     <button
                       onClick={() => navigate('/books')}
                       className='btn theme-bg-color text-white m-0 mx-auto'
