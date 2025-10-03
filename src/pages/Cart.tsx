@@ -16,19 +16,20 @@ import { IMAGE_BASE_URL } from '@/constants';
 const Cart = () => {
   const { currency } = useCurrency();
   const dispatch = useAppDispatch();
-  const { items: cartItems, summary } = useAppSelector((state: RootState) => state.cart);
+  const { items: cartItems } = useAppSelector((state: RootState) => state.cart);
 
   useEffect(() => {
     dispatch(fetchCartList());
   }, [dispatch]);
 
-  // Use backend calculated values
-  const subtotal = summary?.cart_subtotal || 0;
-  const totalItems = summary?.total_items || 0;
-  const itemsCount = summary?.items_count || 0;
-  const cartDiscount = summary?.cart_discount || 0;
+  // Calculate correct totals using discounted prices
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discountedSubtotal = cartItems.reduce((sum, item) => sum + item.current_line_total, 0);
+  const totalDiscount = subtotal - discountedSubtotal;
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const itemsCount = cartItems.length;
   const shipping = 0; // Will be calculated by backend
-  const total = summary?.cart_total || 0;
+  const total = discountedSubtotal + shipping;
 
   return (
     <div>
@@ -334,9 +335,9 @@ const Cart = () => {
 
                     <li>
                       <h4>Discount</h4>
-                      <h4 className='price'>
+                      <h4 className='price theme-color'>
                         (-) {currency.sign}
-                        {cartDiscount.toFixed(2)}
+                        {totalDiscount.toFixed(2)}
                       </h4>
                     </li>
 
