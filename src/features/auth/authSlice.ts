@@ -16,7 +16,7 @@ export type User = {
   gender?: string;
   avatar?: string;
   role: UserRole;
-  status?: string; 
+  status?: string;
   created_at?: string; // Added created_at
   updated_at?: string;
   last_login?: string;
@@ -51,11 +51,17 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       localStorage.removeItem('auth_user');
     },
+    updateUser: (state, action: PayloadAction<Partial<User>>) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+        localStorage.setItem('auth_user', JSON.stringify(state.user));
+      }
+    },
     finishLoading: (state) => {
       state.loading = false;
     },
   },
 });
 
-export const { setUser, login, logout, finishLoading } = authSlice.actions;
+export const { setUser, login, logout, updateUser, finishLoading } = authSlice.actions;
 export default authSlice.reducer;

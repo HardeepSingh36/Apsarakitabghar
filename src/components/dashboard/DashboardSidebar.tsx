@@ -10,9 +10,13 @@ import {
   User,
 } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import LogoutConfirmationModal from './LogoutConfirmationModal';
 import { useAuthDialog } from '@/context/AuthDialogContext';
-import { useAppSelector } from '@/app/hooks';
+import { useAppSelector, useAppDispatch } from '@/app/hooks';
+import { updateUser } from '@/features/auth/authSlice';
+import { uploadAvatar } from '@/services/authService';
+import { IMAGE_PATH } from '@/services/API';
 import type { RootState } from '@/app/store';
 
 interface DashboardSidebarProps {
@@ -22,15 +26,66 @@ interface DashboardSidebarProps {
 
 const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
   const { user } = useAppSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const { logout } = useAuthDialog();
   const navigate = useNavigate();
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleLogout = () => {
     setLogoutModalOpen(false);
     logout();
     navigate('/'); // Redirect to homepage
+  };
+
+  const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Please select a valid image file (JPEG, JPG, PNG, or WebP)');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      toast.error('File size must be less than 5MB');
+      return;
+    }
+
+    try {
+      setIsUploadingAvatar(true);
+      const response = await uploadAvatar(file);
+
+      if (response.success && response.user) {
+        // Update user in Redux store
+        dispatch(updateUser({ avatar: response.user.avatar }));
+        toast.success('Profile picture updated successfully!');
+      }
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to update profile picture');
+    } finally {
+      setIsUploadingAvatar(false);
+      // Clear the input so the same file can be selected again if needed
+      if (event.target) {
+        event.target.value = '';
+      }
+    }
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    // Fallback to default image if user avatar fails to load
+    event.currentTarget.src = 'assets/images/inner-page/user/1.jpg';
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -83,13 +138,34 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
             <div className='profile-image'>
               <div className='position-relative'>
                 <img
-                  src='assets/images/inner-page/user/1.jpg'
+                  src={
+                    user?.avatar
+                      ? `${IMAGE_PATH}${user.avatar}`
+                      : 'assets/images/inner-page/user/1.jpg'
+                  }
                   className='blur-up lazyload update_img mx-auto'
-                  alt=''
+                  alt='Profile'
+                  onError={handleImageError}
+                  style={{ opacity: isUploadingAvatar ? 0.7 : 1 }}
                 />
-                <div className='cover-icon'>
-                  <i className='fa-solid fa-pen'>
-                    <input type='file' onChange={() => {}} />
+                <div
+                  className='cover-icon'
+                  onClick={!isUploadingAvatar ? handleAvatarClick : undefined}
+                  style={{
+                    cursor: isUploadingAvatar ? 'not-allowed' : 'pointer',
+                    opacity: isUploadingAvatar ? 0.7 : 1,
+                  }}
+                  title={isUploadingAvatar ? 'Uploading...' : 'Change profile picture'}
+                >
+                  <i className={`fa-solid ${isUploadingAvatar ? 'fa-spinner fa-spin' : 'fa-pen'}`}>
+                    <input
+                      ref={fileInputRef}
+                      type='file'
+                      accept='image/jpeg,image/jpg,image/png,image/webp'
+                      onChange={handleAvatarChange}
+                      style={{ display: 'none' }}
+                      disabled={isUploadingAvatar}
+                    />
                   </i>
                 </div>
               </div>
