@@ -15,10 +15,14 @@ import { Edit } from 'react-feather';
 import { IMAGE_BASE_URL } from '@/constants';
 import toast from 'react-hot-toast';
 import PaymentOptions from '@/components/checkout/PaymentOptions';
+import { placeOrder, type PlaceOrderRequest } from '@/services/orderService';
+import { useNavigate } from 'react-router-dom';
+import { clearCart } from '@/features/cart/cartSlice';
 
 const Checkout = () => {
   const { currency } = useCurrency();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
   const { addresses, selectedAddressId, loading, error } = useAppSelector(
@@ -27,6 +31,11 @@ const Checkout = () => {
 
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
   const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [transactionId, setTransactionId] = useState('');
+  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [notes, setNotes] = useState('');
+  const [adminUpiId, setAdminUpiId] = useState('');
 
   // Fetch addresses on component mount
   useEffect(() => {
@@ -77,6 +86,81 @@ const Checkout = () => {
   const handleEditAddress = (address: Address) => {
     setAddressToEdit(address);
     setAddAddressModalOpen(true);
+  };
+
+  const handlePlaceOrder = async () => {
+    // Validation
+    if (!selectedAddressId) {
+      toast.error('Please select a delivery address');
+      return;
+    }
+
+    if (!transactionId.trim()) {
+      toast.error('Please enter a transaction ID');
+      return;
+    }
+
+    if (!paymentScreenshot) {
+      toast.error('Please upload a payment screenshot');
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(paymentScreenshot.type)) {
+      toast.error('Please upload a valid image file (JPEG, PNG, or GIF)');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (paymentScreenshot.size > maxSize) {
+      toast.error('File size must be less than 5MB');
+      return;
+    }
+
+    try {
+      setIsPlacingOrder(true);
+
+      // Get the UPI ID from the selected address (we'll need to get this from QR API)
+      const orderData: PlaceOrderRequest = {
+        address_id: parseInt(selectedAddressId),
+        payment_method: 'upi',
+        transaction_id: transactionId.trim(),
+        paid_to_upi_id: adminUpiId,
+        payment_receipt: paymentScreenshot,
+        notes: notes.trim() || undefined,
+      };
+
+      const response = await placeOrder(orderData);
+
+      if (response.status === 'success') {
+        // Clear the cart
+        dispatch(clearCart());
+
+        toast.success(`Order ${response.data.order_number} placed successfully!`);
+
+        // Navigate to order success page or orders list
+        navigate('/dashboard?tab=order', {
+          state: {
+            orderNumber: response.data.order_number,
+            orderTotal: response.data.total_amount,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error placing order:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to place order');
+    } finally {
+      setIsPlacingOrder(false);
+    }
+  };
+
+  const handleScreenshotChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setPaymentScreenshot(file);
+    }
   };
 
   return (
@@ -310,7 +394,7 @@ const Checkout = () => {
                         </div>
 
                         <div className='checkout-detail'>
-                          <PaymentOptions />
+                          <PaymentOptions onUpiIdChange={setAdminUpiId} />
                         </div>
                       </div>
                     </li>
@@ -391,32 +475,60 @@ const Checkout = () => {
                   {/* Transaction ID Input */}
                   <div className='mb-3'>
                     <label htmlFor='transactionId' className='form-label fw-semibold'>
-                      Transaction ID
+                      Transaction ID <span className='text-danger'>*</span>
                     </label>
                     <input
                       type='text'
                       id='transactionId'
                       className='form-control'
-                      placeholder='Enter your transaction ID'
+                      placeholder='Enter your UPI transaction ID'
+                      value={transactionId}
+                      onChange={(e) => setTransactionId(e.target.value)}
                       required
                     />
+                    <p className='text-muted small mt-1'>
+                      Payment to be made to UPI ID: <strong>{adminUpiId}</strong>
+                    </p>
                   </div>
 
                   {/* Screenshot Upload */}
                   <div className='mb-3'>
                     <label htmlFor='paymentScreenshot' className='form-label fw-semibold'>
-                      Upload Payment Screenshot
+                      Upload Payment Screenshot <span className='text-danger'>*</span>
                     </label>
                     <input
                       type='file'
                       id='paymentScreenshot'
                       className='form-control'
-                      accept='image/*'
+                      accept='image/jpeg,image/jpg,image/png,image/gif'
+                      onChange={handleScreenshotChange}
                       required
                     />
                     <p className='text-muted small mt-1'>
-                      Please upload the screenshot of your UPI/QR payment confirmation.
+                      Please upload the screenshot of your UPI/QR payment confirmation. Max size:
+                      5MB (JPEG, PNG, GIF)
                     </p>
+                    {paymentScreenshot && (
+                      <p className='text-success small mt-1'>
+                        ✓ Selected: {paymentScreenshot.name} (
+                        {(paymentScreenshot.size / 1024 / 1024).toFixed(2)} MB)
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Notes/Special Instructions */}
+                  <div className='mb-3'>
+                    <label htmlFor='orderNotes' className='form-label fw-semibold'>
+                      Special Instructions (Optional)
+                    </label>
+                    <textarea
+                      id='orderNotes'
+                      className='form-control'
+                      rows={3}
+                      placeholder='Any special delivery instructions...'
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                    />
                   </div>
                 </div>
 
@@ -442,8 +554,23 @@ const Checkout = () => {
                   </ul>
                 </div> */}
 
-                <button className='btn theme-bg-color text-white btn-md w-100 mt-4 fw-bold'>
-                  Place Order
+                <button
+                  className='btn theme-bg-color text-white btn-md w-100 mt-4 fw-bold'
+                  onClick={handlePlaceOrder}
+                  disabled={isPlacingOrder || !selectedAddressId || cartItems.length === 0}
+                >
+                  {isPlacingOrder ? (
+                    <>
+                      <span
+                        className='spinner-border spinner-border-sm me-2'
+                        role='status'
+                        aria-hidden='true'
+                      ></span>
+                      Placing Order...
+                    </>
+                  ) : (
+                    'Place Order'
+                  )}
                 </button>
               </div>
             </div>

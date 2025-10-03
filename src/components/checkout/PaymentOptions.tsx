@@ -35,7 +35,11 @@ interface APIResponse {
   };
 }
 
-const PaymentOptions: React.FC = () => {
+interface PaymentOptionsProps {
+  onUpiIdChange?: (upiId: string) => void;
+}
+
+const PaymentOptions: React.FC<PaymentOptionsProps> = ({ onUpiIdChange }) => {
   const [paymentData, setPaymentData] = useState<APIResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -45,9 +49,14 @@ const PaymentOptions: React.FC = () => {
       .then((data: APIResponse) => {
         setPaymentData(data);
         setLoading(false);
+
+        // Set the first available UPI ID as default
+        if (onUpiIdChange && data.data.upi_ids.length > 0) {
+          onUpiIdChange(data.data.upi_ids[0].upi_id);
+        }
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [onUpiIdChange]);
 
   if (loading) return <p>Loading payment options...</p>;
 
