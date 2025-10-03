@@ -4,15 +4,22 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 export type UserRole = 'customer' | 'publisher' | 'reseller';
 
 export type User = {
+  id?: number;
   username: string;
   email: string;
   full_name: string;
   first_name: string; // Added first name
   last_name: string; // Added last name
   phone_number: string;
+  mobile?: string;
+  dob?: string;
+  gender?: string;
+  avatar?: string;
   role: UserRole;
   status?: string; 
   created_at?: string; // Added created_at
+  updated_at?: string;
+  last_login?: string;
 };
 
 interface AuthState {

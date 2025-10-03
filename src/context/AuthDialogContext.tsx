@@ -73,15 +73,22 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
 
           dispatch(
             login({
+              id: user.id,
               username: user.username,
               email: user.email,
               full_name: user.full_name,
               first_name: user.first_name,
               last_name: user.last_name,
-              phone_number: user.phone || '',
-              role: user.role,
-              status: user.is_verified ? 'verified' : 'unverified',
+              phone_number: user.mobile || '',
+              mobile: user.mobile,
+              dob: user.dob,
+              gender: user.gender,
+              avatar: user.avatar,
+              role: user.role as UserRole,
+              status: user.status,
               created_at: user.created_at,
+              updated_at: user.updated_at,
+              last_login: user.last_login,
             })
           );
         } else {

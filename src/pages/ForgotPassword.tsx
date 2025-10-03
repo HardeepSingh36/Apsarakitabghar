@@ -4,10 +4,7 @@ import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
 import { forgotPassword } from '@/services/authService';
 import { getCaptchaConfig } from '@/services/captchaService';
-import type { 
-  CaptchaConfig, 
-  ForgotPasswordResponse
-} from '@/types/types';
+import type { CaptchaConfig, ForgotPasswordResponse } from '@/types/types';
 import Captcha from '@/components/general/Captcha';
 
 const ForgotPassword = () => {
@@ -82,7 +79,7 @@ const ForgotPassword = () => {
       localStorage.removeItem('captcha_token');
     } catch (error: any) {
       console.error('Forgot password error:', error);
-      
+
       // Handle rate limiting and other specific errors
       if (error.message?.includes('rate limit') || error.message?.includes('Rate limiting')) {
         toast.error('Too many requests. Please wait an hour before trying again.');
@@ -144,9 +141,12 @@ const ForgotPassword = () => {
                       </svg>
                     </div>
                     <p className='mb-3'>
-                      {resetData?.message || 
-                        <>We've sent a password reset link to{' '}
-                        <strong className='theme-color'>{email}</strong></>}
+                      {resetData?.message || (
+                        <>
+                          We've sent a password reset link to{' '}
+                          <strong className='theme-color'>{email}</strong>
+                        </>
+                      )}
                     </p>
                   </div>
 
