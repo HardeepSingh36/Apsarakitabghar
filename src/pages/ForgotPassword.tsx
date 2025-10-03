@@ -1,34 +1,100 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
+import { forgotPassword } from '@/services/authService';
+import { getCaptchaConfig } from '@/services/captchaService';
+import type { 
+  CaptchaConfig, 
+  ForgotPasswordResponse
+} from '@/types/types';
+import Captcha from '@/components/general/Captcha';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [captchaValid, setCaptchaValid] = useState(false);
+  const [captchaConfig, setCaptchaConfig] = useState<CaptchaConfig | null>(null);
+  const [resetData, setResetData] = useState<ForgotPasswordResponse | null>(null);
+
+  // Fetch CAPTCHA configuration on component mount
+  useEffect(() => {
+    const fetchCaptchaConfig = async () => {
+      try {
+        const config = await getCaptchaConfig();
+        setCaptchaConfig(config);
+      } catch (error) {
+        console.error('Failed to fetch CAPTCHA configuration:', error);
+      }
+    };
+
+    fetchCaptchaConfig();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Email validation
     if (!email) {
-      toast.error('Please enter your email.');
+      toast.error('Please enter your email address.');
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
+    // Captcha validation
+    if (!captchaValid) {
+      toast.error('Please complete the captcha verification.');
+      return;
+    }
+
+    const captchaToken = localStorage.getItem('captcha_token');
+    if (!captchaToken) {
+      toast.error('Captcha token missing. Please try again.');
       return;
     }
 
     setLoading(true);
 
     try {
-      // Simulate API call - replace with actual forgot password API
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await forgotPassword({
+        email,
+        captcha_token: captchaToken,
+      });
 
-      // TODO: Replace with actual API call
-      // const response = await forgotPasswordApi(email);
+      if (response.status !== 'success') {
+        toast.error(response?.message || 'Failed to send reset email. Please try again.');
+        return;
+      }
 
+      // Store the entire response for display
+      setResetData(response);
       setEmailSent(true);
-      toast.success('Reset link sent to your email!');
+      toast.success(response.message || 'Password reset link sent!');
+
+      // Clear captcha token after successful submission
+      localStorage.removeItem('captcha_token');
     } catch (error: any) {
-      toast.error('Failed to send reset email. Please try again.');
+      console.error('Forgot password error:', error);
+      
+      // Handle rate limiting and other specific errors
+      if (error.message?.includes('rate limit') || error.message?.includes('Rate limiting')) {
+        toast.error('Too many requests. Please wait an hour before trying again.');
+      } else if (error.message?.includes('captcha') || error.message?.includes('Captcha')) {
+        toast.error('Invalid captcha. Please try again.');
+      } else {
+        toast.error(error.message || 'Failed to send reset email. Please try again.');
+      }
+
+      // Reset captcha on error
+      setCaptchaValid(false);
+      localStorage.removeItem('captcha_token');
     } finally {
       setLoading(false);
     }
@@ -36,7 +102,7 @@ const ForgotPassword = () => {
 
   if (emailSent) {
     return (
-      <section className='log-in-section section-b-space'>
+      <section className='log-in-section section-b-space !min-h-screen'>
         <div className='container-fluid-lg w-100'>
           <div className='row'>
             <div className='col-xxl-6 col-xl-5 col-lg-6 d-lg-block d-none ms-auto'>
@@ -78,11 +144,9 @@ const ForgotPassword = () => {
                       </svg>
                     </div>
                     <p className='mb-3'>
-                      We've sent a password reset link to{' '}
-                      <strong className='theme-color'>{email}</strong>
-                    </p>
-                    <p className='text-muted'>
-                      Please check your email and click on the reset link to create a new password.
+                      {resetData?.message || 
+                        <>We've sent a password reset link to{' '}
+                        <strong className='theme-color'>{email}</strong></>}
                     </p>
                   </div>
 
@@ -92,6 +156,9 @@ const ForgotPassword = () => {
                       onClick={() => {
                         setEmailSent(false);
                         setEmail('');
+                        setResetData(null);
+                        setCaptchaValid(false);
+                        localStorage.removeItem('captcha_token');
                       }}
                     >
                       Send Another Email
@@ -120,7 +187,7 @@ const ForgotPassword = () => {
   }
 
   return (
-    <section className='log-in-section section-b-space'>
+    <section className='log-in-section section-b-space !min-h-screen'>
       <div className='container-fluid-lg w-100'>
         <div className='row'>
           <div className='col-xxl-6 col-xl-5 col-lg-6 d-lg-block d-none ms-auto'>
@@ -135,7 +202,7 @@ const ForgotPassword = () => {
                 <Link to='/' className='web-logo'>
                   <img
                     src='/assets/logo/apsra.svg'
-                    className='img-fluid'
+                    className='img-fluid mx-auto'
                     alt='Apsara Kitab Ghar'
                     style={{ maxHeight: '60px' }}
                   />
@@ -161,22 +228,41 @@ const ForgotPassword = () => {
                       />
                       <label htmlFor='email'>Email Address</label>
                     </div>
-                    <p className='text-muted mt-2 small'>
-                      Enter your email address and we'll send you a link to reset your password.
-                    </p>
+                    <div className='mt-2'>
+                      <p className='text-muted small mb-2'>
+                        Enter your email address and we'll send you a link to reset your password.
+                      </p>
+                    </div>
                   </div>
+
+                  {captchaConfig && (
+                    <div className='col-12 !mt-0'>
+                      <div className='captcha-box'>
+                        <label className='form-label'>Captcha</label>
+                        <Captcha
+                          config={captchaConfig}
+                          onVerify={(token: string | null) => setCaptchaValid(!!token)}
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   <div className='col-12'>
                     <button
                       className={`btn btn-animation w-100 justify-content-center ${
-                        loading ? 'opacity-50' : ''
+                        loading || !captchaValid ? 'opacity-50' : ''
                       }`}
                       type='submit'
-                      disabled={loading}
+                      disabled={loading || !captchaValid}
                     >
                       {loading ? <Loader className='animate-spin me-2' size={16} /> : null}
                       {loading ? 'Sending...' : 'Send Reset Link'}
                     </button>
+                    {captchaConfig && !captchaValid && (
+                      <p className='text-muted mt-2 small text-center'>
+                        Please complete the captcha verification to continue.
+                      </p>
+                    )}
                   </div>
                 </form>
               </div>

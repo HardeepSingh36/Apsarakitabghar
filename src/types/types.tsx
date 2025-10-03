@@ -113,6 +113,32 @@ export interface CaptchaConfig {
   };
 }
 
+// Forgot Password API Types
+export interface ForgotPasswordResponse {
+  status: string;
+  message: string;
+  data: {
+    email: string;
+    expires_in: number; // in seconds (3600 = 1 hour)
+    note: string;
+    support_email: string;
+  };
+}
+
+export interface ForgotPasswordErrorResponse {
+  status: string;
+  message: string;
+  errors?: {
+    email?: string[];
+    captcha_token?: string[];
+  };
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+  captcha_token: string;
+}
+
 // Related Books API Types
 export interface Tag {
   id: number;

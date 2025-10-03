@@ -1,4 +1,9 @@
-import { AUTH_LOGIN, AUTH_ME, AUTH_REGISTER } from './API';
+import { AUTH_LOGIN, AUTH_ME, AUTH_REGISTER, AUTH_FORGOT_PASSWORD } from './API';
+import type { 
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  ForgotPasswordErrorResponse
+} from '../types/types';
 
 export const login = async (email: string, password: string) => {
   const res = await fetch(AUTH_LOGIN, {
@@ -56,4 +61,23 @@ export const register = async (userData: {
   }
 
   return res.json();
+};
+
+export const forgotPassword = async (
+  userData: ForgotPasswordRequest
+): Promise<ForgotPasswordResponse> => {
+  const res = await fetch(AUTH_FORGOT_PASSWORD, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
+
+  if (!res.ok) {
+    const error: ForgotPasswordErrorResponse = await res.json();
+    throw new Error(error.message || 'Failed to send reset email');
+  }
+
+  return res.json() as Promise<ForgotPasswordResponse>;
 };

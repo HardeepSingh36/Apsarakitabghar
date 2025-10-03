@@ -10,6 +10,7 @@ export const API_HEALTH = `${API_BASE_URL}/health`;
 export const AUTH_REGISTER = `${API_BASE_URL}/register`;
 export const AUTH_LOGIN = `${API_BASE_URL}/login`;
 export const AUTH_ME = `${API_BASE_URL}/profile`;
+export const AUTH_FORGOT_PASSWORD = `${API_BASE_URL}/forgot-password`;
 
 // ------------- Public Books -------------
 export const BOOKS_LIST = `${API_BASE_URL}/books-list`;
