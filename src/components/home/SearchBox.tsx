@@ -352,11 +352,6 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
                 );
               })}
             </div>
-            {filteredSuggestions.length > 8 && (
-              <div className='border-t border-border px-4 py-2 text-xs text-muted-foreground text-center'>
-                Scroll for more results
-              </div>
-            )}
           </div>,
           document.body
         )}

@@ -55,3 +55,7 @@ export const ADDRESSES_LIST = `${API_BASE_URL}/addresses-list`;
 export const ADDRESSES_ADD = `${API_BASE_URL}/addresses-add`;
 export const ADDRESSES_UPDATE = `${API_BASE_URL}/addresses-update`;
 export const ADDRESSES_DELETE = `${API_BASE_URL}/addresses-delete`;
+
+
+// ------------- QR -------------
+export const GET_QR = `${API_BASE_URL}/get-qr`;
