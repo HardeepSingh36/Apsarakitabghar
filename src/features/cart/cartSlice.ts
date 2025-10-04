@@ -13,6 +13,7 @@ interface CartState {
   summary: any | null;
   loading: boolean;
   error: string | null;
+  operationLoading: { [key: string]: boolean }; // For individual operations
 }
 
 const initialState: CartState = {
@@ -20,6 +21,7 @@ const initialState: CartState = {
   summary: null,
   loading: false,
   error: null,
+  operationLoading: {},
 };
 
 // Thunks
@@ -109,12 +111,14 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addToCartAsync.pending, (state) => {
-        state.loading = true;
+      .addCase(addToCartAsync.pending, (state, action) => {
+        const bookId = action.meta.arg.book_id;
+        state.operationLoading[`add-${bookId}`] = true;
         state.error = null;
       })
       .addCase(addToCartAsync.fulfilled, (state, action) => {
-        state.loading = false;
+        const bookId = action.meta.arg.book_id;
+        state.operationLoading[`add-${bookId}`] = false;
 
         // Add the returned cart item to the state
         if (action.payload && action.payload) {
@@ -171,7 +175,8 @@ const cartSlice = createSlice({
         }
       })
       .addCase(addToCartAsync.rejected, (state, action) => {
-        state.loading = false;
+        const bookId = action.meta.arg.book_id;
+        state.operationLoading[`add-${bookId}`] = false;
         state.error = action.payload as string;
       })
       .addCase(fetchCartList.pending, (state) => {
@@ -187,12 +192,14 @@ const cartSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(updateCartItemAsync.pending, (state) => {
-        state.loading = true;
+      .addCase(updateCartItemAsync.pending, (state, action) => {
+        const cartItemId = action.meta.arg.cartItemId;
+        state.operationLoading[`update-${cartItemId}`] = true;
         state.error = null;
       })
       .addCase(updateCartItemAsync.fulfilled, (state, action) => {
-        state.loading = false;
+        const cartItemId = action.meta.arg.cartItemId;
+        state.operationLoading[`update-${cartItemId}`] = false;
 
         // Update the cart item quantity in state
         if (action.payload && action.payload.cartItemId) {
@@ -217,15 +224,18 @@ const cartSlice = createSlice({
         }
       })
       .addCase(updateCartItemAsync.rejected, (state, action) => {
-        state.loading = false;
+        const cartItemId = action.meta.arg.cartItemId;
+        state.operationLoading[`update-${cartItemId}`] = false;
         state.error = action.payload as string;
       })
-      .addCase(removeCartItemAsync.pending, (state) => {
-        state.loading = true;
+      .addCase(removeCartItemAsync.pending, (state, action) => {
+        const cartItemId = action.meta.arg.cartItemId;
+        state.operationLoading[`remove-${cartItemId}`] = true;
         state.error = null;
       })
       .addCase(removeCartItemAsync.fulfilled, (state, action) => {
-        state.loading = false;
+        const cartItemId = action.meta.arg.cartItemId;
+        state.operationLoading[`remove-${cartItemId}`] = false;
 
         // Remove the cart item from state
         if (action.payload && action.payload.cartItemId) {
@@ -235,20 +245,21 @@ const cartSlice = createSlice({
         }
       })
       .addCase(removeCartItemAsync.rejected, (state, action) => {
-        state.loading = false;
+        const cartItemId = action.meta.arg.cartItemId;
+        state.operationLoading[`remove-${cartItemId}`] = false;
         state.error = action.payload as string;
       })
       .addCase(clearCartAsync.pending, (state) => {
-        state.loading = true;
+        state.operationLoading['clear-cart'] = true;
         state.error = null;
       })
       .addCase(clearCartAsync.fulfilled, (state) => {
         state.items = [];
         state.summary = null;
-        state.loading = false;
+        state.operationLoading['clear-cart'] = false;
       })
       .addCase(clearCartAsync.rejected, (state, action) => {
-        state.loading = false;
+        state.operationLoading['clear-cart'] = false;
         state.error = action.payload as string;
       });
   },

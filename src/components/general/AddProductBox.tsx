@@ -1,15 +1,20 @@
 import { Link } from 'react-router-dom';
-import { X } from 'react-feather';
+import { X, Loader } from 'react-feather';
 // import { Tooltip } from 'react-tooltip';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import { addToCartAsync } from '@/features/cart/cartSlice';
-import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistSlice';
+import {
+  addToWishlistAsync,
+  removeFromWishlistAsync,
+  fetchWishlistAsync,
+} from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { IMAGE_BASE_URL } from '@/constants';
+import toast from 'react-hot-toast';
 
 interface AddProductBoxProps {
   product: Book;
@@ -34,6 +39,15 @@ const AddProductBox = ({
   const cartItem = useAppSelector((state: RootState) =>
     state.cart.items.find((item) => item.book_id === product.id)
   );
+  const cartState = useAppSelector((state: RootState) => state.cart);
+  const isAddingToCart = cartState.operationLoading[`add-${product.id}`] || false;
+
+  // Get wishlist state from Redux
+  const wishlistState = useAppSelector((state: RootState) => state.wishlist);
+  const isInWishlist = wishlistState.items.find((item) => item.id === product.id);
+  const isAddingToWishlist = wishlistState.operationLoading[`add-${product.id}`] || false;
+  const isRemovingFromWishlist = wishlistState.operationLoading[`remove-${product.id}`] || false;
+  const isWishlistLoading = isAddingToWishlist || isRemovingFromWishlist;
   // const handleDecrease = () => {
   //   if (cartItem) {
   //     dispatch(decreaseQuantity(product.id));
@@ -45,37 +59,64 @@ const AddProductBox = ({
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
+      toast.error('Please sign in to add items to cart');
       openSignIn('/cart');
       return;
     }
 
+    if (isAddingToCart) return; // Prevent multiple clicks
+
     try {
       await dispatch(addToCartAsync({ book_id: product.id, quantity: 1 })).unwrap();
-    } catch (error) {
+      toast.success(`"${product.title}" added to cart`, {
+        duration: 3000,
+      });
+    } catch (error: any) {
       console.error('Failed to add item to cart:', error);
-      if (error instanceof Error) {
-        alert(error.message || 'Failed to add item to cart');
-      } else {
-        alert('An unknown error occurred');
-      }
+      toast.error(error || 'Failed to add item to cart. Please try again.', {
+        duration: 4000,
+      });
     }
   };
 
-  const handleWishlistToggle = () => {
+  const handleWishlistToggle = async () => {
     if (!isAuthenticated) {
+      toast.error('Please sign in to manage your wishlist');
       openSignIn('/wishlist');
       return;
     }
 
-    if (removeButton) {
-      dispatch(removeFromWishlist(product.id));
-    } else {
-      dispatch(
-        addToWishlist({
-          ...product,
-          rating: 5, // Default rating for WishlistItem
-        })
-      );
+    if (isWishlistLoading) return; // Prevent multiple clicks
+
+    try {
+      if (removeButton && isInWishlist) {
+        // Remove from wishlist using API
+        await dispatch(
+          removeFromWishlistAsync({
+            wishlistId: isInWishlist.wishlist_id || 0,
+            bookId: product.id,
+          })
+        ).unwrap();
+
+        toast.success(`"${product.title}" removed from wishlist`, {
+          duration: 3000,
+        });
+      } else if (!isInWishlist) {
+        // Add to wishlist using API
+        await dispatch(addToWishlistAsync(product.id)).unwrap();
+
+        // Refresh wishlist to get updated data
+        dispatch(fetchWishlistAsync());
+
+        toast.success(`"${product.title}" added to wishlist`, {
+          duration: 3000,
+        });
+      }
+    } catch (error: any) {
+      console.error('Failed to update wishlist:', error);
+      toast.error(error || 'Failed to update wishlist. Please try again.', {
+        duration: 4000,
+      });
     }
   };
 
@@ -98,10 +139,18 @@ const AddProductBox = ({
           </Link>
           {removeButton && (
             <button
-              className='btn !absolute top-0 right-0 bg-white !rounded-full w-9 h-9 !p-2 shadow-md'
+              className={`btn !absolute top-0 right-0 bg-white !rounded-full w-9 h-9 !p-2 shadow-md ${
+                isWishlistLoading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               onClick={handleWishlistToggle}
+              disabled={isWishlistLoading}
+              title={isWishlistLoading ? 'Removing...' : 'Remove from wishlist'}
             >
-              <X className='w-10 h-10 text-gray-500' />
+              {isWishlistLoading ? (
+                <Loader className='w-4 h-4 text-gray-500 animate-spin' />
+              ) : (
+                <X className='w-10 h-10 text-gray-500' />
+              )}
             </button>
           )}
           {/* {showOptions && (
@@ -157,21 +206,26 @@ const AddProductBox = ({
           </h6>
           <div className='add-to-cart-box bg-white hidden md:block'>
             {cartItem ? (
-              <Link
-                to={'/cart'}
-                className='btn btn-add-cart addcart-button py-3'
-                onClick={handleAddToCart}
-              >
+              <Link to={'/cart'} className='btn btn-add-cart addcart-button py-3'>
                 ✔ In Cart
               </Link>
             ) : (
-              <Link
-                to={'#'}
-                className='btn btn-add-cart addcart-button py-3'
+              <button
+                className={`btn btn-add-cart addcart-button py-3 w-full ${
+                  isAddingToCart ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
                 onClick={handleAddToCart}
+                disabled={isAddingToCart}
               >
-                Add to Cart
-              </Link>
+                {isAddingToCart ? (
+                  <div className='flex items-center justify-center gap-2'>
+                    <Loader className='w-4 h-4 animate-spin' />
+                    Adding...
+                  </div>
+                ) : (
+                  'Add to Cart'
+                )}
+              </button>
             )}
           </div>
         </div>

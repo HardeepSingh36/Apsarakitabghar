@@ -7,16 +7,21 @@ import {
   fetchCartList,
 } from '@/features/cart/cartSlice';
 import { useEffect } from 'react';
-import { Bookmark, Minus, Plus, X } from 'react-feather';
+import { Bookmark, Minus, Plus, X, Loader } from 'react-feather';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Tooltip } from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import { IMAGE_BASE_URL } from '@/constants';
+import toast from 'react-hot-toast';
 
 const Cart = () => {
   const { currency } = useCurrency();
   const dispatch = useAppDispatch();
-  const { items: cartItems } = useAppSelector((state: RootState) => state.cart);
+  const cartState = useAppSelector((state: RootState) => state.cart);
+  const { items: cartItems } = cartState;
+
+  // Get loading states for different operations
+  const isClearingCart = cartState.operationLoading['clear-cart'] || false;
 
   useEffect(() => {
     dispatch(fetchCartList());
@@ -40,10 +45,31 @@ const Cart = () => {
             <div className='col-xxl-9'>
               <div>
                 <button
-                  onClick={() => dispatch(clearCartAsync())}
-                  className='btn btn-danger !text-sm mb-2 !ml-auto'
+                  onClick={async () => {
+                    try {
+                      await dispatch(clearCartAsync()).unwrap();
+                      toast.success('Cart cleared successfully', {
+                        duration: 3000,
+                      });
+                    } catch (error: any) {
+                      toast.error(error || 'Failed to clear cart. Please try again.', {
+                        duration: 4000,
+                      });
+                    }
+                  }}
+                  className={`btn btn-danger !text-sm mb-2 !ml-auto ${
+                    isClearingCart ? 'opacity-75 cursor-not-allowed' : ''
+                  }`}
+                  disabled={isClearingCart}
                 >
-                  Clear Cart
+                  {isClearingCart ? (
+                    <div className='flex items-center gap-2'>
+                      <Loader className='w-4 h-4 animate-spin' />
+                      Clearing...
+                    </div>
+                  ) : (
+                    'Clear Cart'
+                  )}
                 </button>
               </div>
               <div className='cart-table'>
@@ -133,7 +159,18 @@ const Cart = () => {
                                         <div className='input-group'>
                                           <button
                                             type='button'
-                                            className='btn qty-left-minus'
+                                            className={`btn qty-left-minus ${
+                                              cartState.operationLoading[
+                                                `update-${item.cart_item_id}`
+                                              ]
+                                                ? 'opacity-50 cursor-not-allowed'
+                                                : ''
+                                            }`}
+                                            disabled={
+                                              cartState.operationLoading[
+                                                `update-${item.cart_item_id}`
+                                              ]
+                                            }
                                             onClick={async () => {
                                               if (item.quantity > 1) {
                                                 try {
@@ -144,13 +181,26 @@ const Cart = () => {
                                                     })
                                                   ).unwrap();
                                                   dispatch(fetchCartList());
-                                                } catch (error) {
+                                                  toast.success('Quantity updated', {
+                                                    duration: 2000,
+                                                  });
+                                                } catch (error: any) {
                                                   console.error('Failed to update cart:', error);
+                                                  toast.error(
+                                                    error || 'Failed to update quantity',
+                                                    { duration: 3000 }
+                                                  );
                                                 }
                                               }
                                             }}
                                           >
-                                            <i className='fa fa-minus ms-0'></i>
+                                            {cartState.operationLoading[
+                                              `update-${item.cart_item_id}`
+                                            ] ? (
+                                              <Loader className='w-3 h-3 animate-spin' />
+                                            ) : (
+                                              <i className='fa fa-minus ms-0'></i>
+                                            )}
                                           </button>
                                           <input
                                             className='form-control input-number qty-input'
@@ -161,7 +211,18 @@ const Cart = () => {
                                           />
                                           <button
                                             type='button'
-                                            className='btn qty-right-plus'
+                                            className={`btn qty-right-plus ${
+                                              cartState.operationLoading[
+                                                `update-${item.cart_item_id}`
+                                              ]
+                                                ? 'opacity-50 cursor-not-allowed'
+                                                : ''
+                                            }`}
+                                            disabled={
+                                              cartState.operationLoading[
+                                                `update-${item.cart_item_id}`
+                                              ]
+                                            }
                                             onClick={async () => {
                                               if (item.quantity < item.max_quantity) {
                                                 try {
@@ -172,13 +233,26 @@ const Cart = () => {
                                                     })
                                                   ).unwrap();
                                                   dispatch(fetchCartList());
-                                                } catch (error) {
+                                                  toast.success('Quantity updated', {
+                                                    duration: 2000,
+                                                  });
+                                                } catch (error: any) {
                                                   console.error('Failed to update cart:', error);
+                                                  toast.error(
+                                                    error || 'Failed to update quantity',
+                                                    { duration: 3000 }
+                                                  );
                                                 }
                                               }
                                             }}
                                           >
-                                            <i className='fa fa-plus ms-0'></i>
+                                            {cartState.operationLoading[
+                                              `update-${item.cart_item_id}`
+                                            ] ? (
+                                              <Loader className='w-3 h-3 animate-spin' />
+                                            ) : (
+                                              <i className='fa fa-plus ms-0'></i>
+                                            )}
                                           </button>
                                         </div>
                                       </div>
@@ -215,7 +289,14 @@ const Cart = () => {
                                   <div className='input-group'>
                                     <button
                                       type='button'
-                                      className='btn qty-left-minus !h-6 !w-6'
+                                      className={`btn qty-left-minus !h-6 !w-6 ${
+                                        cartState.operationLoading[`update-${item.cart_item_id}`]
+                                          ? 'opacity-50 cursor-not-allowed'
+                                          : ''
+                                      }`}
+                                      disabled={
+                                        cartState.operationLoading[`update-${item.cart_item_id}`]
+                                      }
                                       onClick={async () => {
                                         if (item.quantity > 1) {
                                           try {
@@ -226,13 +307,21 @@ const Cart = () => {
                                               })
                                             ).unwrap();
                                             dispatch(fetchCartList());
-                                          } catch (error) {
+                                            toast.success('Quantity updated', { duration: 2000 });
+                                          } catch (error: any) {
                                             console.error('Failed to update cart:', error);
+                                            toast.error(error || 'Failed to update quantity', {
+                                              duration: 3000,
+                                            });
                                           }
                                         }
                                       }}
                                     >
-                                      <Minus className='w-4 h-4' />
+                                      {cartState.operationLoading[`update-${item.cart_item_id}`] ? (
+                                        <Loader className='w-3 h-3 animate-spin' />
+                                      ) : (
+                                        <Minus className='w-4 h-4' />
+                                      )}
                                     </button>
                                     <input
                                       className='form-control input-number qty-input'
@@ -243,7 +332,14 @@ const Cart = () => {
                                     />
                                     <button
                                       type='button'
-                                      className='btn qty-right-plus !h-6 !w-6'
+                                      className={`btn qty-right-plus !h-6 !w-6 ${
+                                        cartState.operationLoading[`update-${item.cart_item_id}`]
+                                          ? 'opacity-50 cursor-not-allowed'
+                                          : ''
+                                      }`}
+                                      disabled={
+                                        cartState.operationLoading[`update-${item.cart_item_id}`]
+                                      }
                                       onClick={async () => {
                                         try {
                                           await dispatch(
@@ -253,12 +349,20 @@ const Cart = () => {
                                             })
                                           ).unwrap();
                                           dispatch(fetchCartList());
-                                        } catch (error) {
+                                          toast.success('Quantity updated', { duration: 2000 });
+                                        } catch (error: any) {
                                           console.error('Failed to update cart:', error);
+                                          toast.error(error || 'Failed to update quantity', {
+                                            duration: 3000,
+                                          });
                                         }
                                       }}
                                     >
-                                      <Plus className='w-4 h-4' />
+                                      {cartState.operationLoading[`update-${item.cart_item_id}`] ? (
+                                        <Loader className='w-3 h-3 animate-spin' />
+                                      ) : (
+                                        <Plus className='w-4 h-4' />
+                                      )}
                                     </button>
                                   </div>
                                 </div>
@@ -281,16 +385,38 @@ const Cart = () => {
                                 >
                                   <Bookmark className='w-5 h-5' />
                                 </a>
-                                <a
-                                  className='remove close_button'
-                                  href='javascript:void(0)'
-                                  onClick={() =>
-                                    dispatch(removeCartItemAsync({ cartItemId: item.cart_item_id }))
+                                <button
+                                  className={`remove close_button border-0 bg-transparent p-1 ${
+                                    cartState.operationLoading[`remove-${item.cart_item_id}`]
+                                      ? 'opacity-50 cursor-not-allowed'
+                                      : ''
+                                  }`}
+                                  disabled={
+                                    cartState.operationLoading[`remove-${item.cart_item_id}`]
                                   }
+                                  onClick={async () => {
+                                    try {
+                                      await dispatch(
+                                        removeCartItemAsync({ cartItemId: item.cart_item_id })
+                                      ).unwrap();
+                                      toast.success(`"${item.title}" removed from cart`, {
+                                        duration: 3000,
+                                      });
+                                    } catch (error: any) {
+                                      console.error('Failed to remove item:', error);
+                                      toast.error(error || 'Failed to remove item from cart', {
+                                        duration: 4000,
+                                      });
+                                    }
+                                  }}
                                   data-tooltip-id='remove-tooltip'
                                 >
-                                  <X className='w-5 h-5' />
-                                </a>
+                                  {cartState.operationLoading[`remove-${item.cart_item_id}`] ? (
+                                    <Loader className='w-5 h-5 animate-spin text-red-500' />
+                                  ) : (
+                                    <X className='w-5 h-5' />
+                                  )}
+                                </button>
                               </div>
                               {/* Tooltips */}
                               <Tooltip id='save-tooltip' place='top' content='Save for later' />

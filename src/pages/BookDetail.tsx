@@ -4,10 +4,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import type { Book } from '@/types/types';
 import { getBooks } from '@/services/bookService';
-import { Heart } from 'react-feather';
-import { useAppDispatch } from '@/app/hooks';
+import { Heart, Loader } from 'react-feather';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { addToCartAsync } from '@/features/cart/cartSlice';
-import { addToWishlist } from '@/features/wishlist/wishlistSlice';
+import { addToWishlistAsync, fetchWishlistAsync } from '@/features/wishlist/wishlistSlice';
+import type { RootState } from '@/app/store';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { Tooltip } from 'react-tooltip';
 import toast from 'react-hot-toast';
@@ -80,55 +81,100 @@ const BookDetail = () => {
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
+      toast.error('Please sign in to add items to cart');
       openSignIn('/cart'); // Pass redirect path
       return;
     }
 
-    if (!book) return;
+    if (!book || isAddingToCart) return;
+
+    setCartAction('add'); // Set which action is being performed
 
     try {
       await dispatch(addToCartAsync({ book_id: book.id, quantity: quantity })).unwrap();
+      const itemText = quantity > 1 ? `${quantity} copies of "${book.title}"` : `"${book.title}"`;
+      toast.success(`${itemText} added to cart`, {
+        duration: 3000,
+      });
       setQuantity(1);
-      toast.success(quantity > 1 ? 'Books added to cart' : 'Book added to cart');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to add item to cart:', error);
-      toast.error('Failed to add item to cart. Please try again.');
+      toast.error(error || 'Failed to add item to cart. Please try again.', {
+        duration: 4000,
+      });
+    } finally {
+      setCartAction(null); // Reset action state
     }
   };
 
-  const handleAddToWishlist = () => {
+  // Get wishlist state from Redux
+  const wishlistState = useAppSelector((state: RootState) => state.wishlist);
+  const isInWishlist = book ? wishlistState.items.find((item) => item.id === book.id) : null;
+  const isAddingToWishlist = book ? wishlistState.operationLoading[`add-${book.id}`] : false;
+  const isWishlistLoading = isAddingToWishlist || false;
+
+  // Get cart state from Redux
+  const cartState = useAppSelector((state: RootState) => state.cart);
+  const isAddingToCart = book ? cartState.operationLoading[`add-${book.id}`] : false;
+
+  // Local state to track which button was clicked
+  const [cartAction, setCartAction] = useState<'add' | 'buy' | null>(null);
+
+  const handleAddToWishlist = async () => {
     if (!isAuthenticated) {
+      toast.error('Please sign in to manage your wishlist');
       openSignIn('/wishlist'); // Pass redirect path
       return;
     }
 
-    if (!book) return;
+    if (!book || isWishlistLoading) return;
 
-    dispatch(
-      addToWishlist({
-        ...book,
-        rating: 4,
-      })
-    );
+    try {
+      if (!isInWishlist) {
+        // Add to wishlist using API
+        await dispatch(addToWishlistAsync(book.id)).unwrap();
 
-    navigate('/wishlist');
+        // Refresh wishlist to get updated data
+        dispatch(fetchWishlistAsync());
+
+        toast.success(`"${book.title}" added to wishlist`, {
+          duration: 3000,
+        });
+
+        navigate('/wishlist');
+      }
+    } catch (error: any) {
+      console.error('Failed to add to wishlist:', error);
+      toast.error(error || 'Failed to add to wishlist. Please try again.', {
+        duration: 4000,
+      });
+    }
   };
 
   const handleBuyNow = async () => {
     if (!isAuthenticated) {
+      toast.error('Please sign in to purchase items');
       openSignIn('/cart'); // Pass redirect path
       return;
     }
 
-    if (!book) return;
+    if (!book || isAddingToCart) return;
+
+    setCartAction('buy'); // Set which action is being performed
 
     try {
       await dispatch(addToCartAsync({ book_id: book.id, quantity: 1 })).unwrap();
-      toast.success('Item added to cart!');
+      toast.success(`"${book.title}" added to cart!`, {
+        duration: 2000,
+      });
       navigate('/cart', { state: { isBuyNow: true } });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to add item to cart:', error);
-      toast.error('Failed to add item to cart. Please try again.');
+      toast.error(error || 'Failed to add item to cart. Please try again.', {
+        duration: 4000,
+      });
+    } finally {
+      setCartAction(null); // Reset action state
     }
   };
 
@@ -163,11 +209,28 @@ const BookDetail = () => {
                               <div className='buy-box absolute right-4 top-4 bg-white p-2 rounded-full md:hidden'>
                                 <button
                                   onClick={handleAddToWishlist}
-                                  className='flex items-center gap-2'
+                                  className={`flex items-center gap-2 ${
+                                    isWishlistLoading ? 'opacity-50 cursor-not-allowed' : ''
+                                  }`}
+                                  disabled={isWishlistLoading}
                                   data-tooltip-id='cart-tooltip'
-                                  data-tooltip-content='Add to wishlist'
+                                  data-tooltip-content={
+                                    isWishlistLoading
+                                      ? 'Adding to wishlist...'
+                                      : isInWishlist
+                                      ? 'Already in wishlist'
+                                      : 'Add to wishlist'
+                                  }
                                 >
-                                  <Heart className='w-6 h-6' />
+                                  {isWishlistLoading ? (
+                                    <Loader className='w-6 h-6 animate-spin text-gray-500' />
+                                  ) : (
+                                    <Heart
+                                      className={`w-6 h-6 ${
+                                        isInWishlist ? 'fill-red-500 text-red-500' : 'text-gray-500'
+                                      }`}
+                                    />
+                                  )}
                                 </button>
                                 <Tooltip id='cart-tooltip' />
                               </div>
@@ -184,11 +247,28 @@ const BookDetail = () => {
                     <div className='buy-box absolute right-4 top-0 !hidden md:!block'>
                       <button
                         onClick={handleAddToWishlist}
-                        className='flex items-center gap-2'
+                        className={`flex items-center gap-2 ${
+                          isWishlistLoading ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        disabled={isWishlistLoading}
                         data-tooltip-id='cart-tooltip'
-                        data-tooltip-content='Add to wishlist'
+                        data-tooltip-content={
+                          isWishlistLoading
+                            ? 'Adding to wishlist...'
+                            : isInWishlist
+                            ? 'Already in wishlist'
+                            : 'Add to wishlist'
+                        }
                       >
-                        <Heart className='w-6 h-6' />
+                        {isWishlistLoading ? (
+                          <Loader className='w-6 h-6 animate-spin text-gray-500' />
+                        ) : (
+                          <Heart
+                            className={`w-6 h-6 ${
+                              isInWishlist ? 'fill-red-500 text-red-500' : 'text-gray-500'
+                            }`}
+                          />
+                        )}
                       </button>
                       <Tooltip id='cart-tooltip' />
                     </div>
@@ -313,16 +393,40 @@ const BookDetail = () => {
 
                       <div className='w-full'>
                         <button
-                          className='btn btn-md bg-dark cart-button text-white w-100'
+                          className={`btn btn-md bg-dark cart-button text-white w-100 ${
+                            isAddingToCart && cartAction === 'add'
+                              ? 'opacity-75 cursor-not-allowed'
+                              : ''
+                          }`}
                           onClick={handleAddToCart}
+                          disabled={isAddingToCart && cartAction === 'add'}
                         >
-                          Add To Cart
+                          {isAddingToCart && cartAction === 'add' ? (
+                            <div className='flex items-center justify-center gap-2'>
+                              <Loader className='w-4 h-4 animate-spin' />
+                              Adding...
+                            </div>
+                          ) : (
+                            'Add To Cart'
+                          )}
                         </button>
                         <button
-                          className='btn btn-md !bg-gradient-to-r !from-red-400 !to-red-500 cart-button mt-2 text-white w-100'
+                          className={`btn btn-md !bg-gradient-to-r !from-red-400 !to-red-500 cart-button mt-2 text-white w-100 ${
+                            isAddingToCart && cartAction === 'buy'
+                              ? 'opacity-75 cursor-not-allowed'
+                              : ''
+                          }`}
                           onClick={handleBuyNow}
+                          disabled={isAddingToCart && cartAction === 'buy'}
                         >
-                          Buy Now
+                          {isAddingToCart && cartAction === 'buy' ? (
+                            <div className='flex items-center justify-center gap-2'>
+                              <Loader className='w-4 h-4 animate-spin' />
+                              Processing...
+                            </div>
+                          ) : (
+                            'Buy Now'
+                          )}
                         </button>
                       </div>
                     </div>

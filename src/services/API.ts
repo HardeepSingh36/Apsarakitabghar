@@ -70,6 +70,12 @@ export const USER_STATS = `${API_BASE_URL}/user-stats`;
 // ------------- Support Tickets -------------
 export const SUPPORT_TICKETS = `${API_BASE_URL}/support-tickets`;
 
+// ------------- Wishlist Operations -------------
+export const WISHLIST_LIST = `${API_BASE_URL}/wishlist-list`;
+export const WISHLIST_ADD = `${API_BASE_URL}/wishlist-add`;
+export const WISHLIST_REMOVE = `${API_BASE_URL}/wishlist-remove`;
+export const WISHLIST_CLEAR = `${API_BASE_URL}/wishlist-clear`;
+
 // ------------- Book Publication Queries -------------
 export const BOOK_QUERIES = `${API_BASE_URL}/queries`;
 

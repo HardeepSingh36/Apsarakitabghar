@@ -61,7 +61,7 @@ const Footer = () => {
               <ul className='footer-list footer-contact footer-list-light'>
                 <li>
                   <Link
-                    to='/about'
+                    to='#'
                     className='light-text'
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   >
@@ -79,7 +79,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to='/term-conditions'
+                    to='/terms-conditions'
                     className='light-text'
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   >

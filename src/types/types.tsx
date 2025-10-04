@@ -93,6 +93,8 @@ export interface CartItem {
 
 export interface WishlistItem extends Book {
   rating: number;
+  wishlist_id?: number; // For API integration
+  in_stock?: boolean; // For stock status
 }
 
 // captcha config
