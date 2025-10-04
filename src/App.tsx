@@ -25,6 +25,7 @@ import { Toaster } from 'react-hot-toast';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
+import PublishBook from './pages/PublishBook';
 
 // define once globally
 defineElement(Lottie.loadAnimation);
@@ -41,7 +42,8 @@ const App = () => {
       {location.pathname !== '/dashboard' &&
       location.pathname !== '/signin' &&
       location.pathname !== '/signup' &&
-      location.pathname !== '/forgot-password' ? (
+      location.pathname !== '/forgot-password' &&
+      location.pathname !== '/publish-book' ? (
         <Header />
       ) : null}
       <MobileFixMenu />
@@ -51,6 +53,7 @@ const App = () => {
         <Route path='/signin' element={<SignIn />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/publish-book' element={<PublishBook />} />
         <Route path='/books/:id' element={<BookDetail />} />
         <Route path='/books' element={<BooksPage />} />
         {/* Protected routes */}
@@ -94,8 +97,10 @@ const App = () => {
         <Route path='*' element={<div>404 Not Found</div>} />
       </Routes>
       {location.pathname !== '/dashboard' &&
-      location.pathname !== '/signin' &&
-      location.pathname !== '/signup' && location.pathname !== '/forgot-password' && <Footer />}
+        location.pathname !== '/signin' &&
+        location.pathname !== '/signup' &&
+        location.pathname !== '/forgot-password' &&
+        location.pathname !== '/publish-book' && <Footer />}
       <Toaster position='top-right' />
     </AuthDialogProvider>
   );

@@ -95,6 +95,15 @@ const Footer = () => {
                     Contact Us
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to='/publish-book'
+                    className='light-text'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  >
+                    Publish With Us
+                  </Link>
+                </li>
               </ul>
             </div>
 

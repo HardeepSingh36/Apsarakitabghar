@@ -11,7 +11,9 @@ import {
   BOOKS_RELATED,
   GENRES_SEARCH,
   TAGS_SEARCH,
+  BOOK_QUERIES,
 } from './API';
+import type { PublishBookRequest, PublishBookResponse, BookQueriesResponse } from '@/types/types';
 
 export const getBooks = async (params: {
   page?: number;
@@ -196,5 +198,66 @@ export const getRelatedBooks = async (
 
   const res = await fetch(`${BOOKS_RELATED}?${query.toString()}`);
   if (!res.ok) throw new Error('Failed to fetch related books');
+  return res.json();
+};
+
+
+
+export const publishBook = async (requestData: PublishBookRequest): Promise<PublishBookResponse> => {
+  const token = localStorage.getItem('auth_token');
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  // Add Authorization header (required for this endpoint)
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(BOOK_QUERIES, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(requestData),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || 'Failed to submit book for publication');
+  }
+
+  return res.json();
+};
+
+export const getBookQueries = async (params?: {
+  status?: 'received' | 'under_review' | 'approved' | 'rejected' | 'published';
+  category_id?: number;
+  page?: number;
+  limit?: number;
+}): Promise<BookQueriesResponse> => {
+  const token = localStorage.getItem('auth_token');
+  
+  const query = new URLSearchParams();
+  if (params?.status) query.append('status', params.status);
+  if (params?.category_id) query.append('category_id', String(params.category_id));
+  if (params?.page) query.append('page', String(params.page));
+  if (params?.limit) query.append('limit', String(params.limit));
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const url = query.toString() ? `${BOOK_QUERIES}?${query.toString()}` : BOOK_QUERIES;
+  const res = await fetch(url, {
+    method: 'GET',
+    headers,
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || 'Failed to fetch book queries');
+  }
+
   return res.json();
 };

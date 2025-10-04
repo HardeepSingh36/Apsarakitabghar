@@ -194,3 +194,61 @@ export interface RelatedBooksResponse {
     };
   };
 }
+
+// Book Query Types for Publication Requests
+export interface BookQuery {
+  id: number;
+  anonymous: boolean;
+  author_name: string;
+  email: string;
+  mobile: string;
+  category_id: number;
+  genre_id: number;
+  book_language: string;
+  book_title: string;
+  book_description: string;
+  pdf_file_name: string | null;
+  notes: string;
+  status: 'received' | 'under_review' | 'approved' | 'rejected' | 'published';
+  admin_response: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+  category_name: string;
+  genre_name: string;
+}
+
+export interface PublishBookRequest {
+  book_title: string;
+  book_language: string;
+  book_description?: string;
+  category_id?: number;
+  genre_id?: number;
+  author_name?: string;
+  email?: string;
+  mobile?: string;
+  anonymous?: boolean;
+  notes?: string;
+  captcha_token: string;
+}
+
+export interface PublishBookResponse {
+  status: string;
+  message: string;
+  data?: BookQuery;
+}
+
+export interface BookQueriesResponse {
+  status: string;
+  message: string;
+  data: {
+    queries: BookQuery[];
+    pagination: {
+      current_page: number;
+      per_page: number;
+      total_items: number;
+      total_pages: number;
+      has_next: boolean;
+      has_prev: boolean;
+    };
+  };
+}

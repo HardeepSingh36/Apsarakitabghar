@@ -38,6 +38,13 @@ const navItems = [
     isDropdown: false,
   },
   {
+    type: 'link',
+    label: 'Publish',
+    to: '/publish-book',
+    className: 'lg:!ml-4 text-primary font-semibold',
+    isDropdown: false,
+  },
+  {
     type: 'dropdown',
     label: 'Categories',
     className: 'dropdown dropdown-mega lg:!ml-4',

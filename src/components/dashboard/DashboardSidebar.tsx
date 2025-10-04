@@ -4,6 +4,7 @@ import {
   Home,
   ShoppingBag,
   Heart,
+  Book,
   // CreditCard,
   HelpCircle,
   MapPin,
@@ -210,6 +211,18 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
               onClick={onClose}
             >
               <Heart size={16} className='me-2' /> Wishlist
+            </button>
+          </li>
+          <li className='nav-item' role='presentation'>
+            <button
+              className='nav-link'
+              id='pills-book-queries-tab'
+              data-bs-toggle='pill'
+              data-bs-target='#pills-book-queries'
+              type='button'
+              onClick={onClose}
+            >
+              <Book size={16} className='me-2' /> My Book Requests
             </button>
           </li>
           <li className='nav-item' role='presentation'>

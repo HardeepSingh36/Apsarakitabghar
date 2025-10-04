@@ -70,5 +70,8 @@ export const USER_STATS = `${API_BASE_URL}/user-stats`;
 // ------------- Support Tickets -------------
 export const SUPPORT_TICKETS = `${API_BASE_URL}/support-tickets`;
 
+// ------------- Book Publication Queries -------------
+export const BOOK_QUERIES = `${API_BASE_URL}/queries`;
+
 // ------------- QR -------------
 export const GET_QR = `${API_BASE_URL}/get-qr`;

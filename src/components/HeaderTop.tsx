@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Printer } from 'react-feather';
 import { useEffect, useState } from 'react';
-import PublishBookModal from './dashboard/PublishBookModal';
 // import { useCurrency } from '@/context/CurrencyContext';
 
 declare global {
@@ -12,7 +11,6 @@ declare global {
 }
 
 const HeaderTop = () => {
-  const [isPublishModalOpen, setPublishModalOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('English');
   // const { currency, setCurrency } = useCurrency();
 
@@ -84,14 +82,7 @@ const HeaderTop = () => {
       <div className='container-fluid-lg'>
         <div className='flex justify-between'>
           <div className='col-xxl-2 d-xxl-block text-white'>
-            <Link
-              to='#'
-              className='flex text-white gap-2 min-w-36'
-              onClick={(e) => {
-                e.preventDefault();
-                setPublishModalOpen(true);
-              }}
-            >
+            <Link to='/publish-book' className='flex text-white gap-2 min-w-36'>
               <Printer size={18} />
               Publish With Us
             </Link>
@@ -192,8 +183,6 @@ const HeaderTop = () => {
           </div>
         </div>
       </div>
-
-      <PublishBookModal isOpen={isPublishModalOpen} onClose={() => setPublishModalOpen(false)} />
     </div>
   );
 };

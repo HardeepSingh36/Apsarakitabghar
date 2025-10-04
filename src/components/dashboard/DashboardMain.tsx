@@ -7,7 +7,7 @@ import DashboardPaymentHistory from './DashboardPaymentHistory';
 import DashboardProfile from './DashboardProfile';
 import DashboardReviews from './DashboardReviews';
 import DashboardSupport from './DashboardSupport';
-
+import BookQueries from './BookQueries';
 
 const DashboardMain: React.FC = () => (
   <div className='dashboard-right-sidebar'>
@@ -35,6 +35,9 @@ const DashboardMain: React.FC = () => (
       </div>
       <div className='tab-pane fade' id='pills-support' role='tabpanel'>
         <DashboardSupport />
+      </div>
+      <div className='tab-pane fade' id='pills-book-queries' role='tabpanel'>
+        <BookQueries />
       </div>
     </div>
   </div>
