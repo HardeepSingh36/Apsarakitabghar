@@ -165,8 +165,17 @@ const wishlistSlice = createSlice({
         state.error = null;
       })
       .addCase(addToWishlistAsync.fulfilled, (state, action) => {
-        state.operationLoading[`add-${action.payload}`] = false;
-        // Will trigger a refetch of the wishlist
+        state.operationLoading[`add-${action.payload.bookId}`] = false;
+
+        // Add the item to local state using API response data
+        const apiWishlistData = action.payload.wishlistData;
+        const wishlistItem = convertAPIWishlistItem(apiWishlistData);
+
+        // Check if item already exists to avoid duplicates
+        const exists = state.items.find((item) => item.id === wishlistItem.id);
+        if (!exists) {
+          state.items.push(wishlistItem);
+        }
       })
       .addCase(addToWishlistAsync.rejected, (state, action) => {
         state.operationLoading[`add-${action.meta.arg}`] = false;

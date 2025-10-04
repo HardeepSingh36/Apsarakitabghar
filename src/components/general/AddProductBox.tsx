@@ -105,9 +105,6 @@ const AddProductBox = ({
         // Add to wishlist using API
         await dispatch(addToWishlistAsync(product.id)).unwrap();
 
-        // Refresh wishlist to get updated data
-        dispatch(fetchWishlistAsync());
-
         toast.success(`"${product.title}" added to wishlist`, {
           duration: 3000,
         });

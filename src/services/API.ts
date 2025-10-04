@@ -81,3 +81,6 @@ export const BOOK_QUERIES = `${API_BASE_URL}/queries`;
 
 // ------------- QR -------------
 export const GET_QR = `${API_BASE_URL}/get-qr`;
+
+// ------------- Contact Forms -------------
+export const CONTACT_FORMS = `${API_BASE_URL}/contact-forms`;

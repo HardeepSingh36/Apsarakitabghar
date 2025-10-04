@@ -134,14 +134,9 @@ const BookDetail = () => {
         // Add to wishlist using API
         await dispatch(addToWishlistAsync(book.id)).unwrap();
 
-        // Refresh wishlist to get updated data
-        dispatch(fetchWishlistAsync());
-
         toast.success(`"${book.title}" added to wishlist`, {
           duration: 3000,
         });
-
-        navigate('/wishlist');
       }
     } catch (error: any) {
       console.error('Failed to add to wishlist:', error);
