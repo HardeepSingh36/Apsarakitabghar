@@ -67,8 +67,8 @@ export const ORDERS_LIST = `${API_BASE_URL}/orders-list`;
 // ------------- User Stats -------------
 export const USER_STATS = `${API_BASE_URL}/user-stats`;
 
-// ------------- Support Queries -------------
-export const SUPPORT_QUERIES = `${API_BASE_URL}/queries`;
+// ------------- Support Tickets -------------
+export const SUPPORT_TICKETS = `${API_BASE_URL}/support-tickets`;
 
 // ------------- QR -------------
 export const GET_QR = `${API_BASE_URL}/get-qr`;

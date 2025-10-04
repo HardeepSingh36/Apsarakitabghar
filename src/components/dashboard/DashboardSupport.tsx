@@ -4,21 +4,23 @@ import { getCaptchaConfig } from '@/services/captchaService';
 import type { CaptchaConfig } from '@/types/types';
 import Captcha from '@/components/general/Captcha';
 import {
-  submitSupportQuery,
-  getSupportQueries,
-  type SupportQuery,
-  type SubmitQueryRequest,
+  submitSupportTicket,
+  getSupportTickets,
+  type SupportTicket,
+  type SubmitTicketRequest,
 } from '@/services/supportQueriesService';
 
 const ADMIN_NUMBER = '+91-9876543210';
 
 const DashboardSupport: React.FC = () => {
-  const [queries, setQueries] = useState<SupportQuery[]>([]);
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [category, setCategory] = useState('general');
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('medium');
   const [statusFilter, setStatusFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('');
   const [error, setError] = useState('');
   const [captchaValid, setCaptchaValid] = useState(false);
   const [captchaConfig, setCaptchaConfig] = useState<CaptchaConfig | null>(null);
@@ -37,39 +39,42 @@ const DashboardSupport: React.FC = () => {
     };
 
     fetchCaptchaConfig();
-    fetchQueries();
+    fetchTickets();
   }, []);
 
-  // Refetch queries when status filter changes
+  // Refetch tickets when filters change
   useEffect(() => {
-    fetchQueries();
-  }, [statusFilter]);
+    fetchTickets();
+  }, [statusFilter, categoryFilter, priorityFilter]);
 
-  const fetchQueries = async () => {
+  const fetchTickets = async () => {
     try {
       setLoading(true);
-      const params = statusFilter ? { status: statusFilter } : undefined;
-      const response = await getSupportQueries(params);
+      const params: any = {};
+      if (statusFilter) params.status = statusFilter;
+      if (categoryFilter) params.category = categoryFilter;
+      if (priorityFilter) params.priority = priorityFilter;
+
+      const response = await getSupportTickets(Object.keys(params).length > 0 ? params : undefined);
 
       if (response.status === 'success') {
-        setQueries(response.data.queries);
+        setTickets(response.data.tickets);
       }
     } catch (error) {
-      console.error('Error fetching queries:', error);
-      toast.error('Failed to load support queries');
+      console.error('Error fetching tickets:', error);
+      toast.error('Failed to load support tickets');
     } finally {
       setLoading(false);
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     // Validate required fields
     if (!subject.trim()) {
-      setError('Please enter a subject for your query.');
-      toast.error('Please enter a subject for your query.');
+      setError('Please enter a subject for your ticket.');
+      toast.error('Please enter a subject for your ticket.');
       return;
     }
 
@@ -120,7 +125,7 @@ const DashboardSupport: React.FC = () => {
     try {
       setSubmitting(true);
 
-      const queryData: SubmitQueryRequest = {
+      const ticketData: SubmitTicketRequest = {
         category: category,
         subject: subject.trim(),
         description: description.trim(),
@@ -128,8 +133,7 @@ const DashboardSupport: React.FC = () => {
         captcha_token: captchaToken!,
       };
 
-      const response = await submitSupportQuery(queryData);
-
+      const response = await submitSupportTicket(ticketData);
       if (response.status === 'success') {
         // Reset form
         setCategory('general');
@@ -142,24 +146,24 @@ const DashboardSupport: React.FC = () => {
 
         toast.success(response.message || 'Support query submitted successfully!');
 
-        // Refresh queries list
-        fetchQueries();
+        // Refresh tickets list
+        fetchTickets();
       }
     } catch (error: any) {
       console.error('Error submitting query:', error);
 
       // Handle rate limiting and other specific errors
       if (error.message?.includes('rate limit') || error.message?.includes('Rate limiting')) {
-        setError('You have reached the daily limit of 10 queries. Please try again tomorrow.');
-        toast.error('Daily query limit reached. Please try again tomorrow.');
+        setError('You have reached the daily limit of 10 tickets. Please try again tomorrow.');
+        toast.error('Daily ticket limit reached. Please try again tomorrow.');
       } else if (error.message?.includes('captcha') || error.message?.includes('Captcha')) {
         setError('Invalid captcha. Please try again.');
         toast.error('Invalid captcha. Please try again.');
         setCaptchaValid(false);
         localStorage.removeItem('captcha_token');
       } else {
-        setError(error.message || 'Failed to submit query. Please try again.');
-        toast.error(error.message || 'Failed to submit query. Please try again.');
+        setError(error.message || 'Failed to submit ticket. Please try again.');
+        toast.error(error.message || 'Failed to submit ticket. Please try again.');
       }
     } finally {
       setSubmitting(false);
@@ -220,12 +224,12 @@ const DashboardSupport: React.FC = () => {
         <div className='col-lg-6'>
           <div className='support-form bg-white p-4 rounded shadow border'>
             <h4 className='mb-3'>
-              <i className='fa-solid fa-headset me-2 text-primary'></i>
-              Create a Support Ticket
+              <i className='fa-solid fa-ticket me-2 text-primary'></i>
+              Submit Support Ticket
             </h4>
             <p className='text-muted mb-4'>
-              Having trouble? Submit a support ticket and our team will get back to you as soon as
-              possible.
+              Need help? Submit a support ticket and our team will respond based on your priority
+              level. Each ticket gets a unique tracking number.
             </p>
             <form onSubmit={handleSubmit} className='space-y-3'>
               <div className='row'>
@@ -277,7 +281,7 @@ const DashboardSupport: React.FC = () => {
                     setSubject(e.target.value);
                     if (error) setError(''); // Clear error on input
                   }}
-                  placeholder='Enter query subject (3-200 characters)'
+                  placeholder='Enter ticket subject (3-200 characters)'
                   maxLength={200}
                   disabled={submitting}
                 />
@@ -300,7 +304,7 @@ const DashboardSupport: React.FC = () => {
                     setDescription(e.target.value);
                     if (error) setError(''); // Clear error on input
                   }}
-                  placeholder='Describe your issue in detail (minimum 10 characters)'
+                  placeholder='Describe your issue in detail for faster resolution (minimum 10 characters)'
                   rows={5}
                   maxLength={3000}
                   disabled={submitting}
@@ -366,21 +370,55 @@ const DashboardSupport: React.FC = () => {
           <div className='bg-white p-4 rounded shadow border'>
             <div className='d-flex justify-content-between align-items-center mb-3'>
               <h4 className='mb-0'>
-                <i className='fa-solid fa-clock-rotate-left me-2 text-primary'></i>
-                Query History
+                <i className='fa-solid fa-ticket me-2 text-primary'></i>
+                Support Tickets
               </h4>
-              <select
-                className='form-select form-select-sm'
-                style={{ width: 'auto' }}
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value=''>All Status</option>
-                <option value='open'>Open</option>
-                <option value='in_progress'>In Progress</option>
-                <option value='resolved'>Resolved</option>
-                <option value='closed'>Closed</option>
-              </select>
+            </div>
+
+            {/* Filter Controls */}
+            <div className='row g-2 mb-3'>
+              <div className='col-md-4'>
+                <select
+                  className='form-select form-select-sm'
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  <option value=''>All Status</option>
+                  <option value='open'>Open</option>
+                  <option value='in_progress'>In Progress</option>
+                  <option value='resolved'>Resolved</option>
+                  <option value='closed'>Closed</option>
+                </select>
+              </div>
+              <div className='col-md-4'>
+                <select
+                  className='form-select form-select-sm'
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                >
+                  <option value=''>All Categories</option>
+                  <option value='general'>General</option>
+                  <option value='order'>Order</option>
+                  <option value='payment'>Payment</option>
+                  <option value='shipping'>Shipping</option>
+                  <option value='return'>Return</option>
+                  <option value='technical'>Technical</option>
+                  <option value='feedback'>Feedback</option>
+                </select>
+              </div>
+              <div className='col-md-4'>
+                <select
+                  className='form-select form-select-sm'
+                  value={priorityFilter}
+                  onChange={(e) => setPriorityFilter(e.target.value)}
+                >
+                  <option value=''>All Priorities</option>
+                  <option value='low'>Low</option>
+                  <option value='medium'>Medium</option>
+                  <option value='high'>High</option>
+                  <option value='urgent'>Urgent</option>
+                </select>
+              </div>
             </div>
 
             {loading ? (
@@ -388,39 +426,46 @@ const DashboardSupport: React.FC = () => {
                 <div className='spinner-border spinner-border-sm text-primary' role='status'>
                   <span className='visually-hidden'>Loading...</span>
                 </div>
-                <p className='mt-2 text-muted'>Loading your queries...</p>
+                <p className='mt-2 text-muted'>Loading your support tickets...</p>
               </div>
-            ) : queries.length === 0 ? (
+            ) : tickets.length === 0 ? (
               <div className='text-center py-4'>
                 <i
                   className='fa-regular fa-comment-dots text-muted'
                   style={{ fontSize: '3rem' }}
                 ></i>
-                <p className='mt-2 text-muted'>No support queries yet.</p>
+                <p className='mt-2 text-muted'>No support tickets found.</p>
                 <small className='text-muted'>
-                  Submit your first query using the form on the left.
+                  Submit your first ticket using the form on the left.
                 </small>
               </div>
             ) : (
-              <div className='queries-list' style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                {queries.map((query) => (
-                  <div key={query.id} className='border rounded p-3 mb-3 bg-light'>
+              <div className='tickets-list' style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                {tickets.map((ticket) => (
+                  <div key={ticket.id} className='border rounded p-3 mb-3 bg-light'>
                     <div className='d-flex justify-content-between align-items-start mb-2'>
                       <div>
                         <h6 className='mb-1 text-truncate' style={{ maxWidth: '200px' }}>
-                          {query.subject}
+                          {ticket.subject}
                         </h6>
                         <small className='text-muted'>
+                          <i className='fa-solid fa-hashtag me-1'></i>
+                          {ticket.ticket_no}
+                        </small>
+                        <br />
+                        <small className='text-muted'>
                           <i className='fa-regular fa-calendar me-1'></i>
-                          {formatDate(query.created_at)}
+                          {formatDate(ticket.created_at)}
                         </small>
                       </div>
                       <div className='d-flex flex-column align-items-end'>
-                        <span className={`badge ${getStatusBadgeClass(query.status)} mb-1`}>
-                          {query.status.replace('_', ' ').toUpperCase()}
+                        <span className={`badge ${getStatusBadgeClass(ticket.status)} mb-1`}>
+                          {ticket.status.replace('_', ' ').toUpperCase()}
                         </span>
-                        <span className={`badge ${getPriorityBadgeClass(query.priority)} badge-sm`}>
-                          {query.priority.toUpperCase()}
+                        <span
+                          className={`badge ${getPriorityBadgeClass(ticket.priority)} badge-sm`}
+                        >
+                          {ticket.priority.toUpperCase()}
                         </span>
                       </div>
                     </div>
@@ -428,9 +473,9 @@ const DashboardSupport: React.FC = () => {
                     <div className='mb-2'>
                       <span className='badge bg-info text-dark me-2'>
                         <i className='fa-solid fa-tag me-1'></i>
-                        {query.category.charAt(0).toUpperCase() + query.category.slice(1)}
+                        {ticket.category.charAt(0).toUpperCase() + ticket.category.slice(1)}
                       </span>
-                      <small className='text-muted'>ID: #{query.id}</small>
+                      <small className='text-muted'>ID: #{ticket.id}</small>
                     </div>
 
                     <p
@@ -444,27 +489,45 @@ const DashboardSupport: React.FC = () => {
                         WebkitBoxOrient: 'vertical',
                       }}
                     >
-                      {query.description}
+                      {ticket.description}
                     </p>
 
-                    {query.updated_at && query.updated_at !== query.created_at && (
-                      <div className='mt-2 p-2 bg-info bg-opacity-10 border-start border-info border-3'>
-                        <small className='text-info fw-bold'>
-                          <i className='fa-solid fa-clock-rotate-left me-1'></i>
-                          Last Updated:
+                    {ticket.admin_response && (
+                      <div className='mt-2 p-2 bg-success bg-opacity-10 border-start border-success border-3'>
+                        <small className='text-success fw-bold'>
+                          <i className='fa-solid fa-reply me-1'></i>
+                          Admin Response{ticket.admin_name ? ` (${ticket.admin_name})` : ''}:
                         </small>
-                        <small className='text-muted d-block mt-1'>
-                          <i className='fa-regular fa-clock me-1'></i>
-                          {formatDate(query.updated_at)}
-                        </small>
+                        <p className='small mb-0 mt-1'>{ticket.admin_response}</p>
+                        {ticket.responded_at && (
+                          <small className='text-muted'>
+                            <i className='fa-regular fa-clock me-1'></i>
+                            {formatDate(ticket.responded_at)}
+                          </small>
+                        )}
                       </div>
                     )}
+
+                    {ticket.updated_at &&
+                      ticket.updated_at !== ticket.created_at &&
+                      !ticket.admin_response && (
+                        <div className='mt-2 p-2 bg-info bg-opacity-10 border-start border-info border-3'>
+                          <small className='text-info fw-bold'>
+                            <i className='fa-solid fa-clock-rotate-left me-1'></i>
+                            Last Updated:
+                          </small>
+                          <small className='text-muted d-block mt-1'>
+                            <i className='fa-regular fa-clock me-1'></i>
+                            {formatDate(ticket.updated_at)}
+                          </small>
+                        </div>
+                      )}
                   </div>
                 ))}
               </div>
             )}
 
-            {queries.length > 0 && (
+            {tickets.length > 0 && (
               <div className='mt-3 p-3 bg-warning bg-opacity-10 border-start border-warning border-3'>
                 <small className='text-warning-emphasis'>
                   <i className='fa-solid fa-info-circle me-1'></i>
