@@ -7,14 +7,18 @@ import type { CartItem } from '@/types/types';
 import { fetchCartList } from '@/features/cart/cartSlice';
 import { useEffect } from 'react';
 import { IMAGE_BASE_URL } from '@/constants';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const RightSideBox = () => {
   // ✅ Auth UI actions (from dialog context)
   const { openSignIn, openSignUp, openForgot, logout } = useAuthDialog();
 
+  // ✅ Currency context
+  const { currency } = useCurrency();
+
   // ✅ Redux state for user + auth
   const { isAuthenticated, user } = useAppSelector((state: RootState) => state.auth);
-  const { items: cartItems, summary } = useAppSelector((state: RootState) => state.cart);
+  const { items: cartItems } = useAppSelector((state: RootState) => state.cart);
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
@@ -25,7 +29,8 @@ const RightSideBox = () => {
     }
   }, [isAuthenticated, dispatch]);
 
-  const cartTotal = summary?.cart_total || 0;
+  // Calculate discounted cart total
+  const cartTotal = cartItems.reduce((sum, item) => sum + item.current_line_total, 0);
 
   // Handle protected navigation
   const handleProtectedNav = (path: string) => {
@@ -133,7 +138,7 @@ const RightSideBox = () => {
                               <h5>{item.title}</h5>
                             </button>
                             <h6>
-                              <span>{item.quantity} x</span> $
+                              <span>{item.quantity} x</span> {currency.sign}
                               {item.current_discounted_price.toFixed(2)}
                             </h6>
                           </div>
@@ -145,7 +150,10 @@ const RightSideBox = () => {
                   {/* Cart total */}
                   <div className='price-box'>
                     <h5>Total :</h5>
-                    <h4 className='theme-color fw-bold'>${cartTotal.toFixed(2)}</h4>
+                    <h4 className='theme-color fw-bold'>
+                      {currency.sign}
+                      {cartTotal.toFixed(2)}
+                    </h4>
                   </div>
 
                   {/* Buttons */}

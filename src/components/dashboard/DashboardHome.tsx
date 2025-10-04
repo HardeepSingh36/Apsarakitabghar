@@ -33,12 +33,6 @@ const DashboardHome: React.FC = () => {
     fetchUserStats();
   }, []);
 
-  // Refresh statistics
-  const refreshStats = () => {
-    fetchUserStats();
-    toast.success('Statistics refreshed!');
-  };
-
   return (
     <div className='dashboard-home'>
       <div className='title'>
