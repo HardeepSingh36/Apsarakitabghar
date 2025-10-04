@@ -114,6 +114,7 @@ const SignUp = () => {
         last_name: lastName,
         mobile: phoneNumber,
         captcha_token: captchaToken,
+        role: 'user',
       });
 
       if (response.status !== 'success') {

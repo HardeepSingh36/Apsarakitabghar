@@ -7,7 +7,6 @@ import { addToCartAsync } from '@/features/cart/cartSlice';
 import {
   addToWishlistAsync,
   removeFromWishlistAsync,
-  fetchWishlistAsync,
 } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';

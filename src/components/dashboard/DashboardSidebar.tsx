@@ -19,6 +19,7 @@ import { updateUser } from '@/features/auth/authSlice';
 import { uploadAvatar } from '@/services/authService';
 import { IMAGE_PATH } from '@/services/API';
 import type { RootState } from '@/app/store';
+import { AVATAR_BASE_URL } from '@/constants';
 
 interface DashboardSidebarProps {
   show: boolean;
@@ -46,34 +47,33 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
     if (!file) return;
 
     // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      toast.error('Please select a valid image file (JPEG, JPG, PNG, or WebP)');
+      toast.error('Please select a valid image file (JPEG, JPG, PNG, GIF, or WebP)');
       return;
     }
 
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    // Validate file size (max 3MB)
+    const maxSize = 3 * 1024 * 1024; // 3MB in bytes
     if (file.size > maxSize) {
-      toast.error('File size must be less than 5MB');
+      toast.error('File size must be less than 3MB');
       return;
     }
 
     try {
       setIsUploadingAvatar(true);
       const response = await uploadAvatar(file);
-
-      if (response.success && response.user) {
-        // Update user in Redux store
-        dispatch(updateUser({ avatar: response.user.avatar }));
+      if (response.status === 'success' && response.data?.user) {
+        dispatch(updateUser({ avatar: response.data.user.avatar }));
         toast.success('Profile picture updated successfully!');
+      } else {
+        toast.error(response.message || 'Failed to update profile picture');
       }
     } catch (error) {
       console.error('Error uploading avatar:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to update profile picture');
     } finally {
       setIsUploadingAvatar(false);
-      // Clear the input so the same file can be selected again if needed
       if (event.target) {
         event.target.value = '';
       }
@@ -141,7 +141,7 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
                 <img
                   src={
                     user?.avatar
-                      ? `${IMAGE_PATH}${user.avatar}`
+                      ? `${AVATAR_BASE_URL}${user.avatar}`
                       : 'assets/images/inner-page/user/1.jpg'
                   }
                   className='blur-up lazyload update_img mx-auto'

@@ -466,14 +466,6 @@ const Cart = () => {
                         {totalDiscount.toFixed(2)}
                       </h4>
                     </li>
-
-                    <li className='align-items-start'>
-                      <h4>Shipping</h4>
-                      <h4 className='price text-end'>
-                        {currency.sign}
-                        {shipping.toFixed(2)}
-                      </h4>
-                    </li>
                   </ul>
                 </div>
 

@@ -1,6 +1,6 @@
 import RelatedProducts from '@/components/bookdetail/RelatedProducts';
 import Reviews from '@/components/bookdetail/Reviews';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import type { Book } from '@/types/types';
 import { getBooks } from '@/services/bookService';
@@ -13,43 +13,31 @@ import { useAuthDialog } from '@/context/AuthDialogContext';
 import { Tooltip } from 'react-tooltip';
 import toast from 'react-hot-toast';
 import { IMAGE_BASE_URL } from '@/constants';
-
-const fallbackBook: Book = {
-  id: 51,
-  title: 'ਪੰਜਾਬ ਦੇ ਵੀਰ ਯੋਧੇ',
-  slug: 'punjab-de-veer-yodhe',
-  description: 'ਪੰਜਾਬ ਦੇ ਇਤਿਹਾਸਕ ਵੀਰ ਯੋਧਿਆਂ ਅਤੇ ਉਨ੍ਹਾਂ ਦੇ ਬਲਿਦਾਨਾਂ ਦੀ ਗਾਥਾ',
-  isbn: '9782222222244',
-  language: 'Punjabi',
-  price: 450,
-  discount_percent: 18,
-  stock_quantity: 52,
-  pages: 423,
-  author_name: 'ਅਮਰਜੀਤ ਸਿੰਘ',
-  publisher_name: 'ਵੀਰ ਗਾਥਾ ਪ੍ਰਕਾਸ਼ਨ',
-  publish_date: '2023-05-25',
-  cover_image_name: '3.jpg',
-  featured: 1,
-  views_count: 1567,
-  sales_count: 124,
-  rating_avg: 4.5,
-  rating_count: 234,
-  created_at: '2025-09-26 09:09:35',
-  updated_at: '2025-09-26 09:11:18',
-  author_id: 50,
-  category_id: 5,
-  genre_id: 49,
-  author_table_id: null,
-  author_pen_name: null,
-  category_table_id: 5,
-  category_name: 'रहस्य कहानी',
-  genre_table_id: null,
-  genre_name: null,
-  tags: [],
-  discounted_price: 369,
-};
+import { BOOKS_BY_FLAGS } from '@/services/API';
 
 const BookDetail = () => {
+  // Trending books state
+  const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
+  const [trendingLoading, setTrendingLoading] = useState(false);
+  useEffect(() => {
+    async function fetchTrendingBooks() {
+      setTrendingLoading(true);
+      try {
+        const response = await fetch(BOOKS_BY_FLAGS + '?is_trending=1&limit=3');
+        const data = await response.json();
+        if (data.status === 'success') {
+          setTrendingBooks(data.data.books || []);
+        } else {
+          setTrendingBooks([]);
+        }
+      } catch (e) {
+        setTrendingBooks([]);
+      } finally {
+        setTrendingLoading(false);
+      }
+    }
+    fetchTrendingBooks();
+  }, []);
   const dispatch = useAppDispatch();
   const { isAuthenticated, openSignIn } = useAuthDialog();
   const [quantity, setQuantity] = useState(1);
@@ -659,76 +647,48 @@ const BookDetail = () => {
                   <div className='category-menu'>
                     <h3>Trending Books</h3>
                     <ul className='product-list product-right-sidebar border-0 p-0'>
-                      <li>
-                        <div className='offer-product'>
-                          <a href={`/books/${fallbackBook.slug}`} className='offer-image'>
-                            <img
-                              src={IMAGE_BASE_URL + fallbackBook.cover_image_name || ''}
-                              className='img-fluid blur-up lazyload notranslate'
-                              alt={fallbackBook.title}
-                            />
-                          </a>
-                          <div className='offer-detail'>
-                            <div>
-                              <a href={`/books/${fallbackBook.slug}`}>
-                                <h6 className='name notranslate' translate='no'>
-                                  {fallbackBook.title}
-                                </h6>
-                              </a>
-                              <span>{fallbackBook.author_name}</span>
-                              <h6 className='price theme-color'>
-                                ₹{fallbackBook.discounted_price}
-                              </h6>
+                      {trendingLoading ? (
+                        <li className='text-center py-4'>
+                          <span className='spinner-border text-primary' role='status'></span>
+                          <p className='mt-2'>Loading trending books...</p>
+                        </li>
+                      ) : trendingBooks.length === 0 ? (
+                        <li className='text-center py-4 text-muted'>No trending books found.</li>
+                      ) : (
+                        trendingBooks.map((book) => (
+                          <li key={book.id}>
+                            <div className='offer-product'>
+                              <Link
+                                to={`/books/${book.slug}`}
+                                className='offer-image'
+                                state={{ item: book }}
+                              >
+                                <img
+                                  src={IMAGE_BASE_URL + book.cover_image_name}
+                                  className='img-fluid blur-up lazyload notranslate'
+                                  alt={book.title}
+                                  onError={(e) => {
+                                    e.currentTarget.src = '/assets/images/book/product/1.jpg';
+                                  }}
+                                />
+                              </Link>
+                              <div className='offer-detail'>
+                                <div>
+                                  <Link to={`/books/${book.slug}`} state={{ item: book }}>
+                                    <h6 className='name notranslate' translate='no'>
+                                      {book.title}
+                                    </h6>
+                                  </Link>
+                                  <span>{book.author_name}</span>
+                                  <h6 className='price theme-color'>
+                                    ₹{book.discounted_price?.toFixed(2) ?? book.price?.toFixed(2)}
+                                  </h6>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div className='offer-product'>
-                          <a href={`/books/${fallbackBook.slug}`} className='offer-image'>
-                            {book.cover_image_name && (
-                              <img
-                                src={IMAGE_BASE_URL + fallbackBook.cover_image_name}
-                                className='img-fluid blur-up lazyload notranslate'
-                                alt={fallbackBook.title}
-                              />
-                            )}
-                          </a>
-                          <div className='offer-detail'>
-                            <div>
-                              <a href={`/books/${fallbackBook.slug}`}>
-                                <h6 className='name notranslate'>{fallbackBook.title}</h6>
-                              </a>
-                              <span>{fallbackBook.author_name}</span>
-                              <h6 className='price theme-color'>
-                                ₹{fallbackBook.discounted_price}
-                              </h6>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div className='offer-product'>
-                          <a href={`/books/${fallbackBook.slug}`} className='offer-image'>
-                            <img
-                              src={IMAGE_BASE_URL + fallbackBook.cover_image_name}
-                              className='img-fluid blur-up lazyload notranslate'
-                              alt={fallbackBook.title}
-                            />
-                          </a>
-                          <div className='offer-detail'>
-                            <div>
-                              <a href={`/books/${fallbackBook.slug}`}>
-                                <h6 className='name notranslate'>{fallbackBook.title}</h6>
-                              </a>
-                              <span>{fallbackBook.author_name}</span>
-                              <h6 className='price theme-color'>
-                                ₹{fallbackBook.discounted_price}
-                              </h6>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
+                          </li>
+                        ))
+                      )}
                     </ul>
                   </div>
                 </div>

@@ -5,6 +5,7 @@ import {
   AUTH_FORGOT_PASSWORD,
   AUTH_CHANGE_PASSWORD,
   AUTH_UPDATE_PROFILE,
+  UPDATE_AVATAR,
 } from './API';
 import type {
   ForgotPasswordRequest,
@@ -53,6 +54,7 @@ export const register = async (userData: {
   last_name: string;
   mobile: string;
   captcha_token?: string;
+  role?: string;
 }) => {
   const res = await fetch(AUTH_REGISTER, {
     method: 'POST',
@@ -157,18 +159,17 @@ export const uploadAvatar = async (file: File) => {
   const formData = new FormData();
   formData.append('avatar', file);
 
-  const res = await fetch(AUTH_UPDATE_PROFILE, {
-    method: 'PUT',
+  const res = await fetch(UPDATE_AVATAR, {
+    method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
     },
     body: formData,
   });
 
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || 'Failed to upload avatar');
+  const data = await res.json();
+  if (!res.ok || data.status !== 'success') {
+    throw new Error(data.message || 'Failed to upload avatar');
   }
-
-  return res.json();
+  return data;
 };
