@@ -1,72 +1,209 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { getCaptchaConfig } from '@/services/captchaService';
+import type { CaptchaConfig } from '@/types/types';
+import Captcha from '@/components/general/Captcha';
+import {
+  submitSupportQuery,
+  getSupportQueries,
+  type SupportQuery,
+  type SubmitQueryRequest,
+} from '@/services/supportQueriesService';
 
 const ADMIN_NUMBER = '+91-9876543210';
 
-type Ticket = {
-  id: number;
-  subject: string;
-  description: string;
-  status: string;
-  date: string;
-};
-
-const initialTickets: Ticket[] = [
-  // Example ticket history
-  {
-    id: 1,
-    subject: 'Order not received',
-    description: 'Details...',
-    status: 'Open',
-    date: '2025-09-10',
-  },
-  {
-    id: 2,
-    subject: 'Order not received',
-    description: 'Details...',
-    status: 'Open',
-    date: '2025-09-10',
-  },
-  {
-    id: 3,
-    subject: 'Order not received',
-    description: 'Details...',
-    status: 'Open',
-    date: '2025-09-10',
-  },
-  {
-    id: 4,
-    subject: 'Order not received',
-    description: 'Details...',
-    status: 'Open',
-    date: '2025-09-10',
-  },
-];
-
 const DashboardSupport: React.FC = () => {
-  const [tickets, setTickets] = useState(initialTickets);
+  const [queries, setQueries] = useState<SupportQuery[]>([]);
+  const [category, setCategory] = useState('general');
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState('medium');
+  const [statusFilter, setStatusFilter] = useState('');
   const [error, setError] = useState('');
+  const [captchaValid, setCaptchaValid] = useState(false);
+  const [captchaConfig, setCaptchaConfig] = useState<CaptchaConfig | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch CAPTCHA configuration and queries on component mount
+  useEffect(() => {
+    const fetchCaptchaConfig = async () => {
+      try {
+        const config = await getCaptchaConfig();
+        setCaptchaConfig(config);
+      } catch (error) {
+        console.error('Failed to fetch CAPTCHA configuration:', error);
+      }
+    };
+
+    fetchCaptchaConfig();
+    fetchQueries();
+  }, []);
+
+  // Refetch queries when status filter changes
+  useEffect(() => {
+    fetchQueries();
+  }, [statusFilter]);
+
+  const fetchQueries = async () => {
+    try {
+      setLoading(true);
+      const params = statusFilter ? { status: statusFilter } : undefined;
+      const response = await getSupportQueries(params);
+
+      if (response.status === 'success') {
+        setQueries(response.data.queries);
+      }
+    } catch (error) {
+      console.error('Error fetching queries:', error);
+      toast.error('Failed to load support queries');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!subject.trim() || !description.trim()) {
-      setError('Please fill in all fields.');
+    setError('');
+
+    // Validate required fields
+    if (!subject.trim()) {
+      setError('Please enter a subject for your query.');
+      toast.error('Please enter a subject for your query.');
       return;
     }
-    setTickets([
-      ...tickets,
-      {
-        id: tickets.length + 1,
-        subject,
-        description,
-        status: 'Open',
-        date: new Date().toISOString().slice(0, 10),
-      },
-    ]);
-    setSubject('');
-    setDescription('');
-    setError('');
+
+    if (subject.trim().length < 3) {
+      setError('Subject must be at least 3 characters long.');
+      toast.error('Subject must be at least 3 characters long.');
+      return;
+    }
+
+    if (subject.trim().length > 200) {
+      setError('Subject must not exceed 200 characters.');
+      toast.error('Subject must not exceed 200 characters.');
+      return;
+    }
+
+    if (!description.trim()) {
+      setError('Please provide a description of your issue.');
+      toast.error('Please provide a description of your issue.');
+      return;
+    }
+
+    if (description.trim().length < 10) {
+      setError('Description must be at least 10 characters long.');
+      toast.error('Description must be at least 10 characters long.');
+      return;
+    }
+
+    if (description.trim().length > 3000) {
+      setError('Description must not exceed 3000 characters.');
+      toast.error('Description must not exceed 3000 characters.');
+      return;
+    }
+
+    // Validate captcha if config is available
+    if (captchaConfig && !captchaValid) {
+      setError('Please complete the captcha verification.');
+      toast.error('Please complete the captcha verification.');
+      return;
+    }
+
+    const captchaToken = localStorage.getItem('captcha_token');
+    if (captchaConfig && !captchaToken) {
+      setError('Captcha token missing. Please complete the captcha.');
+      toast.error('Captcha token missing. Please complete the captcha.');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      const queryData: SubmitQueryRequest = {
+        category: category,
+        subject: subject.trim(),
+        description: description.trim(),
+        priority: priority,
+        captcha_token: captchaToken!,
+      };
+
+      const response = await submitSupportQuery(queryData);
+
+      if (response.status === 'success') {
+        // Reset form
+        setCategory('general');
+        setSubject('');
+        setDescription('');
+        setPriority('medium');
+        setError('');
+        setCaptchaValid(false);
+        localStorage.removeItem('captcha_token');
+
+        toast.success(response.message || 'Support query submitted successfully!');
+
+        // Refresh queries list
+        fetchQueries();
+      }
+    } catch (error: any) {
+      console.error('Error submitting query:', error);
+
+      // Handle rate limiting and other specific errors
+      if (error.message?.includes('rate limit') || error.message?.includes('Rate limiting')) {
+        setError('You have reached the daily limit of 10 queries. Please try again tomorrow.');
+        toast.error('Daily query limit reached. Please try again tomorrow.');
+      } else if (error.message?.includes('captcha') || error.message?.includes('Captcha')) {
+        setError('Invalid captcha. Please try again.');
+        toast.error('Invalid captcha. Please try again.');
+        setCaptchaValid(false);
+        localStorage.removeItem('captcha_token');
+      } else {
+        setError(error.message || 'Failed to submit query. Please try again.');
+        toast.error(error.message || 'Failed to submit query. Please try again.');
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'open':
+        return 'bg-primary text-white';
+      case 'in_progress':
+        return 'bg-warning text-dark';
+      case 'resolved':
+        return 'bg-success text-white';
+      case 'closed':
+        return 'bg-secondary text-white';
+      default:
+        return 'bg-light text-dark';
+    }
+  };
+
+  const getPriorityBadgeClass = (priority: string) => {
+    switch (priority.toLowerCase()) {
+      case 'low':
+        return 'bg-info text-white';
+      case 'medium':
+        return 'bg-primary text-white';
+      case 'high':
+        return 'bg-warning text-dark';
+      case 'urgent':
+        return 'bg-danger text-white';
+      default:
+        return 'bg-light text-dark';
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   return (
@@ -79,68 +216,264 @@ const DashboardSupport: React.FC = () => {
           </svg>
         </span>
       </div>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <div className='support-form bg-white p-4 rounded shadow'>
-          <h4 className='mb-3'>Create a Support Ticket</h4>
-          <form onSubmit={handleSubmit} className='space-y-3'>
-            <div>
-              <label className='block mb-1 font-medium'>Subject</label>
-              <input
-                type='text'
-                className='form-control'
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder='Enter ticket subject'
-              />
-            </div>
-            <div>
-              <label className='block mb-1 font-medium'>Description</label>
-              <textarea
-                className='form-control'
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder='Describe your issue'
-                rows={3}
-              />
-            </div>
-            {error && <div className='text-red-500 text-sm'>{error}</div>}
-            <button type='submit' className='btn btn-animation btn-md fw-bold w-full'>
-              Submit Ticket
-            </button>
-          </form>
-        </div>
-        <div className=' bg-white p-4 rounded shadow'>
-          <h4 className='mb-3'>Ticket History</h4>
-          {tickets.length === 0 ? (
-            <div className='text-gray-500'>No tickets yet.</div>
-          ) : (
-            <ul className='space-y-2'>
-              {tickets.map((ticket) => (
-                <li key={ticket.id} className='border p-2 rounded w-full'>
-                  <div className='flex justify-between items-center'>
-                    <span className='font-semibold'>{ticket.subject}</span>
-                    <span
-                      className={`badge ${
-                        ticket.status === 'Open'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-green-100 text-green-800'
-                      }`}
-                    >
-                      {ticket.status}
-                    </span>
+      <div className='row g-4'>
+        <div className='col-lg-6'>
+          <div className='support-form bg-white p-4 rounded shadow border'>
+            <h4 className='mb-3'>
+              <i className='fa-solid fa-headset me-2 text-primary'></i>
+              Create a Support Ticket
+            </h4>
+            <p className='text-muted mb-4'>
+              Having trouble? Submit a support ticket and our team will get back to you as soon as
+              possible.
+            </p>
+            <form onSubmit={handleSubmit} className='space-y-3'>
+              <div className='row'>
+                <div className='col-md-6'>
+                  <label className='block mb-1 font-medium'>
+                    Category <span className='text-red-500'>*</span>
+                  </label>
+                  <select
+                    className='form-control'
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    disabled={submitting}
+                  >
+                    <option value='general'>General Inquiry</option>
+                    <option value='order'>Order Issues</option>
+                    <option value='payment'>Payment Problems</option>
+                    <option value='shipping'>Shipping & Delivery</option>
+                    <option value='return'>Returns & Refunds</option>
+                    <option value='technical'>Technical Support</option>
+                    <option value='feedback'>Feedback & Suggestions</option>
+                  </select>
+                </div>
+                <div className='col-md-6'>
+                  <label className='block mb-1 font-medium'>
+                    Priority <span className='text-red-500'>*</span>
+                  </label>
+                  <select
+                    className='form-control'
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    disabled={submitting}
+                  >
+                    <option value='low'>Low</option>
+                    <option value='medium'>Medium</option>
+                    <option value='high'>High</option>
+                    <option value='urgent'>Urgent</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className='block mb-1 font-medium'>
+                  Subject <span className='text-red-500'>*</span>
+                </label>
+                <input
+                  type='text'
+                  className={`form-control ${error && !subject.trim() ? 'border-red-500' : ''}`}
+                  value={subject}
+                  onChange={(e) => {
+                    setSubject(e.target.value);
+                    if (error) setError(''); // Clear error on input
+                  }}
+                  placeholder='Enter query subject (3-200 characters)'
+                  maxLength={200}
+                  disabled={submitting}
+                />
+                <small
+                  className={`text-muted ${
+                    subject.length > 0 && subject.length < 3 ? 'text-warning' : ''
+                  }`}
+                >
+                  {subject.length}/200 characters (minimum 3 required)
+                </small>
+              </div>
+              <div>
+                <label className='block mb-1 font-medium'>
+                  Description <span className='text-red-500'>*</span>
+                </label>
+                <textarea
+                  className={`form-control ${error && !description.trim() ? 'border-red-500' : ''}`}
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                    if (error) setError(''); // Clear error on input
+                  }}
+                  placeholder='Describe your issue in detail (minimum 10 characters)'
+                  rows={5}
+                  maxLength={3000}
+                  disabled={submitting}
+                />
+                <small
+                  className={`text-muted ${
+                    description.length > 0 && description.length < 10
+                      ? 'text-warning'
+                      : description.length > 2900
+                      ? 'text-danger'
+                      : ''
+                  }`}
+                >
+                  {description.length}/3000 characters (minimum 10 required)
+                </small>
+              </div>
+
+              {/* Captcha Component */}
+              {captchaConfig && (
+                <div>
+                  <label className='block mb-2 font-medium'>
+                    Captcha <span className='text-red-500'>*</span>
+                  </label>
+                  <div className='captcha-container d-flex justify-content-center'>
+                    <Captcha
+                      config={captchaConfig}
+                      onVerify={(token: string | null) => {
+                        setCaptchaValid(!!token);
+                        if (error && token) setError(''); // Clear error when captcha is completed
+                      }}
+                    />
                   </div>
-                  <div className='text-sm text-gray-600'>{ticket.date}</div>
-                  <div className='mt-1 text-gray-700'>{ticket.description}</div>
-                </li>
-              ))}
-            </ul>
-          )}
-          {tickets.length > 3 && (
-            <div className='mt-4 p-2 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 rounded'>
-              <strong>Need urgent help?</strong> Please contact admin at{' '}
-              <span className='font-bold'>{ADMIN_NUMBER}</span>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className='alert alert-danger' role='alert'>
+                  <i className='fa-solid fa-circle-exclamation me-2 !text-sm'></i>
+                  {error}
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type='submit'
+                className={`btn btn-animation btn-md fw-bold w-full d-flex align-items-center justify-content-center ${
+                  submitting || (!!captchaConfig && !captchaValid) ? 'opacity-50' : ''
+                }`}
+                disabled={submitting || (!!captchaConfig && !captchaValid)}
+              >
+                {submitting && (
+                  <div className='spinner-border spinner-border-sm me-2' role='status'>
+                    <span className='visually-hidden'>Loading...</span>
+                  </div>
+                )}
+                {submitting ? 'Submitting...' : 'Submit Ticket'}
+              </button>
+            </form>
+          </div>
+        </div>
+        <div className='col-lg-6'>
+          <div className='bg-white p-4 rounded shadow border'>
+            <div className='d-flex justify-content-between align-items-center mb-3'>
+              <h4 className='mb-0'>
+                <i className='fa-solid fa-clock-rotate-left me-2 text-primary'></i>
+                Query History
+              </h4>
+              <select
+                className='form-select form-select-sm'
+                style={{ width: 'auto' }}
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value=''>All Status</option>
+                <option value='open'>Open</option>
+                <option value='in_progress'>In Progress</option>
+                <option value='resolved'>Resolved</option>
+                <option value='closed'>Closed</option>
+              </select>
             </div>
-          )}
+
+            {loading ? (
+              <div className='text-center py-4'>
+                <div className='spinner-border spinner-border-sm text-primary' role='status'>
+                  <span className='visually-hidden'>Loading...</span>
+                </div>
+                <p className='mt-2 text-muted'>Loading your queries...</p>
+              </div>
+            ) : queries.length === 0 ? (
+              <div className='text-center py-4'>
+                <i
+                  className='fa-regular fa-comment-dots text-muted'
+                  style={{ fontSize: '3rem' }}
+                ></i>
+                <p className='mt-2 text-muted'>No support queries yet.</p>
+                <small className='text-muted'>
+                  Submit your first query using the form on the left.
+                </small>
+              </div>
+            ) : (
+              <div className='queries-list' style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                {queries.map((query) => (
+                  <div key={query.id} className='border rounded p-3 mb-3 bg-light'>
+                    <div className='d-flex justify-content-between align-items-start mb-2'>
+                      <div>
+                        <h6 className='mb-1 text-truncate' style={{ maxWidth: '200px' }}>
+                          {query.subject}
+                        </h6>
+                        <small className='text-muted'>
+                          <i className='fa-regular fa-calendar me-1'></i>
+                          {formatDate(query.created_at)}
+                        </small>
+                      </div>
+                      <div className='d-flex flex-column align-items-end'>
+                        <span className={`badge ${getStatusBadgeClass(query.status)} mb-1`}>
+                          {query.status.replace('_', ' ').toUpperCase()}
+                        </span>
+                        <span className={`badge ${getPriorityBadgeClass(query.priority)} badge-sm`}>
+                          {query.priority.toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className='mb-2'>
+                      <span className='badge bg-info text-dark me-2'>
+                        <i className='fa-solid fa-tag me-1'></i>
+                        {query.category.charAt(0).toUpperCase() + query.category.slice(1)}
+                      </span>
+                      <small className='text-muted'>ID: #{query.id}</small>
+                    </div>
+
+                    <p
+                      className='text-muted mb-2 small'
+                      style={{
+                        maxHeight: '60px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                      }}
+                    >
+                      {query.description}
+                    </p>
+
+                    {query.updated_at && query.updated_at !== query.created_at && (
+                      <div className='mt-2 p-2 bg-info bg-opacity-10 border-start border-info border-3'>
+                        <small className='text-info fw-bold'>
+                          <i className='fa-solid fa-clock-rotate-left me-1'></i>
+                          Last Updated:
+                        </small>
+                        <small className='text-muted d-block mt-1'>
+                          <i className='fa-regular fa-clock me-1'></i>
+                          {formatDate(query.updated_at)}
+                        </small>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {queries.length > 0 && (
+              <div className='mt-3 p-3 bg-warning bg-opacity-10 border-start border-warning border-3'>
+                <small className='text-warning-emphasis'>
+                  <i className='fa-solid fa-info-circle me-1'></i>
+                  <strong>Need urgent help?</strong> Please contact admin at{' '}
+                  <span className='fw-bold'>{ADMIN_NUMBER}</span>
+                </small>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
