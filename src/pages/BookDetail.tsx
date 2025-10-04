@@ -77,7 +77,11 @@ const BookDetail = () => {
       }
       fetchBook();
     }
-  }, [id, passedBook]);
+    // Always fetch wishlist if authenticated, so wishlisted status is correct after refresh
+    if (isAuthenticated) {
+      dispatch(fetchWishlistAsync());
+    }
+  }, [id, passedBook, isAuthenticated, dispatch]);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
