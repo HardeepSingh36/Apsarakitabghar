@@ -1,6 +1,7 @@
 import { useCurrency } from '@/context/CurrencyContext';
 import React, { useState, useEffect } from 'react';
-import { getOrdersList, type Order } from '@/services/ordersService';
+import { getOrdersList } from '@/services/ordersService';
+import type { Order } from '@/services/ordersService';
 import toast from 'react-hot-toast';
 
 const DashboardOrders: React.FC = () => {
@@ -74,10 +75,10 @@ const DashboardOrders: React.FC = () => {
       </div>
       {/* Filters */}
       <div className='mb-4'>
-        <div className='row align-items-center'>
-          <div className='col-md-6'>
+        <div className='flex flex-wrap items-center gap-4'>
+          <div className='w-full sm:w-auto flex-grow max-w-sm'>
             <select
-              className='form-select'
+              className='form-select w-full'
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -110,75 +111,95 @@ const DashboardOrders: React.FC = () => {
             </a>
           </div>
         ) : (
-          <ul className='space-y-3 w-full'>
+          <ul className='space-y-4 w-full max-w-full overflow-hidden'>
             {orders.map((order) => (
               <li
                 key={order.id}
-                className='!flex !items-center bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition'
+                className='bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition w-full'
               >
-                {/* Order Icon */}
-                <div className='w-16 h-16 flex-shrink-0 bg-gray-100 rounded-lg flex items-center justify-center'>
-                  <i className='fa-solid fa-receipt text-gray-500 text-xl'></i>
-                </div>
-
-                {/* Order Details */}
-                <div className='ml-4 flex-grow'>
-                  <div className='flex justify-between items-start mb-2'>
-                    <div>
-                      <h4 className='text-lg font-semibold mb-1'>Order #{order.order_number}</h4>
+                <div className='flex flex-col md:flex-row gap-4'>
+                  {/* Order Header - Always Visible */}
+                  <div className='flex-grow'>
+                    <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3'>
+                      <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
+                        <h4 className='text-lg font-semibold m-0'>Order #{order.order_number}</h4>
+                        <span
+                          className={`px-3 py-1 text-xs rounded-full whitespace-nowrap w-fit ${getStatusBadgeClass(
+                            order.status
+                          )}`}
+                        >
+                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        </span>
+                      </div>
                       <p className='text-sm text-gray-500 m-0'>
+                        Placed on: {formatDate(order.created_at)}
+                      </p>
+                    </div>
+
+                    {/* Order Items */}
+                    <div className='mb-3'>
+                      <p className='text-sm font-medium text-gray-700 mb-1'>
                         {order.items_count} item(s) • {order.total_quantity} book(s)
                       </p>
+                      <div className='text-xs text-gray-500 space-y-1'>
+                        {order.order_items.map((item) => (
+                          <div key={item.item_id} className='flex justify-between'>
+                            <span>
+                              {item.book_title} (x{item.quantity})
+                            </span>
+                            <span className='text-gray-700'>
+                              {currency.sign}
+                              {item.total_price.toFixed(2)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <span
-                      className={`px-3 py-1 text-xs rounded-full ${getStatusBadgeClass(
-                        order.status
-                      )}`}
-                    >
-                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                    </span>
-                  </div>
 
-                  <div className='row'>
-                    <div className='col-md-6'>
-                      <p className='text-sm text-gray-700 m-0 mb-1'>
-                        <strong>Total:</strong>{' '}
-                        <span className='text-theme font-semibold'>
-                          {currency.sign}
-                          {order.total_amount.toFixed(2)}
-                        </span>
-                      </p>
-                      <p className='text-sm text-gray-700 m-0 mb-1'>
-                        <strong>Payment ID:</strong> {order.transaction_id}
-                      </p>
-                      {order.shipping_amount > 0 && (
+                    {/* Order Details */}
+                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3'>
+                      <div className='space-y-1'>
                         <p className='text-sm text-gray-700 m-0'>
-                          <strong>Shipping:</strong> {currency.sign}
-                          {order.shipping_amount.toFixed(2)}
+                          <strong>Total Amount:</strong>{' '}
+                          <span className='text-theme font-semibold'>
+                            {currency.sign}
+                            {order.total_amount.toFixed(2)}
+                          </span>
                         </p>
+                        {order.shipping_amount > 0 && (
+                          <p className='text-sm text-gray-700 m-0'>
+                            <strong>Shipping:</strong> {currency.sign}
+                            {order.shipping_amount.toFixed(2)}
+                          </p>
+                        )}
+                        {order.tax_amount > 0 && (
+                          <p className='text-sm text-gray-700 m-0'>
+                            <strong>Tax:</strong> {currency.sign}
+                            {order.tax_amount.toFixed(2)}
+                          </p>
+                        )}
+                        <p className='text-sm text-gray-700 m-0'>
+                          <strong>Payment ID:</strong> {order.transaction_id}
+                        </p>
+                      </div>
+                      <div>
+                        <p className='text-sm text-gray-700 m-0 mb-1'>
+                          <strong>Delivery to:</strong> {order.address.name}
+                        </p>
+                        <p className='text-sm text-gray-500 m-0'>
+                          {order.address.city}, {order.address.state}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    {/* <div className='flex flex-wrap gap-2 justify-end pt-3 border-t'>
+                      {order.can_cancel && !order.is_cancelled && (
+                        <button className='btn !bg-[#bf2020] text-white hover:!bg-red-700 hover:scale-105 mx-auto sm:!mx-0 w-full sm:w-auto max-w-sm'>
+                          Cancel Order
+                        </button>
                       )}
-                    </div>
-                    <div className='col-md-6'>
-                      <p className='text-sm text-gray-700 m-0 mb-1'>
-                        <strong>Delivery to:</strong> {order.address.name}
-                      </p>
-                      <p className='text-sm text-gray-500 m-0'>
-                        {order.address.city}, {order.address.state}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Date and Actions */}
-                <div className='text-right ml-4'>
-                  <p className='text-sm text-muted m-0 mb-2'>
-                    Placed on: {formatDate(order.created_at)}
-                  </p>
-
-                  <div className='flex flex-col gap-2'>
-                    {order.can_cancel && !order.is_cancelled && (
-                      <button className='btn btn-sm btn-outline-danger'>Cancel Order</button>
-                    )}
+                    </div> */}
                   </div>
                 </div>
               </li>

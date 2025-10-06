@@ -254,3 +254,45 @@ export interface BookQueriesResponse {
     };
   };
 }
+
+export interface OrderItem {
+  book_id: number;
+  title: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  discount_amount: number;
+  final_price: number;
+}
+
+export interface OrderAddress {
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  phone: string;
+}
+
+export interface Order {
+  id: number;
+  order_number: string;
+  user_id: number;
+  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  total_amount: number;
+  discount_amount: number;
+  final_amount: number;
+  payment_status: 'pending' | 'completed' | 'failed';
+  payment_method: string;
+  address: OrderAddress;
+  order_items: OrderItem[];
+  created_at: string;
+  updated_at: string;
+  confirmed_at?: string;
+  processing_at?: string;
+  shipped_at?: string;
+  delivered_at?: string;
+  cancelled_at?: string;
+  cancellation_reason?: string;
+}

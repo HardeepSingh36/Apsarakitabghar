@@ -11,6 +11,21 @@ export interface OrderAddress {
   country: string;
 }
 
+export interface OrderItem {
+  item_id: number;
+  book_id: number;
+  book_title: string;
+  title: string;
+  author_name: string;
+  unit_price: number;
+  quantity: number;
+  total_price: number;
+  discounted_unit_price: number;
+  discount_amount: number;
+  final_price: number;
+  sku: string;
+}
+
 export interface Order {
   id: number;
   order_number: string;
@@ -31,6 +46,13 @@ export interface Order {
   can_cancel: boolean;
   is_completed: boolean;
   is_cancelled: boolean;
+  order_items: OrderItem[];
+  confirmed_at?: string;
+  processing_at?: string;
+  shipped_at?: string;
+  delivered_at?: string;
+  cancelled_at?: string;
+  final_amount: number;
 }
 
 export interface OrderStatistics {
