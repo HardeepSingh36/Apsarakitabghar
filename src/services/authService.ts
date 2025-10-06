@@ -13,6 +13,8 @@ import type {
   ForgotPasswordErrorResponse,
 } from '../types/types';
 
+import { API_BASE_URL } from './API';
+
 export const login = async (email: string, password: string) => {
   const res = await fetch(AUTH_LOGIN, {
     method: 'POST',
@@ -118,7 +120,6 @@ export const changePassword = async (passwordData: {
   return res.json();
 };
 
-
 export const updateProfileService = async (profileData: Record<string, any>) => {
   const token = localStorage.getItem('auth_token');
   if (!token) {
@@ -159,6 +160,22 @@ export const uploadAvatar = async (file: File) => {
   const data = await res.json();
   if (!res.ok || data.status !== 'success') {
     throw new Error(data.message || 'Failed to upload avatar');
+  }
+  return data;
+};
+
+// Reset Password API
+export const resetPassword = async ({ token, password }: { token: string; password: string }) => {
+  const res = await fetch(`${API_BASE_URL}/reset-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token, password }),
+  });
+  const data = await res.json();
+  if (!res.ok || data.status !== 'success') {
+    throw new Error(data.message || 'Failed to reset password');
   }
   return data;
 };
