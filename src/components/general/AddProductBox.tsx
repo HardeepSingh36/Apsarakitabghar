@@ -4,10 +4,7 @@ import { X, Loader } from 'react-feather';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import { addToCartAsync } from '@/features/cart/cartSlice';
-import {
-  addToWishlistAsync,
-  removeFromWishlistAsync,
-} from '@/features/wishlist/wishlistSlice';
+import { addToWishlistAsync, removeFromWishlistAsync } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
@@ -118,18 +115,18 @@ const AddProductBox = ({
 
   return (
     <div
-      className={`flex gap-2 md:gap-0 md:flex-col items-center book-product-box wow fadeIn md:p-3 md:bg-gray-50 ${className}`}
+      className={`flex gap-3 md:gap-0 md:flex-col justify-between book-product-box wow fadeIn md:p-3 md:bg-gray-50 h-full ${className}`}
       data-wow-delay={idx ? `0.${(idx * 5).toString().padStart(2, '0')}s` : undefined}
     >
-      <div className='product-header'>
-        <div className='product-image p-0 md:!mb-0 w-full '>
+      <div className='product-header '>
+        <div className='product-image p-0 md:!mb-0 !size-36 md:!h-72 md:!w-auto'>
           <Link to={`/books/${product.slug}`} state={{ item: product }}>
             <img
-              src={IMAGE_BASE_URL + product.cover_image_name || ''}
+              src={IMAGE_BASE_URL + product.cover_image_name || '/assets/images/book/product/1.jpg'}
               onError={(e) => {
                 e.currentTarget.src = '/assets/images/book/product/1.jpg';
               }}
-              className='img-fluid blur-up lazyload w-full !h-28 md:!h-72 !object-cover hover:scale-105 transition'
+              className='img-fluid blur-up lazyload !w-full !h-full !object-cover hover:scale-105 transition'
               alt=''
             />
           </Link>
@@ -149,35 +146,17 @@ const AddProductBox = ({
               )}
             </button>
           )}
-          {/* {showOptions && (
-            <ul className='product-option'>
-              <li data-tooltip-id='cart-tooltip' data-tooltip-content='Add to cart'>
-                <Link to='/cart' onClick={handleAddToCart}>
-                  <ShoppingCart size={18} className='mx-auto text-gray-600' />
-                </Link>
-                <Tooltip id='cart-tooltip' />
-              </li>
-              <li data-tooltip-id='wishlist-tooltip' data-tooltip-content='Add to wishlist'>
-                <Link to='/wishlist' className='notifi-wishlist' onClick={handleWishlistToggle}>
-                  <Heart size={18} className='mx-auto text-gray-600' />
-                </Link>
-                <Tooltip id='wishlist-tooltip' />
-              </li>
-              <li data-tooltip-id='view-tooltip' data-tooltip-content='View'>
-                <Link to={`/books/${product.slug}`} state={{ item: product }}>
-                  <Eye size={18} className='mx-auto text-gray-600' />
-                </Link>
-                <Tooltip id='view-tooltip' />
-              </li>
-            </ul>
-          )} */}
         </div>
       </div>
-      <div className='product-footer'>
-        <div className='product-detail position-relative md:mt-4'>
-          <h6 className='name !font-semibold notranslate !text-xl leading-6 !text-gray-900 mb-1 cursor-pointer'>
+      <div className='product-footer flex flex-col flex-grow justify-between'>
+        <div className='product-detail flex flex-col flex-grow position-relative'>
+          <Link
+            to={`/books/${product.slug}`}
+            state={{ item: product }}
+            className='name !font-semibold notranslate !text-xl leading-6 !text-gray-900 mb-1 cursor-pointer'
+          >
             {product.title}
-          </h6>
+          </Link>
           {/* <div className='product-rating mt-2'>
             <ul className='rating'>
               {[...Array(5)].map((_, i) => (
@@ -188,30 +167,36 @@ const AddProductBox = ({
             </ul>
             <span>(5)</span>
           </div> */}
-          <Link to={`/books/${product.slug}`} className='!no-underline' state={{ item: product }}>
-            <h5 className='name !font-medium text-muted !text-sm'>{product.description}</h5>
-          </Link>
+          <h5 className='name !font-medium text-muted !text-sm !line-clamp-2'>
+            {product.description}
+          </h5>
           <h6 className='byers text-base !text-emerald-600'>
             <span>By</span> {product.author_name || 'Unknown Author'}
           </h6>
-          <h6 className='price'>
+          <h6 className='price md:!mb-3'>
             {currency.sign}
             <span className=''>{product.discounted_price.toFixed(2)}</span>
             {'  '}
             <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
           </h6>
-          <div className='add-to-cart-box bg-white hidden md:block'>
+          <div className='add-to-cart-box bg-white hidden md:block !mt-auto'>
             {cartItem ? (
-              <Link to={'/cart'} className='btn btn-add-cart addcart-button py-3'>
+              <Link
+                to={'/cart'}
+                className='btn btn-add-cart addcart-button !py-5 !mt-0 !text-gray-800'
+              >
                 ✔ In Cart
               </Link>
             ) : (
               <button
-                className={`btn btn-add-cart addcart-button py-3 w-full ${
+                className={`btn btn-add-cart addcart-button !py-5 !mt-0 w-full !text-gray-800 !font-medium ${
                   isAddingToCart ? 'opacity-75 cursor-not-allowed' : ''
                 }`}
                 onClick={handleAddToCart}
                 disabled={isAddingToCart}
+                style={{
+                  fontFamily: 'Public Sans, sans-serif',
+                }}
               >
                 {isAddingToCart ? (
                   <div className='flex items-center justify-center gap-2'>

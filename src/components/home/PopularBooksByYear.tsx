@@ -28,7 +28,7 @@ const PopularBooksByYear = () => {
           <h2>Popular books this year</h2>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-4 xl:grid-cols-5 gap-4'>
+        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 items-stretch'>
           {isLoading ? (
             Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
           ) : books.length > 0 ? (
