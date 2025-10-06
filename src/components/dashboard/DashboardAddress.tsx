@@ -3,7 +3,6 @@ import { Edit, Trash2 } from 'react-feather';
 import toast from 'react-hot-toast';
 import type { RootState } from '../../app/store';
 import type { Address } from '../../features/user/userSlice';
-import EditProfileModal from './EditProfileModal';
 import AddAddressModal from './AddAddressModal';
 import RemoveConfirmationModal from './RemoveConfirmationModal';
 import RemoveDoneModal from './RemoveDoneModal';
@@ -17,7 +16,6 @@ import {
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
 const DashboardAddress: React.FC = () => {
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
   const [isRemoveConfirmationOpen, setRemoveConfirmationOpen] = useState(false);
   const [isRemoveDoneOpen, setRemoveDoneOpen] = useState(false);
@@ -31,7 +29,6 @@ const DashboardAddress: React.FC = () => {
     setEditAddress(address);
     setAddAddressModalOpen(true);
   };
-  const closeEditModal = () => setEditModalOpen(false);
 
   const openAddAddressModal = () => {
     setEditAddress(null); // Clear the editAddress state to reset the form
@@ -92,10 +89,10 @@ const DashboardAddress: React.FC = () => {
   // Toggle body scroll based on modal states
   useEffect(() => {
     const anyModalOpen =
-      isEditModalOpen || isAddAddressModalOpen || isRemoveConfirmationOpen || isRemoveDoneOpen;
+       isAddAddressModalOpen || isRemoveConfirmationOpen || isRemoveDoneOpen;
 
     document.body.style.overflow = anyModalOpen ? 'hidden' : '';
-  }, [isEditModalOpen, isAddAddressModalOpen, isRemoveConfirmationOpen, isRemoveDoneOpen]);
+  }, [isAddAddressModalOpen, isRemoveConfirmationOpen, isRemoveDoneOpen]);
 
   return (
     <div className='dashboard-address'>
@@ -186,7 +183,6 @@ const DashboardAddress: React.FC = () => {
       </div>
 
       {/* Modals */}
-      <EditProfileModal isOpen={isEditModalOpen} onClose={closeEditModal} />
       <AddAddressModal
         isOpen={isAddAddressModalOpen}
         onClose={closeAddAddressModal}

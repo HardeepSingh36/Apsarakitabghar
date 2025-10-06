@@ -12,13 +12,19 @@ import type { RootState } from '@/app/store';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { Tooltip } from 'react-tooltip';
 import toast from 'react-hot-toast';
+
 import { IMAGE_BASE_URL } from '@/constants';
 import { BOOKS_BY_FLAGS } from '@/services/API';
+import { fetchBannersByArea, getBannerImageUrl } from '@/services/bannerService';
 
 const BookDetail = () => {
   // Trending books state
   const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
   const [trendingLoading, setTrendingLoading] = useState(false);
+
+  // Banner states
+  const [mainBanner, setMainBanner] = useState<any>(null); // area 1
+  const [sidebarBanner, setSidebarBanner] = useState<any>(null); // area 2
   useEffect(() => {
     async function fetchTrendingBooks() {
       setTrendingLoading(true);
@@ -37,6 +43,20 @@ const BookDetail = () => {
       }
     }
     fetchTrendingBooks();
+
+    // Fetch banners for area 1 (main) and area 2 (sidebar)
+    async function fetchBanners() {
+      try {
+        const banners1 = await fetchBannersByArea(1, 'active', 1);
+        setMainBanner(banners1 && banners1.length > 0 ? banners1[0] : null);
+        const banners2 = await fetchBannersByArea(2, 'active', 1);
+        setSidebarBanner(banners2 && banners2.length > 0 ? banners2[0] : null);
+      } catch (e) {
+        setMainBanner(null);
+        setSidebarBanner(null);
+      }
+    }
+    fetchBanners();
   }, []);
   const dispatch = useAppDispatch();
   const { isAuthenticated, openSignIn } = useAuthDialog();
@@ -538,11 +558,21 @@ const BookDetail = () => {
                           </div>
 
                           <div className='banner-contain nav-desh'>
-                            <img
-                              src='/assets/images/book/banner/1.jpg'
-                              className='bg-img blur-up lazyload'
-                              alt=''
-                            />
+                            {mainBanner ? (
+                              <a href={mainBanner.url || undefined} target={mainBanner.url ? '_blank' : undefined} rel='noopener noreferrer'>
+                                <img
+                                  src={getBannerImageUrl(mainBanner.image)}
+                                  className='bg-img blur-up lazyload'
+                                  alt={mainBanner.image || ''}
+                                />
+                              </a>
+                            ) : (
+                              <img
+                                src='/assets/images/book/banner/1.jpg'
+                                className='bg-img blur-up lazyload'
+                                alt=''
+                              />
+                            )}
                             <div className='banner-details p-center banner-b-space w-100 text-center'>
                               <div>
                                 <h6 className='ls-expanded theme-color mb-sm-3 mb-1'>FEATURED</h6>
@@ -695,11 +725,21 @@ const BookDetail = () => {
 
                 <div className='ratio_156 pt-25'>
                   <div className='home-contain'>
-                    <img
-                      src='/assets/images/book/banner/3.jpg'
-                      className='bg-img blur-up lazyload'
-                      alt=''
-                    />
+                    {sidebarBanner ? (
+                      <a href={sidebarBanner.url || undefined} target={sidebarBanner.url ? '_blank' : undefined} rel='noopener noreferrer'>
+                        <img
+                          src={getBannerImageUrl(sidebarBanner.image)}
+                          className='bg-img blur-up lazyload'
+                          alt={sidebarBanner.image || ''}
+                        />
+                      </a>
+                    ) : (
+                      <img
+                        src='/assets/images/book/banner/3.jpg'
+                        className='bg-img blur-up lazyload'
+                        alt=''
+                      />
+                    )}
                     {/* <div className='home-detail p-top-left home-p-medium'>
                       <div>
                         <h6 className='text-yellow home-banner'>Seafood</h6>

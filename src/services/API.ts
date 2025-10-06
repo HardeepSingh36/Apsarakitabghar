@@ -85,6 +85,10 @@ export const UPDATE_PROFILE = `${API_BASE_URL}/profile`;
 // ------------- Book Publication Queries -------------
 export const BOOK_QUERIES = `${API_BASE_URL}/queries`;
 
+// ------------- Banners -------------
+export const BANNERS_LIST = `${API_BASE_URL}/banners-list`;
+export const BANNERS_GET = `${API_BASE_URL}/banners-get`;
+
 // ------------- QR -------------
 export const GET_QR = `${API_BASE_URL}/get-qr`;
 
