@@ -81,16 +81,17 @@ const NavItem = ({ label, to, href, className, state }: any) =>
 
 const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJoinClick }: any) => {
   return (
-    <li className={`nav-item ${className || ''}`}>
+    <li className={`nav-item !relative ${className || ''}`}>
       {dropdownContent ? (
         <>
-          <a
+          <Link
             className='nav-link dropdown-toggle'
-            href='javascript:void(0)'
+            to='#'
             data-bs-toggle='dropdown'
+            onClick={(e) => e.preventDefault()}
           >
             {label}
-          </a>
+          </Link>
           <div className='dropdown-menu dropdown-menu-3 dropdown-menu-2'>
             <div className='row'>
               {dropdownContent.map((col: any, idx: number) => (
@@ -126,7 +127,12 @@ const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJo
         </>
       ) : (
         <>
-          <Link className='nav-link dropdown-toggle ps-xl-2 ps-0' to='/' data-bs-toggle='dropdown'>
+          <Link
+            className='nav-link dropdown-toggle ps-xl-2 ps-0'
+            to='#'
+            data-bs-toggle='dropdown'
+            onClick={(e) => e.preventDefault()}
+          >
             {label}
           </Link>
           <ul className='dropdown-menu'>
