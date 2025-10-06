@@ -7,7 +7,7 @@ import { useAppDispatch } from '@/app/hooks';
 import { updateUser } from '@/features/auth/authSlice';
 import { updateProfileService } from '@/services/authService';
 import toast from 'react-hot-toast';
-
+import { Link } from 'react-router-dom';
 
 const DashboardProfile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.auth.user);
@@ -36,7 +36,7 @@ const DashboardProfile: React.FC = () => {
       setEditLoading(false);
     }
   };
-  
+
   // Format date function
   const formatDate = (dateString: string) => {
     if (!dateString || dateString === '0000-00-00 00:00:00') return 'Not provided';
@@ -60,18 +60,11 @@ const DashboardProfile: React.FC = () => {
       <div className='profile-about dashboard-bg-box !mt-0'>
         <div className='row'>
           <div className='col-xxl-7'>
-            <div className='dashboard-title mb-3 flex items-center justify-between col-xxl-7'>
+            <div className='dashboard-title mb-3'>
               <h3>Profile</h3>
-              <button
-                type='button'
-                className='!text-[15px] text-emerald-600'
-                onClick={openEditModal}
-              >
-                Edit
-              </button>
             </div>
             <div className='table-responsive'>
-              <table className='table'>
+              <table className='table !mb-0'>
                 <tbody>
                   <tr>
                     <td>Name :</td>
@@ -92,21 +85,21 @@ const DashboardProfile: React.FC = () => {
                   <tr>
                     <td>Phone Number :</td>
                     <td>
-                      <a href='javascript:void(0)'>
+                      <Link to='#' onClick={(e) => e.preventDefault()}>
                         {user?.mobile || user?.phone_number || 'Not provided'}
-                      </a>
+                      </Link>
                     </td>
                   </tr>
-                  <tr>
+                  {/* <tr>
                     <td>Role :</td>
                     <td style={{ textTransform: 'capitalize' }}>{user?.role || 'Not specified'}</td>
-                  </tr>
-                  <tr>
+                  </tr> */}
+                  {/* <tr>
                     <td>Status :</td>
                     <td style={{ textTransform: 'capitalize' }}>
                       {user?.status || 'Not specified'}
                     </td>
-                  </tr>
+                  </tr> */}
                   <tr>
                     <td>Member Since :</td>
                     <td>{user?.created_at ? formatDate(user.created_at) : 'Not available'}</td>
@@ -114,6 +107,18 @@ const DashboardProfile: React.FC = () => {
                   <tr>
                     <td>Last Login :</td>
                     <td>{user?.last_login ? formatDate(user.last_login) : 'Not available'}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <button
+                        type='button'
+                        className='!text-[15px] text-emerald-600'
+                        onClick={openEditModal}
+                      >
+                        Edit Profile
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>

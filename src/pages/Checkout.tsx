@@ -51,7 +51,7 @@ const Checkout = () => {
   }, [error, dispatch]);
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.current_line_total, 0);
-  const coupon = 20;
+  const coupon = 0;
   const total = subtotal - coupon;
 
   const handleAddressSelect = (id: string) => {
@@ -435,12 +435,12 @@ const Checkout = () => {
                         {subtotal.toFixed(2)}
                       </h4>
                     </li>
-                    <li>
+                    {/* <li>
                       <h4>Coupon/Code</h4>
                       <h4 className='price'>
                         {currency.sign}-{coupon.toFixed(2)}
                       </h4>
-                    </li>
+                    </li> */}
                     <li className='list-total'>
                       <h4>Total ({currency.sign})</h4>
                       <h4 className='price'>
