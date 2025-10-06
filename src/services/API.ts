@@ -79,6 +79,9 @@ export const WISHLIST_CLEAR = `${API_BASE_URL}/wishlist-clear`;
 // ------------- Profile Avatar Update -------------
 export const UPDATE_AVATAR = `${API_BASE_URL}/update-avatar`;
 
+// ------------- User Profile Update -------------
+export const UPDATE_PROFILE = `${API_BASE_URL}/profile`;
+
 // ------------- Book Publication Queries -------------
 export const BOOK_QUERIES = `${API_BASE_URL}/queries`;
 

@@ -17,7 +17,6 @@ import { useAuthDialog } from '@/context/AuthDialogContext';
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import { updateUser } from '@/features/auth/authSlice';
 import { uploadAvatar } from '@/services/authService';
-import { IMAGE_PATH } from '@/services/API';
 import type { RootState } from '@/app/store';
 import { AVATAR_BASE_URL } from '@/constants';
 

@@ -3,164 +3,151 @@ import React from 'react';
 interface EditProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  user: any;
+  onSave: (profileData: Record<string, any>) => void;
+  loading: boolean;
 }
 
-const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose }) => {
+const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, user, onSave, loading }) => {
+  const [form, setForm] = React.useState({
+    first_name: '',
+    last_name: '',
+    username: '',
+    email: '',
+    mobile: '',
+    dob: '',
+    gender: '',
+  });
+
+  React.useEffect(() => {
+    setForm({
+      first_name: user?.first_name || '',
+      last_name: user?.last_name || '',
+      username: user?.username || '',
+      email: user?.email || '',
+      mobile: user?.mobile || user?.phone_number || '',
+      dob: user?.dob || '',
+      gender: user?.gender || '',
+    });
+  }, [user]);
+
   if (!isOpen) return null;
   return (
-    <div
-      className='modal fade theme-modal show'
-      style={{ display: 'block', background: 'rgba(0,0,0,0.5)' }}
-      tabIndex={-1}
-    >
-      <div className='modal-dialog modal-lg modal-dialog-centered modal-fullscreen-sm-down'>
-        <div className='modal-content'>
-          <div className='modal-header'>
-            <h5 className='modal-title' id='exampleModalLabel2'>
-              Edit Profile
-            </h5>
-            <button type='button' className='btn-close' onClick={onClose}>
-              <i className='fa-solid fa-xmark'></i>
-            </button>
-          </div>
+  <div
+    className='modal fade theme-modal show'
+    style={{ display: 'block', background: 'rgba(0,0,0,0.5)' }}
+    tabIndex={-1}
+  >
+    <div className='modal-dialog modal-lg modal-dialog-centered modal-fullscreen-sm-down'>
+      <div className='modal-content'>
+        <div className='modal-header'>
+          <h5 className='modal-title' id='exampleModalLabel2'>
+            Edit Profile
+          </h5>
+          <button type='button' className='btn-close' onClick={onClose}>
+            <i className='fa-solid fa-xmark'></i>
+          </button>
+        </div>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            onSave(form);
+          }}
+        >
           <div className='modal-body'>
             <div className='row g-4'>
-              <div className='col-xxl-12'>
-                <form>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='text'
-                      className='form-control'
-                      id='pname'
-                      defaultValue='Jack Jennas'
-                    />
-                    <label htmlFor='pname'>Full Name</label>
-                  </div>
-                </form>
+              <div className='col-xxl-6'>
+                <div className='form-floating theme-form-floating'>
+                  <input
+                    type='text'
+                    className='form-control'
+                    id='first_name'
+                    value={form.first_name}
+                    onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))}
+                    required
+                  />
+                  <label htmlFor='first_name'>First Name</label>
+                </div>
               </div>
               <div className='col-xxl-6'>
-                <form>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='email'
-                      className='form-control'
-                      id='email1'
-                      defaultValue='vicki.pope@gmail.com'
-                      readOnly
-                    />
-                    <label htmlFor='email1'>Email address</label>
-                  </div>
-                </form>
+                <div className='form-floating theme-form-floating'>
+                  <input
+                    type='text'
+                    className='form-control'
+                    id='last_name'
+                    value={form.last_name}
+                    onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))}
+                    required
+                  />
+                  <label htmlFor='last_name'>Last Name</label>
+                </div>
               </div>
               <div className='col-xxl-6'>
-                <form>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      className='form-control'
-                      type='tel'
-                      defaultValue='4567891234'
-                      name='mobile'
-                      id='mobile'
-                      maxLength={10}
-                      onInput={(e) => {
-                        const input = e.target as HTMLInputElement;
-                        if (input.value.length > input.maxLength)
-                          input.value = input.value.slice(0, input.maxLength);
-                      }}
-                    />
-                    <label htmlFor='mobile'>Email address</label>
-                  </div>
-                </form>
+                <div className='form-floating theme-form-floating'>
+                  <input
+                    type='text'
+                    className='form-control'
+                    id='username'
+                    value={form.username}
+                    onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
+                    required
+                  />
+                  <label htmlFor='username'>Username</label>
+                </div>
               </div>
-              <div className='col-12'>
-                <form>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='text'
-                      className='form-control'
-                      id='address1'
-                      defaultValue='8424 James Lane South San Francisco'
-                    />
-                    <label htmlFor='address1'>Add Address</label>
-                  </div>
-                </form>
+              <div className='col-xxl-6'>
+                <div className='form-floating theme-form-floating'>
+                  <input
+                    type='email'
+                    className='form-control'
+                    id='email'
+                    value={form.email}
+                    readOnly
+                  />
+                  <label htmlFor='email'>Email address</label>
+                </div>
               </div>
-              <div className='col-12'>
-                <form>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='text'
-                      className='form-control'
-                      id='address2'
-                      defaultValue='CA 94080'
-                    />
-                    <label htmlFor='address2'>Add Address 2</label>
-                  </div>
-                </form>
+              <div className='col-xxl-6'>
+                <div className='form-floating theme-form-floating'>
+                  <input
+                    className='form-control'
+                    type='tel'
+                    id='mobile'
+                    value={form.mobile}
+                    maxLength={15}
+                    onChange={e => setForm(f => ({ ...f, mobile: e.target.value }))}
+                  />
+                  <label htmlFor='mobile'>Mobile</label>
+                </div>
               </div>
-              <div className='col-xxl-4'>
-                <form>
-                  <div className='form-floating theme-form-floating'>
-                    <select
-                      className='form-select'
-                      id='floatingSelect1'
-                      defaultValue='Choose Your Country'
-                    >
-                      <option>Choose Your Country</option>
-                      <option value='kingdom'>United Kingdom</option>
-                      <option value='states'>United States</option>
-                      <option value='fra'>France</option>
-                      <option value='china'>China</option>
-                      <option value='spain'>Spain</option>
-                      <option value='italy'>Italy</option>
-                      <option value='turkey'>Turkey</option>
-                      <option value='germany'>Germany</option>
-                      <option value='russian'>Russian Federation</option>
-                      <option value='malay'>Malaysia</option>
-                      <option value='mexico'>Mexico</option>
-                      <option value='austria'>Austria</option>
-                      <option value='hong'>Hong Kong SAR, China</option>
-                      <option value='ukraine'>Ukraine</option>
-                      <option value='thailand'>Thailand</option>
-                      <option value='saudi'>Saudi Arabia</option>
-                      <option value='canada'>Canada</option>
-                      <option value='singa'>Singapore</option>
-                    </select>
-                    <label htmlFor='floatingSelect1'>Country</label>
-                  </div>
-                </form>
+              <div className='col-xxl-6'>
+                <div className='form-floating theme-form-floating'>
+                  <select
+                    className='form-select'
+                    id='gender'
+                    value={form.gender}
+                    onChange={e => setForm(f => ({ ...f, gender: e.target.value }))}
+                  >
+                    <option value=''>Select Gender</option>
+                    <option value='Male'>Male</option>
+                    <option value='Female'>Female</option>
+                    <option value='Other'>Other</option>
+                    <option value='Not to Say'>Not to Say</option>
+                  </select>
+                  <label htmlFor='gender'>Gender</label>
+                </div>
               </div>
-              <div className='col-xxl-4'>
-                <form>
-                  <div className='form-floating theme-form-floating'>
-                    <select
-                      className='form-select'
-                      id='floatingSelect'
-                      defaultValue='Choose Your City'
-                    >
-                      <option>Choose Your City</option>
-                      <option value='kingdom'>India</option>
-                      <option value='states'>Canada</option>
-                      <option value='fra'>Dubai</option>
-                      <option value='china'>Los Angeles</option>
-                      <option value='spain'>Thailand</option>
-                    </select>
-                    <label htmlFor='floatingSelect'>City</label>
-                  </div>
-                </form>
-              </div>
-              <div className='col-xxl-4'>
-                <form>
-                  <div className='form-floating theme-form-floating'>
-                    <input
-                      type='text'
-                      className='form-control'
-                      id='address3'
-                      defaultValue='94080'
-                    />
-                    <label htmlFor='address3'>Pin Code</label>
-                  </div>
-                </form>
+              <div className='col-xxl-6'>
+                <div className='form-floating theme-form-floating'>
+                  <input
+                    type='date'
+                    className='form-control'
+                    id='dob'
+                    value={form.dob}
+                    onChange={e => setForm(f => ({ ...f, dob: e.target.value }))}
+                  />
+                  <label htmlFor='dob'>Date of Birth</label>
+                </div>
               </div>
             </div>
           </div>
@@ -169,16 +156,17 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose }) 
               Close
             </button>
             <button
-              type='button'
+              type='submit'
               className='btn theme-bg-color btn-md fw-bold text-light'
-              onClick={onClose}
+              disabled={loading}
             >
-              Save changes
+              {loading ? 'Saving...' : 'Save changes'}
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
+  </div>
   );
 };
 

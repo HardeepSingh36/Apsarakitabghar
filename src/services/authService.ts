@@ -6,6 +6,7 @@ import {
   AUTH_CHANGE_PASSWORD,
   AUTH_UPDATE_PROFILE,
   UPDATE_AVATAR,
+  UPDATE_PROFILE,
 } from './API';
 import type {
   ForgotPasswordRequest,
@@ -118,22 +119,13 @@ export const changePassword = async (passwordData: {
   return res.json();
 };
 
-export const updateProfile = async (profileData: {
-  username?: string;
-  email?: string;
-  first_name?: string;
-  last_name?: string;
-  mobile?: string;
-  dob?: string;
-  gender?: string;
-  avatar?: string;
-}) => {
+
+export const updateProfileService = async (profileData: Record<string, any>) => {
   const token = localStorage.getItem('auth_token');
   if (!token) {
     throw new Error('No authentication token found');
   }
-
-  const res = await fetch(AUTH_UPDATE_PROFILE, {
+  const res = await fetch(UPDATE_PROFILE, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -141,13 +133,11 @@ export const updateProfile = async (profileData: {
     },
     body: JSON.stringify(profileData),
   });
-
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || 'Failed to update profile');
+  const data = await res.json();
+  if (!res.ok || data.status !== 'success') {
+    throw new Error(data.message || 'Failed to update profile');
   }
-
-  return res.json();
+  return data;
 };
 
 export const uploadAvatar = async (file: File) => {

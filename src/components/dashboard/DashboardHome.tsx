@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import EditProfileModal from './EditProfileModal';
-import { useAppSelector } from '@/app/hooks';
-import type { RootState } from '@/app/store';
+// import { useAppSelector } from '@/app/hooks';
+// import type { RootState } from '@/app/store';
 import { getUserStats, type UserStatsResponse } from '@/services/userStatsService';
 import toast from 'react-hot-toast';
 
 const DashboardHome: React.FC = () => {
-  const user = useAppSelector((state: RootState) => state.auth.user);
-  const [showEditModal, setShowEditModal] = useState(false);
+  // const user = useAppSelector((state: RootState) => state.auth.user);
   const [userStats, setUserStats] = useState<UserStatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const openEditModal = () => setShowEditModal(true);
-  const closeEditModal = () => setShowEditModal(false);
 
   // Fetch user statistics
   const fetchUserStats = async () => {
@@ -104,25 +100,6 @@ const DashboardHome: React.FC = () => {
         </div>
       </div>
       <div className='row g-4'>
-        <div className='col-xxl-6'>
-          <div className='dashboard-content-title'>
-            <h4>
-              Contact Information{' '}
-              <button
-                type='button'
-                className='!text-[15px] text-emerald-600'
-                onClick={openEditModal}
-              >
-                Edit
-              </button>
-            </h4>
-          </div>
-          <div className='dashboard-detail'>
-            <h6 className='text-content'>{user?.full_name}</h6>
-            <h6 className='text-content'>{user?.email}</h6>
-            <a href='javascript:void(0)'>Change Password</a>
-          </div>
-        </div>
 
         {/* Recent Order Activity */}
         {userStats?.data.recent_activity?.recent_order && (
@@ -206,7 +183,6 @@ const DashboardHome: React.FC = () => {
         </div> */}
       </div>
       {/* Modal for editing the profile */}
-      <EditProfileModal isOpen={showEditModal} onClose={closeEditModal} />
     </div>
   );
 };

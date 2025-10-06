@@ -1,10 +1,42 @@
 import { useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
-import React from 'react';
+import React, { useState } from 'react';
 import ChangePasswordForm from './ChangePasswordForm';
+import EditProfileModal from './EditProfileModal';
+import { useAppDispatch } from '@/app/hooks';
+import { updateUser } from '@/features/auth/authSlice';
+import { updateProfileService } from '@/services/authService';
+import toast from 'react-hot-toast';
+
 
 const DashboardProfile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editLoading, setEditLoading] = useState(false);
+
+  const closeEditModal = () => setShowEditModal(false);
+  const openEditModal = () => setShowEditModal(true);
+
+  // Profile update handler
+  const handleProfileUpdate = async (profileData: Record<string, any>) => {
+    setEditLoading(true);
+    try {
+      const response = await updateProfileService(profileData);
+      if (response.status === 'success' && response.data) {
+        dispatch(updateUser(response.data));
+        toast.success('Profile updated successfully!');
+        setShowEditModal(false);
+      } else {
+        toast.error(response.message || 'Failed to update profile');
+      }
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to update profile');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+  
   // Format date function
   const formatDate = (dateString: string) => {
     if (!dateString || dateString === '0000-00-00 00:00:00') return 'Not provided';
@@ -28,8 +60,15 @@ const DashboardProfile: React.FC = () => {
       <div className='profile-about dashboard-bg-box !mt-0'>
         <div className='row'>
           <div className='col-xxl-7'>
-            <div className='dashboard-title mb-3'>
+            <div className='dashboard-title mb-3 flex items-center justify-between col-xxl-7'>
               <h3>Profile</h3>
+              <button
+                type='button'
+                className='!text-[15px] text-emerald-600'
+                onClick={openEditModal}
+              >
+                Edit
+              </button>
             </div>
             <div className='table-responsive'>
               <table className='table'>
@@ -115,6 +154,13 @@ const DashboardProfile: React.FC = () => {
 
       {/* Change Password Form */}
       <ChangePasswordForm className='mt-4' />
+      <EditProfileModal
+        isOpen={showEditModal}
+        onClose={closeEditModal}
+        user={user}
+        onSave={handleProfileUpdate}
+        loading={editLoading}
+      />
     </div>
   );
 };
