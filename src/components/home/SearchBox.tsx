@@ -336,15 +336,17 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
                         : 'text-foreground'
                     }`}
                   >
-                    <img
-                      src={`${IMAGE_BASE_URL}/${suggestion.image}`}
-                      alt={suggestion.title}
-                      className='h-10 w-10 flex-shrink-0 object-cover rounded'
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/assets/images/book/placeholder.jpg'; // fallback image
-                      }}
-                    />
+                    {activeTab === 'book' && (
+                      <img
+                        src={`${IMAGE_BASE_URL}/${suggestion.image}`}
+                        alt={suggestion.title}
+                        className='h-10 w-10 flex-shrink-0 object-cover rounded'
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = '/assets/images/book/placeholder.jpg'; // fallback image
+                        }}
+                      />
+                    )}
                     <span className='truncate notranslate text-base font-medium'>
                       {suggestion.title}
                     </span>

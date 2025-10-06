@@ -56,16 +56,6 @@ const RightSideBox = () => {
       </div>
 
       <ul className='right-side-menu !mb-0'>
-        {/* Search */}
-        <li className='right-side'>
-          <div className='delivery-login-box'>
-            <div className='delivery-icon'>
-              <div className='search-box'>
-                <i data-feather='search'></i>
-              </div>
-            </div>
-          </div>
-        </li>
 
         {/* Wishlist */}
         <li className='right-side'>
