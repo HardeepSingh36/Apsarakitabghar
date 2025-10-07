@@ -1,7 +1,27 @@
 import { Link } from 'react-router-dom';
 import { useAuthDialog, type UserRole } from '@/context/AuthDialogContext';
+import { useEffect, useState } from 'react';
+import categoriesService, { type Category } from '@/services/categoriesService';
 
-const navItems = [
+interface DropdownMenuItem {
+  label: string;
+  to?: string;
+  state?: { categoryId: number; categoryName: string };
+  hasSubmenu?: boolean;
+  submenu?: DropdownMenuItem[];
+}
+
+interface NavItem {
+  type: 'link' | 'dropdown';
+  label: string;
+  to?: string;
+  className: string;
+  isDropdown?: boolean;
+  dropdownMenu?: DropdownMenuItem[];
+  dropdownContent?: any;
+}
+
+const navItems: NavItem[] = [
   {
     type: 'link',
     label: 'New',
@@ -41,26 +61,7 @@ const navItems = [
     type: 'dropdown',
     label: 'Categories',
     className: 'dropdown dropdown-mega lg:!ml-4',
-    dropdownMenu: [
-      { label: 'Fiction', to: '/books?category_name=Fiction', state: { categoryName: 'Fiction' } },
-      {
-        label: 'Non-Fiction',
-        to: '/books?category_name=Non-Fiction',
-        state: { categoryName: 'Non-Fiction' },
-      },
-      {
-        label: 'Science Fiction',
-        to: '/books?category_name=Science%20Fiction',
-        state: { categoryName: 'Science Fiction' },
-      },
-      { label: 'Fantasy', to: '/books?category_name=Fantasy', state: { categoryName: 'Fantasy' } },
-      { label: 'Mystery', to: '/books?category_name=Mystery', state: { categoryName: 'Mystery' } },
-      {
-        label: 'Biography',
-        to: '/books?category_name=Biography',
-        state: { categoryName: 'Biography' },
-      },
-    ],
+    dropdownMenu: [], // This will be populated from the API
   },
 ];
 
@@ -109,14 +110,14 @@ const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJo
                     {col.subItems &&
                       col.subItems.map((item: any, i: number) =>
                         typeof item === 'string' ? (
-                          <a className='dropdown-item' href='/' key={i}>
+                          <Link className='dropdown-item' to='/' key={i}>
                             {item}
-                          </a>
+                          </Link>
                         ) : (
-                          <a className='dropdown-item' href={item.href} key={i}>
+                          <Link className='dropdown-item' to={item.href} key={i}>
                             {item.label}
                             {item.hot && <label className='menu-label warning-label'>Hot</label>}
-                          </a>
+                          </Link>
                         )
                       )}
                   </div>
@@ -137,8 +138,23 @@ const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJo
           </Link>
           <ul className='dropdown-menu'>
             {dropdownMenu.map((item: any, idx: number) => (
-              <li key={idx}>
-                {item.to ? (
+              <li key={idx} className={item.hasSubmenu ? 'sub-dropdown-hover' : ''}>
+                {item.hasSubmenu ? (
+                  <>
+                    <a className='dropdown-item' href='javascript:void(0)'>
+                      {item.label}
+                    </a>
+                    <ul className='sub-menu'>
+                      {item.submenu.map((subItem: any, subIdx: number) => (
+                        <li key={subIdx}>
+                          <Link to={subItem.to} state={subItem.state}>
+                            {subItem.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : item.to ? (
                   <Link className='dropdown-item' to={item.to} state={item.state}>
                     {item.label}
                   </Link>
@@ -168,6 +184,43 @@ const MainNav = ({
   setShowMenu: (v: boolean) => void;
 }) => {
   const { openChoice, isAuthenticated } = useAuthDialog();
+  const [navItemsState, setNavItemsState] = useState<NavItem[]>(navItems);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await categoriesService.getCategories();
+        if (data.status === 'success') {
+          const updatedNavItems = [...navItemsState];
+          const categoryIndex = updatedNavItems.findIndex((item) => item.label === 'Categories');
+
+          if (categoryIndex !== -1) {
+            updatedNavItems[categoryIndex] = {
+              ...updatedNavItems[categoryIndex],
+              dropdownMenu: data.data.categories.map((category) => ({
+                label: category.category_name,
+                hasSubmenu: category.children.length > 0,
+                submenu: category.children.map((child) => ({
+                  label: child.category_name,
+                  to: `/books?category_name=${child.category_name}`,
+                  state: { categoryId: child.id, categoryName: child.category_name },
+                })),
+                ...(category.children.length === 0 && {
+                  to: `/books?category_name=${category.category_name}`,
+                  state: { categoryId: category.id, categoryName: category.category_name },
+                }),
+              })),
+            };
+            setNavItemsState(updatedNavItems);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleJoinClick = (label: string) => {
     // Map the label to the correct UserRole
@@ -203,7 +256,7 @@ const MainNav = ({
           </div>
           <div className='offcanvas-body'>
             <ul className='navbar-nav'>
-              {navItems.map((item, idx) =>
+              {navItemsState.map((item, idx) =>
                 item.type === 'dropdown' && item.label === 'Join Apsra' && !isAuthenticated ? (
                   <DropdownNavItem key={idx} {...item} onJoinClick={handleJoinClick} />
                 ) : item.type === 'dropdown' && item.label !== 'Join Apsra' ? (

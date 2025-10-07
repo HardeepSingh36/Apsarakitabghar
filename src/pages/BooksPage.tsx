@@ -65,8 +65,8 @@ const BooksPage = () => {
   const searchQuery = searchParams.get('search');
   const authorId = searchParams.get('author');
   const authorName = searchParams.get('author_name');
-  const categoryId = searchParams.get('category');
-  const categoryName = searchParams.get('category_name');
+  const categoryId = location.state?.categoryId
+  const categoryName = location.state?.categoryName || searchParams.get('category_name');
   const genreId = searchParams.get('genre');
   const genreSlug = searchParams.get('genre_slug');
   const tagId = searchParams.get('tag');
@@ -139,23 +139,14 @@ const BooksPage = () => {
         // Books by specific author ID (fallback)
         response = await getBooksByAuthor(authorId, { page: 1, limit: 20 });
         title = `Books by Author (ID: ${authorId})`;
-      } else if (categoryName) {
-        // Books by category name - use ID from state if available, otherwise search by name
-        const categoryIdFromState = location.state?.categoryId;
-
-        if (categoryIdFromState) {
-          // Use category ID for more efficient fetching
-          response = await getBooksByCategory(categoryIdFromState, { page: 1, limit: 20 });
-        } else {
-          // Fallback to search by name
-          response = await searchBooks({ category: categoryName });
-        }
-        title = `Books in ${categoryName}`;
       } else if (categoryId) {
-        // Books by category ID (fallback)
+        console.log('The category ID is present:', categoryId);
+        // If we have category ID, use it directly with books-by-category endpoint
         response = await getBooksByCategory(categoryId, { page: 1, limit: 20 });
-        title = `Books in Category (ID: ${categoryId})`;
-      } else if (genreSlug) {
+        const categoryNameFromState = location.state?.categoryName;
+        title = categoryNameFromState ? `Books in ${categoryNameFromState}` : `Books in Category (ID: ${categoryId})`;
+      }
+       else if (genreSlug) {
         // Books by genre slug - use ID from state if available, otherwise search by slug/name
         const genreIdFromState = location.state?.genreId;
         const genreNameFromState = location.state?.genreName;
