@@ -34,7 +34,7 @@ export const useAuthDialog = (): AuthDialogContextValue => {
 export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const [captchaConfig, setCaptchaConfig] = useState<CaptchaConfig | null>(null);
   const [loading, setLoading] = useState(true);
-  const [initialized, setInitialized] = useState(false);
+  const [_initialized, setInitialized] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();

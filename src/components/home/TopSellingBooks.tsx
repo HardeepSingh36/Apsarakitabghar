@@ -4,52 +4,68 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Heading2 from '../general/Heading2';
-import { BOOKS_LIST } from '@/services/API';
-import type { Book } from '@/types/types';
+import { booksByFlagsService, type BookFlag } from '@/services/booksByFlagsService';
+import { useNavigate } from 'react-router-dom';
 import AddProductBox from '../general/AddProductBox';
 import ProductCardSkeleton from '../ProductSkeleton';
 
 const TopSellingBooks = () => {
-  const [books, setBooks] = useState<Book[] | []>([]);
+  const navigate = useNavigate();
+  const [topBooks, setTopBooks] = useState<BookFlag[]>([]);
+  const [trendingBooks, setTrendingBooks] = useState<BookFlag[]>([]);
+  const [recentBooks, setRecentBooks] = useState<BookFlag[]>([]);
   const [fade, setFade] = useState(false);
   const [activeTab, setActiveTab] = useState('top');
-  const [isLoading, setIsLoading] = useState<boolean>(true); // loading state
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleTabChange = (value: string) => {
     setFade(true);
     setTimeout(() => {
       setActiveTab(value);
       setFade(false);
-    }, 100); // matches transition
+    }, 100);
+  };
+
+  const navigateToBooks = (flag: string) => {
+    const params = new URLSearchParams();
+    switch (flag) {
+      case 'top':
+        params.append('is_best_seller', '1');
+        break;
+      case 'trending':
+        params.append('is_trending', '1');
+        break;
+      case 'recent':
+        params.append('is_new', '1');
+        break;
+    }
+    navigate(`/books?${params.toString()}`);
   };
 
   const fetchBooks = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(BOOKS_LIST);
-      if (!res.ok) throw new Error('Failed to fetch books');
-      const { data } = await res.json();
-      setBooks(data.books);
+      const [topResponse, trendingResponse, recentResponse] = await Promise.all([
+        booksByFlagsService.getBestSellerBooks({ limit: 8 }),
+        booksByFlagsService.getTrendingBooks({ limit: 8 }),
+        booksByFlagsService.getNewBooks({ limit: 8, sort: 'created_at', order: 'DESC' }),
+      ]);
+
+      setTopBooks(topResponse.data.books);
+      setTrendingBooks(trendingResponse.data.books);
+      setRecentBooks(recentResponse.data.books);
     } catch (err) {
-      console.log(err);
+      console.error('Error fetching books:', err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const top = Array.isArray(books) ? books.filter((b) => b).slice(0, 6) : [];
-  const trending = Array.isArray(books) ? books.filter((b) => b).slice(0, 6) : [];
-  const recent = Array.isArray(books)
-    ? [...books]
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-        .slice(0, 6)
-    : [];
-
   useEffect(() => {
     fetchBooks();
-  }, [books.length]);
+  }, []);
 
-  const BookGrid: React.FC<{ items: Book[] }> = ({ items }) => (
+  const BookGrid: React.FC<{ items: BookFlag[]; flag: string }> = ({ items, flag }) => (
     <div className='row'>
       <div className='col-12'>
         <div className='top-selling-box'>
@@ -62,6 +78,16 @@ const TopSellingBooks = () => {
               <p className='text-center col-span-full'>No books found.</p>
             )}
           </div>
+          {items.length > 0 && (
+            <div className='text-center mt-8'>
+              <button
+                onClick={() => navigateToBooks(flag)}
+                className='btn theme-bg-color text-white btn-md mx-auto hover:opacity-90'
+              >
+                View All
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -113,21 +139,21 @@ const TopSellingBooks = () => {
             value='top'
             className={clsx(fade ? 'opacity-0' : 'opacity-100', 'transition-opacity duration-300')}
           >
-            <BookGrid items={top} />
+            <BookGrid items={topBooks} flag='top' />
           </TabsContent>
 
           <TabsContent
             value='trending'
             className={clsx(fade ? 'opacity-0' : 'opacity-100', 'transition-opacity duration-300')}
           >
-            <BookGrid items={trending} />
+            <BookGrid items={trendingBooks} flag='trending' />
           </TabsContent>
 
           <TabsContent
             value='recent'
             className={clsx(fade ? 'opacity-0' : 'opacity-100', 'transition-opacity duration-300')}
           >
-            <BookGrid items={recent} />
+            <BookGrid items={recentBooks} flag='recent' />
           </TabsContent>
         </div>
 

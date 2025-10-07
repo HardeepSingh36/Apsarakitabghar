@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { X, Loader } from 'react-feather';
+import { type BookFlag } from '@/services/booksByFlagsService';
 // import { Tooltip } from 'react-tooltip';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
@@ -13,7 +14,7 @@ import { IMAGE_BASE_URL } from '@/constants';
 import toast from 'react-hot-toast';
 
 interface AddProductBoxProps {
-  product: Book;
+  product: Book | BookFlag;
   idx: number;
   showOptions?: boolean;
   removeButton?: boolean;
@@ -40,7 +41,9 @@ const AddProductBox = ({
 
   // Get wishlist state from Redux
   const wishlistState = useAppSelector((state: RootState) => state.wishlist);
-  const isInWishlist = wishlistState.items.find((item) => item.id === product.id);
+  const isInWishlist = wishlistState.items.find(
+    (item) => 'id' in product && item.id === product.id
+  );
   const isAddingToWishlist = wishlistState.operationLoading[`add-${product.id}`] || false;
   const isRemovingFromWishlist = wishlistState.operationLoading[`remove-${product.id}`] || false;
   const isWishlistLoading = isAddingToWishlist || isRemovingFromWishlist;
@@ -168,14 +171,20 @@ const AddProductBox = ({
             <span>(5)</span>
           </div> */}
           <h5 className='name !font-medium text-muted !text-sm !line-clamp-2'>
-            {product.description}
+            {'description' in product ? product.description : ''}
           </h5>
           <h6 className='byers text-base !text-emerald-600'>
-            <span>By</span> {product.author_name || 'Unknown Author'}
+            <span>By</span>{' '}
+            {('author_name' in product ? product.author_name : product.author_display_name) ||
+              'Unknown Author'}
           </h6>
           <h6 className='price md:!mb-3'>
             {currency.sign}
-            <span className=''>{product.discounted_price.toFixed(2)}</span>
+            <span className=''>
+              {(
+                ('discounted_price' in product ? product.discounted_price : product.price) || 0
+              ).toFixed(2)}
+            </span>
             {'  '}
             <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
           </h6>
