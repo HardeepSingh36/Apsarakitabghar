@@ -258,9 +258,9 @@ const Cart = () => {
                                       </div>
                                     </li>
                                     <li>
-                                      <h5>
+                                      <h5 className='notranslate'>
                                         Total: {currency.sign}
-                                        {item.current_line_total.toFixed(2)}
+                                        <span>{item.current_line_total.toFixed(2)}</span>
                                       </h5>
                                     </li>
                                   </ul>
@@ -269,7 +269,7 @@ const Cart = () => {
                             </td>
                             <td className='price'>
                               <h4 className='table-title text-content'>Price</h4>
-                              <h5>
+                              <h5 className='notranslate'>
                                 {currency.sign}
                                 {item.current_discounted_price.toFixed(2)}{' '}
                                 <del className='text-center'>
@@ -370,9 +370,9 @@ const Cart = () => {
                             </td>
                             <td className='subtotal'>
                               <h4 className='table-title text-content'>Total</h4>
-                              <h5>
+                              <h5 className='notranslate'>
                                 {currency.sign}
-                                {item.current_line_total.toFixed(2)}
+                                <span className='notranslate'>{item.current_line_total.toFixed(2)}</span>
                               </h5>
                             </td>
                             <td className='save-remove'>
@@ -452,8 +452,10 @@ const Cart = () => {
                   </div>
                   <ul>
                     <li>
-                      <h4>Subtotal ({itemsCount} items)</h4>
-                      <h4 className='price'>
+                      <h4>
+                        Subtotal (<span className='notranslate'>{itemsCount}</span> items)
+                      </h4>
+                      <h4 className='price notranslate'>
                         {currency.sign}
                         {subtotal.toFixed(2)}
                       </h4>
@@ -461,7 +463,7 @@ const Cart = () => {
 
                     <li>
                       <h4>Discount</h4>
-                      <h4 className='price theme-color'>
+                      <h4 className='price theme-color notranslate'>
                         (-) {currency.sign}
                         {totalDiscount.toFixed(2)}
                       </h4>
@@ -471,8 +473,10 @@ const Cart = () => {
 
                 <ul className='summery-total'>
                   <li className='list-total border-top-0'>
-                    <h4>Total ({totalItems} total items)</h4>
-                    <h4 className='price theme-color'>
+                    <h4>
+                      Total (<span className='notranslate'>{totalItems}</span> total items)
+                    </h4>
+                    <h4 className='price theme-color notranslate'>
                       {currency.sign}
                       {total.toFixed(2)}
                     </h4>

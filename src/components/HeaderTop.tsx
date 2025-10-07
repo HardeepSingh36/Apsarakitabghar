@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Printer } from 'react-feather';
+import { ArrowRight, Printer } from 'react-feather';
 import { useEffect, useState } from 'react';
+import { useAppSelector } from '@/app/hooks';
 // import { useCurrency } from '@/context/CurrencyContext';
 
 declare global {
@@ -11,7 +12,8 @@ declare global {
 }
 
 const HeaderTop = () => {
-  const [currentLanguage, setCurrentLanguage] = useState('English');
+  const [_currentLanguage, setCurrentLanguage] = useState('English');
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   // const { currency, setCurrency } = useCurrency();
 
   const langMap: Record<string, string> = {
@@ -20,11 +22,11 @@ const HeaderTop = () => {
     punjabi: 'pa',
   };
 
-  const flagMap: Record<string, string> = {
-    english: '/assets/images/country/india.png',
-    hindi: '/assets/images/country/india.png',
-    punjabi: '/assets/images/country/india.png',
-  };
+  // const flagMap: Record<string, string> = {
+  //   english: '/assets/images/country/india.png',
+  //   hindi: '/assets/images/country/india.png',
+  //   punjabi: '/assets/images/country/india.png',
+  // };
 
   // Load Google Translate script
   useEffect(() => {
@@ -80,17 +82,26 @@ const HeaderTop = () => {
   return (
     <div className='header-top'>
       <div className='container-fluid-lg flex justify-between'>
-          <div className=' text-white'>
-            <Link to='/publish-book' className='flex text-white gap-2 min-w-36'>
-              <Printer size={18} />
-              Publish With Us
+        <div className=' text-white'>
+          <Link to='/publish-book' className='flex text-white gap-2 min-w-36'>
+            <Printer size={18} />
+            Publish With Us
+          </Link>
+        </div>
+
+        <div className='col-lg-3 text-right'>
+          {!isAuthenticated || !user ? (
+            <Link to={'/signin'} className='!text-white !transform hover:scale-105 transition'>
+              <span>
+                Login
+                <ArrowRight size={16} className='inline-block ml-1' />
+              </span>
             </Link>
-          </div>
-
-
-          <div className='col-lg-3'>
-            <ul className='about-list right-nav-about'>
-              {/* Language Dropdown */}
+          ) : (
+            <span className='text-white'>Hello, {user?.first_name + ' ' + user?.last_name}!</span>
+          )}
+          {/* <ul className='about-list right-nav-about'>
+              Language Dropdown
               <li className='right-nav-list'>
                 <div className='dropdown theme-form-select'>
                   <button
@@ -129,10 +140,10 @@ const HeaderTop = () => {
                     ))}
                   </ul>
                 </div>
-              </li>
+              </li> */}
 
-              {/* Currency Dropdown */}
-              {/* <li className='right-nav-list'>
+          {/* Currency Dropdown */}
+          {/* <li className='right-nav-list'>
                 <div className='dropdown theme-form-select'>
                   <button
                     className='btn dropdown-toggle'
@@ -177,9 +188,9 @@ const HeaderTop = () => {
                   </ul>
                 </div>
               </li> */}
-            </ul>
-          </div>
+          {/* </ul> */}
         </div>
+      </div>
     </div>
   );
 };

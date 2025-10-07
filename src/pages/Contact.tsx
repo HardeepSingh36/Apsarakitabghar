@@ -164,12 +164,6 @@ const Contact = () => {
                   <div className='col-xl-12'>
                     <div className='contact-title'>
                       <h3>Get In Touch</h3>
-                      <div className='alert alert-info mt-3 mb-4'>
-                        <i className='fa-solid fa-info-circle me-2'></i>
-                        <small>
-                          Rate limit: 5 submissions per day. We respond within 24-48 hours.
-                        </small>
-                      </div>
                     </div>
 
                     <div className='contact-detail'>
@@ -211,21 +205,6 @@ const Contact = () => {
                             </div>
                             <div className='contact-detail-title'>
                               <h4>Punjab Office</h4>
-                            </div>
-
-                            <div className='contact-detail-contain'>
-                              <p>Talwandi Sabo, Punjab 151302</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className='col-xxl-6 col-lg-12 col-sm-6'>
-                          <div className='contact-detail-box'>
-                            <div className='contact-icon'>
-                              <i className='fa-solid fa-building'></i>
-                            </div>
-                            <div className='contact-detail-title'>
-                              <h4>Zirakpur Office</h4>
                             </div>
 
                             <div className='contact-detail-contain'>

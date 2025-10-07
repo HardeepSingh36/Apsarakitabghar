@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Heading2 from '../general/Heading2';
 import { booksByFlagsService, type BookFlag } from '@/services/booksByFlagsService';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AddProductBox from '../general/AddProductBox';
 import ProductCardSkeleton from '../ProductSkeleton';
+import { ChevronRight } from 'react-feather';
 
 const TopSellingBooks = () => {
   const navigate = useNavigate();
@@ -67,6 +68,21 @@ const TopSellingBooks = () => {
 
   const BookGrid: React.FC<{ items: BookFlag[]; flag: string }> = ({ items, flag }) => (
     <div className='row'>
+      {items.length > 0 && (
+        <div className='text-right !-mt-8 !mb-2'>
+          <Link
+            to={`#`}
+            onClick={(e) => {
+              e.preventDefault();
+               navigateToBooks(flag);
+            }}
+            className='!text-base category-name hover:!text-emerald-600 flex justify-end items-center'
+          >
+            View All
+            <ChevronRight size={18} />
+          </Link>
+        </div>
+      )}
       <div className='col-12'>
         <div className='top-selling-box'>
           <div className='grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4'>
@@ -78,16 +94,6 @@ const TopSellingBooks = () => {
               <p className='text-center col-span-full'>No books found.</p>
             )}
           </div>
-          {items.length > 0 && (
-            <div className='text-center mt-8'>
-              <button
-                onClick={() => navigateToBooks(flag)}
-                className='btn theme-bg-color text-white btn-md mx-auto hover:opacity-90'
-              >
-                View All
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>

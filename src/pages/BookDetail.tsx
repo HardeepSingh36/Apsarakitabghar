@@ -213,7 +213,7 @@ const BookDetail = () => {
                                 className='img-fluid image_zoom_cls-0 blur-up lazyload notranslate'
                                 alt={book.title || ''}
                               />
-                              <div className='buy-box absolute right-4 top-4 bg-white p-2 rounded-full md:hidden'>
+                              <div className='buy-box absolute right-4 top-4 bg-white p-2 rounded-full'>
                                 <button
                                   onClick={handleAddToWishlist}
                                   className={`flex items-center gap-2 ${
@@ -252,31 +252,6 @@ const BookDetail = () => {
                 <div className='col-xl-6 wow fadeInUp' data-wow-delay='0.1s'>
                   <div className='right-box-contain relative'>
                     <div className='buy-box absolute right-4 top-0 !hidden md:!block'>
-                      <button
-                        onClick={handleAddToWishlist}
-                        className={`flex items-center gap-2 ${
-                          isWishlistLoading ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                        disabled={isWishlistLoading}
-                        data-tooltip-id='cart-tooltip'
-                        data-tooltip-content={
-                          isWishlistLoading
-                            ? 'Adding to wishlist...'
-                            : isInWishlist
-                            ? 'Already in wishlist'
-                            : 'Add to wishlist'
-                        }
-                      >
-                        {isWishlistLoading ? (
-                          <Loader className='w-6 h-6 animate-spin text-gray-500' />
-                        ) : (
-                          <Heart
-                            className={`w-6 h-6 ${
-                              isInWishlist ? 'fill-red-500 text-red-500' : 'text-gray-500'
-                            }`}
-                          />
-                        )}
-                      </button>
                       <Tooltip id='cart-tooltip' />
                     </div>
                     <h2 className='name mb-0 notranslate'>{book.title || 'Book Title'}</h2>

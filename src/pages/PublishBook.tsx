@@ -547,7 +547,7 @@ const PublishBook = () => {
               <div className='sign-up-box text-center'>
                 <h4>
                   Need help?{' '}
-                  <Link to='/contact' className='theme-color fw-bold'>
+                  <Link to='/contact-us' className='theme-color fw-bold'>
                     Contact Us
                   </Link>
                 </h4>
