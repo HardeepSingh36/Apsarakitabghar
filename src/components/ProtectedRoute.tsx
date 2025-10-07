@@ -12,18 +12,34 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const location = useLocation();
 
   useEffect(() => {
+    // Only redirect if we're sure the user is not authenticated after loading
     if (!loading && !isAuthenticated) {
-      // Open login dialog
-      openSignIn();
-      // Redirect to home
-      navigate('/', { replace: true, state: { from: location } });
+      // Store the current location for redirect after login
+      const currentPath = location.pathname + location.search + location.hash;
+      // Open login dialog and redirect to signin page
+      openSignIn(currentPath);
+      navigate('/signin', {
+        replace: true,
+        state: { from: currentPath },
+      });
     }
   }, [isAuthenticated, loading, openSignIn, navigate, location]);
 
+  // Show loading state while checking authentication
   if (loading) {
-    return <div>Loading...</div>; // or spinner placeholder
+    return (
+      <div className='fullpage-loader'>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    );
   }
 
+  // Don't render anything while redirecting
   if (!isAuthenticated) {
     return null;
   }

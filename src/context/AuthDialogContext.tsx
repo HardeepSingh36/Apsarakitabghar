@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { login, logout } from '@/features/auth/authSlice';
+import { login, logout, finishLoading } from '@/features/auth/authSlice';
 import toast from 'react-hot-toast';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getProfile } from '@/services/authService';
@@ -33,6 +33,8 @@ export const useAuthDialog = (): AuthDialogContextValue => {
 
 export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const [captchaConfig, setCaptchaConfig] = useState<CaptchaConfig | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -60,11 +62,18 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
     navigate('/forgot-password');
   };
 
-  // Add useEffect to fetch profile on component mount
+  // Initialize auth state on mount
   useEffect(() => {
-    const fetchProfile = async () => {
+    const initializeAuth = async () => {
+      setLoading(true);
       const token = localStorage.getItem('auth_token');
-      if (!token) return;
+
+      if (!token) {
+        dispatch(finishLoading());
+        setLoading(false);
+        setInitialized(true);
+        return;
+      }
 
       try {
         const response = await getProfile(token);
@@ -92,14 +101,24 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
             })
           );
         } else {
-          toast.error(response.message || 'Failed to fetch profile');
+          console.warn('Failed to fetch profile:', response.message);
+          // Clear invalid token
+          localStorage.removeItem('auth_token');
+          dispatch(logout());
         }
       } catch (error: any) {
-        toast.error(error.message || 'An error occurred while fetching profile');
+        console.error('Error fetching profile:', error);
+        // Clear invalid token
+        localStorage.removeItem('auth_token');
+        dispatch(logout());
+      } finally {
+        dispatch(finishLoading());
+        setLoading(false);
+        setInitialized(true);
       }
     };
 
-    fetchProfile();
+    initializeAuth();
   }, [dispatch]);
 
   // Fetch CAPTCHA configuration on component mount
@@ -140,7 +159,7 @@ export const AuthDialogProvider: FC<React.PropsWithChildren<{}>> = ({ children }
     openForgot,
     isAuthenticated,
     logout: handleLogout,
-    loading: false, // No longer needed for this context
+    loading, // Use actual loading state
     captchaConfig,
   };
 
