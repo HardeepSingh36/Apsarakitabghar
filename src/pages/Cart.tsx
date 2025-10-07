@@ -84,7 +84,7 @@ const Cart = () => {
                     <p className='text-content mb-4'>
                       Looks like you haven’t added anything to your cart yet.
                     </p>
-                    <Link to={'/books'} className='btn btn-animation fw-bold'>
+                    <Link to={'#'} className='btn btn-animation fw-bold'>
                       Continue Shopping
                       <i className='fa-solid fa-arrow-right-long ms-2'></i>
                     </Link>
@@ -97,19 +97,19 @@ const Cart = () => {
                           <tr className='product-box-contain' key={item.book_id}>
                             <td className='product-detail'>
                               <div className='product border-0'>
-                                <a href={`/books/${item.slug}`} className='product-image'>
+                                <Link to={`#`} className='product-image'>
                                   <img
                                     src={IMAGE_BASE_URL + item.cover_image_name || ''}
                                     className='img-fluid blur-up lazyload notranslate'
                                     alt={item.title}
                                   />
-                                </a>
+                                </Link>
                                 <div className='product-detail'>
                                   <ul>
                                     <li className='name'>
-                                      <a href={`/books/${item.slug}`} className='notranslate'>
+                                      <Link to={'#'} className='notranslate'>
                                         {item.title}
-                                      </a>
+                                      </Link>
                                     </li>
                                     <li className='text-content'>
                                       <span className='text-title'>Author:</span>{' '}
