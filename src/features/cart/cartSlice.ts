@@ -130,9 +130,9 @@ const cartSlice = createSlice({
             quantity: payload.quantity,
             price_at_add: payload.price_at_add,
             added_at: new Date().toISOString(), // API doesn't return this, so use current time
-            cart_subtotal: payload.line_total.toString(), // Use line_total as subtotal
-            cart_discount: '0', // Will be updated when cart list is fetched
-            cart_total: payload.line_total.toString(), // Use line_total as total
+            cart_subtotal: (payload.discounted_price * payload.quantity).toString(), // Use discounted price for subtotal
+            cart_discount: (payload.price - payload.discounted_price).toString(), // Calculate discount
+            cart_total: (payload.discounted_price * payload.quantity).toString(), // Use discounted price for total
             title: payload.title,
             slug: payload.slug,
             price: payload.price,
@@ -210,7 +210,7 @@ const cartSlice = createSlice({
           if (itemIndex >= 0) {
             const item = state.items[itemIndex];
             const newQuantity = action.payload.quantity;
-            const newLineTotal = item.price_at_add * newQuantity;
+            const newLineTotal = item.current_discounted_price * newQuantity;
 
             state.items[itemIndex] = {
               ...item,

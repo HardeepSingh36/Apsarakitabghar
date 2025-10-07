@@ -260,7 +260,11 @@ const Cart = () => {
                                     <li>
                                       <h5 className='notranslate'>
                                         Total: {currency.sign}
-                                        <span>{item.current_line_total.toFixed(2)}</span>
+                                        <span>
+                                          {(item.current_discounted_price * item.quantity).toFixed(
+                                            2
+                                          )}
+                                        </span>
                                       </h5>
                                     </li>
                                   </ul>
@@ -382,7 +386,9 @@ const Cart = () => {
                               <h4 className='table-title text-content'>Total</h4>
                               <h5 className='notranslate'>
                                 {currency.sign}
-                                <span className='notranslate'>{item.current_line_total.toFixed(2)}</span>
+                                <span className='notranslate'>
+                                  {(item.current_discounted_price * item.quantity).toFixed(2)}
+                                </span>
                               </h5>
                             </td>
                             <td className='save-remove'>
