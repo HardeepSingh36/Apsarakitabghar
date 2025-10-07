@@ -72,10 +72,10 @@ const TopSellingBooks = () => {
       <div className='row'>
         <div className='col-xxl-9 col-lg-8'>
           <TabsList
-            className='relative top-selling-box w-full flex justify-between md:justify-start md:gap-8 items-center mt-12 mb-8 bg-transparent overflow-x-scroll overflow-y-hidden'
+            className='relative top-selling-box w-full flex justify-between md:justify-start md:gap-8 items-center mt-12 mb-8 bg-transparent overflow-x-scroll min-h-12 overflow-y-hidden'
             style={{ scrollbarWidth: 'none' }}
           >
-            <div className='absolute bottom-2 w-full bg-gray-100 h-0.5 '></div>
+            <div className='absolute bottom-[13px] w-full bg-gray-100 h-0.5 '></div>
             <TabsTrigger
               className={clsx(
                 'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100',

@@ -45,9 +45,11 @@ const App = () => {
       location.pathname !== '/signup' &&
       location.pathname !== '/forgot-password' &&
       location.pathname !== '/publish-book' ? (
-        <Header />
+        <>
+          <Header />
+          <MobileFixMenu />
+        </>
       ) : null}
-      <MobileFixMenu />
       <ScrollToTop />
       <Routes>
         <Route path='/' element={<Home />} />

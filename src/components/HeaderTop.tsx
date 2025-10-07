@@ -79,16 +79,14 @@ const HeaderTop = () => {
 
   return (
     <div className='header-top'>
-      <div className='container-fluid-lg'>
-        <div className='flex justify-between'>
-          <div className='col-xxl-2 d-xxl-block text-white'>
+      <div className='container-fluid-lg flex justify-between'>
+          <div className=' text-white'>
             <Link to='/publish-book' className='flex text-white gap-2 min-w-36'>
               <Printer size={18} />
               Publish With Us
             </Link>
           </div>
 
-          <div className='col-xxl-6 col-lg-9 d-lg-block d-none'></div>
 
           <div className='col-lg-3'>
             <ul className='about-list right-nav-about'>
@@ -113,7 +111,7 @@ const HeaderTop = () => {
                     {Object.keys(langMap).map((lang) => (
                       <li key={lang}>
                         <Link
-                          className='dropdown-item'
+                          className='dropdown-item notranslate'
                           to='#'
                           onClick={(e) => {
                             e.preventDefault();
@@ -182,7 +180,6 @@ const HeaderTop = () => {
             </ul>
           </div>
         </div>
-      </div>
     </div>
   );
 };

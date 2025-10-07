@@ -8,11 +8,11 @@ const TermConditions = () => {
               <div className='blog-detail-contain'>
                 <h6 className='pb-4'>Last updated: 16-09-2025</h6>
                 <p>
-                  <span className='first'>W</span>elcome to <strong>Apsra Kitab Ghar</strong>. These
-                  Terms & Conditions (“Terms”) govern your use of our website, services, and
-                  platform where books are sold and publishers can publish their works. By accessing
-                  or using our services, you agree to be bound by these Terms. Please read them
-                  carefully before proceeding.
+                  <span className='first notranslate'>W</span>elcome to{' '}
+                  <strong>Apsra Kitab Ghar</strong>. These Terms & Conditions (“Terms”) govern your
+                  use of our website, services, and platform where books are sold and publishers can
+                  publish their works. By accessing or using our services, you agree to be bound by
+                  these Terms. Please read them carefully before proceeding.
                 </p>
                 <p>
                   <strong>1. General Use:</strong> Our platform allows customers to purchase books
