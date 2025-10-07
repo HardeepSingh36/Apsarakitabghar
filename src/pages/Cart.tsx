@@ -328,7 +328,17 @@ const Cart = () => {
                                       type='text'
                                       name='quantity'
                                       value={item.quantity}
-                                      readOnly
+                                      onChange={(e) => {
+                                        const val = parseInt(e.target.value, 10);
+                                        if (!isNaN(val) && val > 0 && val <= item.max_quantity) {
+                                          dispatch(
+                                            updateCartItemAsync({
+                                              cartItemId: item.cart_item_id,
+                                              quantity: val,
+                                            })
+                                          );
+                                        }
+                                      }}
                                     />
                                     <button
                                       type='button'
