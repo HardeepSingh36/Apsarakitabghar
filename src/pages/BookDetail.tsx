@@ -358,8 +358,13 @@ const BookDetail = () => {
                             className='form-control input-number qty-input'
                             type='text'
                             name='quantity'
-                            readOnly
                             value={quantity === 0 ? 1 : quantity}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value, 10);
+                              if (!isNaN(val)) {
+                                setQuantity(val);
+                              }
+                            }}
                           />
                           <button
                             type='button'
