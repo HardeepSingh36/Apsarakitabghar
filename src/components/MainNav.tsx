@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuthDialog, type UserRole } from '@/context/AuthDialogContext';
 import { useEffect, useState } from 'react';
-import categoriesService, { type Category } from '@/services/categoriesService';
+import categoriesService from '@/services/categoriesService';
 
 interface DropdownMenuItem {
   label: string;
