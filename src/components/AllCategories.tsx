@@ -66,6 +66,7 @@ const AllCategories = ({ show, setShow }: AllCategoriesProps) => {
                   to={`/books?category_name=${encodeURIComponent(category.category_name)}`}
                   state={{ categoryId: category.id, categoryName: category.category_name }}
                   className='flex items-center flex-col text-center !text-black hover:!text-gray-700 hover:scale-105'
+                  onClick={() => setShow(false)}
                 >
                   <BookOpen className='hover:!text-gray-700' />
                   <p className='category-title !text-[clamp(0.985rem,2vw,1rem)]'>

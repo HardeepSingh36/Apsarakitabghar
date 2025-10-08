@@ -10,7 +10,7 @@ interface RelatedProductsProps {
 }
 
 const getSlidesToShow = (width: number) => {
-  if (width < 480) return 2;
+  if (width < 600) return 2;
   if (width < 1000) return 3;
   if (width < 1200) return 4;
   return 5;

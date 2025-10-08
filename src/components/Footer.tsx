@@ -115,16 +115,16 @@ const Footer = () => {
               <ul className='footer-list footer-list-light footer-contact'>
                 <li>
                   <Link
-                    to='/dashboard'
+                    to='/dashboard?tab=orders'
                     className='light-text'
                     onClick={(e) => handleProtectedClick(e)}
                   >
-                    Your Order
+                    Your Orders
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to='/dashboard'
+                    to='/dashboard?tab=dashboard'
                     className='light-text'
                     onClick={(e) => handleProtectedClick(e)}
                   >
@@ -133,7 +133,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to='/dashboard'
+                    to='/dashboard?tab=orders'
                     className='light-text'
                     onClick={(e) => handleProtectedClick(e)}
                   >
@@ -142,7 +142,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to='/dashboard'
+                    to='/dashboard?tab=wishlist'
                     className='light-text'
                     onClick={(e) => handleProtectedClick(e)}
                   >

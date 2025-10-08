@@ -10,7 +10,7 @@ import {
   MapPin,
   User,
 } from 'react-feather';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import LogoutConfirmationModal from './LogoutConfirmationModal';
 import { useAuthDialog } from '@/context/AuthDialogContext';
@@ -32,9 +32,18 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const { logout } = useAuthDialog();
   const navigate = useNavigate();
+  const location = useLocation();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [activeTab, setActiveTab] = useState<string>(
+    localStorage.getItem('activeDashboardTab') || 'dashboard'
+  );
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    localStorage.setItem('activeDashboardTab', tab);
+    onClose();
+  };
   const handleLogout = () => {
     setLogoutModalOpen(false);
     logout();
@@ -109,6 +118,16 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
     };
   }, [show]);
 
+  // if dashboard route has ?tab=wishlist etc., sync it
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+      localStorage.setItem('activeDashboardTab', tab);
+    }
+  }, [location.search]);
+
   return (
     <>
       <div
@@ -178,36 +197,36 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
         <ul className='nav nav-pills user-nav-pills' id='pills-tab' role='tablist'>
           <li className='nav-item' role='presentation'>
             <button
-              className='nav-link active'
+              className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`}
               id='pills-dashboard-tab'
               data-bs-toggle='pill'
               data-bs-target='#pills-dashboard'
               type='button'
-              onClick={onClose}
+              onClick={() => handleTabChange('dashboard')}
             >
               <Home size={16} className='me-2' /> DashBoard
             </button>
           </li>
           <li className='nav-item' role='presentation'>
             <button
-              className='nav-link'
+              className={`nav-link ${activeTab === 'orders' ? 'active' : ''}`}
               id='pills-order-tab'
               data-bs-toggle='pill'
               data-bs-target='#pills-order'
               type='button'
-              onClick={onClose}
+              onClick={() => handleTabChange('orders')}
             >
               <ShoppingBag size={16} className='me-2' /> Order
             </button>
           </li>
           <li className='nav-item' role='presentation'>
             <button
-              className='nav-link'
+              className={`nav-link ${activeTab === 'wishlist' ? 'active' : ''}`}
               id='pills-wishlist-tab'
               data-bs-toggle='pill'
               data-bs-target='#pills-wishlist'
               type='button'
-              onClick={onClose}
+              onClick={() => handleTabChange('wishlist')}
             >
               <Heart size={16} className='me-2' /> Wishlist
             </button>

@@ -65,22 +65,41 @@ const navItems: NavItem[] = [
   },
 ];
 
-const NavItem = ({ label, to, href, className, state }: any) =>
+const NavItem = ({ label, to, href, className, state, setShowMenu }: any) =>
   to ? (
     <li className={`nav-item ${className || ''}`}>
-      <Link className='nav-link no-dropdown ps-xl-2 ps-0' to={to} state={state}>
+      <Link
+        className='nav-link no-dropdown ps-xl-2 ps-0'
+        to={to}
+        state={state}
+        onClick={() => setShowMenu(false)}
+      >
         {label}
       </Link>
     </li>
   ) : (
     <li className={`nav-item ${className || ''}`}>
-      <a className='nav-link dropdown-toggle no-dropdown' href={href}>
+      <Link
+        className='nav-link dropdown-toggle no-dropdown'
+        to={href || '#'}
+        onClick={(e) => {
+          if (!href) e.preventDefault();
+          setShowMenu(false);
+        }}
+      >
         {label}
-      </a>
+      </Link>
     </li>
   );
 
-const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJoinClick }: any) => {
+const DropdownNavItem = ({
+  label,
+  className,
+  dropdownContent,
+  dropdownMenu,
+  onJoinClick,
+  setShowMenu,
+}: any) => {
   return (
     <li className={`nav-item !relative ${className || ''}`}>
       {dropdownContent ? (
@@ -100,7 +119,12 @@ const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJo
                   <div className='dropdown-column m-0'>
                     <h5 className='dropdown-header'>{col.header}</h5>
                     {col.items.map((item: string, i: number) => (
-                      <a className='dropdown-item' href='/' key={i}>
+                      <a
+                        className='dropdown-item'
+                        href='/'
+                        key={i}
+                        onClick={() => setShowMenu(false)}
+                      >
                         {item}
                       </a>
                     ))}
@@ -110,11 +134,21 @@ const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJo
                     {col.subItems &&
                       col.subItems.map((item: any, i: number) =>
                         typeof item === 'string' ? (
-                          <Link className='dropdown-item' to='/' key={i}>
+                          <Link
+                            className='dropdown-item'
+                            to='/'
+                            key={i}
+                            onClick={() => setShowMenu(false)}
+                          >
                             {item}
                           </Link>
                         ) : (
-                          <Link className='dropdown-item' to={item.href} key={i}>
+                          <Link
+                            className='dropdown-item'
+                            to={item.href}
+                            key={i}
+                            onClick={() => setShowMenu(false)}
+                          >
                             {item.label}
                             {item.hot && <label className='menu-label warning-label'>Hot</label>}
                           </Link>
@@ -147,7 +181,11 @@ const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJo
                     <ul className='sub-menu'>
                       {item.submenu.map((subItem: any, subIdx: number) => (
                         <li key={subIdx}>
-                          <Link to={subItem.to} state={subItem.state}>
+                          <Link
+                            to={subItem.to}
+                            state={subItem.state}
+                            onClick={() => setShowMenu(false)}
+                          >
                             {subItem.label}
                           </Link>
                         </li>
@@ -155,14 +193,22 @@ const DropdownNavItem = ({ label, className, dropdownContent, dropdownMenu, onJo
                     </ul>
                   </>
                 ) : item.to ? (
-                  <Link className='dropdown-item' to={item.to} state={item.state}>
+                  <Link
+                    className='dropdown-item'
+                    to={item.to}
+                    state={item.state}
+                    onClick={() => setShowMenu(false)}
+                  >
                     {item.label}
                   </Link>
                 ) : (
                   <a
                     className='dropdown-item'
                     href='javascript:void(0)'
-                    onClick={() => onJoinClick && onJoinClick(item.label)}
+                    onClick={() => {
+                      onJoinClick && onJoinClick(item.label);
+                      setShowMenu(false);
+                    }}
                   >
                     {item.label}
                   </a>
@@ -258,11 +304,16 @@ const MainNav = ({
             <ul className='navbar-nav'>
               {navItemsState.map((item, idx) =>
                 item.type === 'dropdown' && item.label === 'Join Apsra' && !isAuthenticated ? (
-                  <DropdownNavItem key={idx} {...item} onJoinClick={handleJoinClick} />
+                  <DropdownNavItem
+                    key={idx}
+                    {...item}
+                    onJoinClick={handleJoinClick}
+                    setShowMenu={setShowMenu}
+                  />
                 ) : item.type === 'dropdown' && item.label !== 'Join Apsra' ? (
-                  <DropdownNavItem key={idx} {...item} />
+                  <DropdownNavItem key={idx} {...item} setShowMenu={setShowMenu} />
                 ) : item.type !== 'dropdown' ? (
-                  <NavItem key={idx} {...item} />
+                  <NavItem key={idx} {...item} setShowMenu={setShowMenu} />
                 ) : null
               )}
             </ul>
