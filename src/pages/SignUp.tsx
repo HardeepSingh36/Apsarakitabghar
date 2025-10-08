@@ -164,7 +164,7 @@ const SignUp = () => {
 
           <div className='col-xxl-5 col-xl-5 col-lg-6 col-sm-8 mx-auto'>
             <div className='log-in-box'>
-              <div className='text-center mb-4'>
+              <div className='text-center mb-3'>
                 <Link to='/' className='web-logo'>
                   <img
                     src='/assets/logo/apsra.svg'
@@ -174,7 +174,7 @@ const SignUp = () => {
                   />
                 </Link>
               </div>
-              <div className='log-in-title'>
+              <div className='log-in-title text-center'>
                 <h3>Welcome</h3>
                 <h4>Create Your Account</h4>
               </div>
