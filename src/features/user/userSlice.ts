@@ -36,6 +36,7 @@ interface UserState {
   selectedAddressId: string | null;
   loading: boolean;
   error: string | null;
+  operationLoading?: Record<string, boolean>;
 }
 
 const initialState: UserState = {
@@ -44,6 +45,7 @@ const initialState: UserState = {
   selectedAddressId: null,
   loading: false,
   error: null,
+  operationLoading: {},
 };
 
 // Async thunks for address operations
@@ -80,6 +82,22 @@ export const updateAddressAsync = createAsyncThunk(
     try {
       const apiAddressData = convertLocalAddressToApi(addressData);
       await addressService.updateAddress(parseInt(id), apiAddressData);
+      // Fetch updated addresses after update
+      const response = await addressService.getAddresses();
+      return response.data.addresses.map(convertApiAddressToLocal);
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Set default address (only updates is_default on API)
+export const setDefaultAddressAsync = createAsyncThunk(
+  'user/setDefaultAddress',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      // API expects is_default boolean; call update endpoint with only that field
+      await addressService.updateAddress(parseInt(id), { is_default: true } as any);
       // Fetch updated addresses after update
       const response = await addressService.getAddresses();
       return response.data.addresses.map(convertApiAddressToLocal);
@@ -160,40 +178,77 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Create address
+      // Create address (per-operation loading)
       .addCase(createAddress.pending, (state) => {
-        state.loading = true;
         state.error = null;
+        if (!state.operationLoading) state.operationLoading = {};
+        state.operationLoading['create-address'] = true;
       })
       .addCase(createAddress.fulfilled, (state, action) => {
-        state.loading = false;
+        if (!state.operationLoading) state.operationLoading = {};
+        state.operationLoading['create-address'] = false;
         state.addresses = action.payload;
       })
       .addCase(createAddress.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
+        if (!state.operationLoading) state.operationLoading = {};
+        state.operationLoading['create-address'] = false;
       })
-      // Update address
-      .addCase(updateAddressAsync.pending, (state) => {
-        state.loading = true;
+      // Update address (per-operation loading)
+      .addCase(updateAddressAsync.pending, (state, action) => {
         state.error = null;
+        const id = (action.meta.arg as any)?.id;
+        if (!state.operationLoading) state.operationLoading = {};
+        if (id) state.operationLoading[`update-${id}`] = true;
       })
       .addCase(updateAddressAsync.fulfilled, (state, action) => {
-        state.loading = false;
         state.addresses = action.payload;
+        const id = (action.meta.arg as any)?.id;
+        if (!state.operationLoading) state.operationLoading = {};
+        if (id) state.operationLoading[`update-${id}`] = false;
       })
       .addCase(updateAddressAsync.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
+        const id = (action.meta.arg as any)?.id;
+        if (!state.operationLoading) state.operationLoading = {};
+        if (id) state.operationLoading[`update-${id}`] = false;
       })
-      // Delete address
-      .addCase(deleteAddressAsync.pending, (state) => {
-        state.loading = true;
+      // Set default address (per-address operation loading)
+      .addCase(setDefaultAddressAsync.pending, (state, action) => {
         state.error = null;
+        const id = action.meta.arg;
+        if (!state.operationLoading) state.operationLoading = {};
+        state.operationLoading[`set-default-${id}`] = true;
+      })
+      .addCase(setDefaultAddressAsync.fulfilled, (state, action) => {
+        state.addresses = action.payload;
+        // clear per-address loading flags
+        if (!state.operationLoading) state.operationLoading = {};
+        Object.keys(state.operationLoading).forEach((k) => {
+          if (k.startsWith('set-default-')) state.operationLoading![k] = false;
+        });
+        // Ensure selectedAddressId points to the default address if present
+        const defaultAddr = state.addresses.find((a) => a.isDefault);
+        if (defaultAddr) state.selectedAddressId = defaultAddr.id;
+      })
+      .addCase(setDefaultAddressAsync.rejected, (state, action) => {
+        state.error = action.payload as string;
+        const id = action.meta.arg;
+        if (!state.operationLoading) state.operationLoading = {};
+        state.operationLoading[`set-default-${id}`] = false;
+      })
+      // Delete address (per-operation loading)
+      .addCase(deleteAddressAsync.pending, (state, action) => {
+        state.error = null;
+        const id = action.meta.arg;
+        if (!state.operationLoading) state.operationLoading = {};
+        state.operationLoading[`remove-${id}`] = true;
       })
       .addCase(deleteAddressAsync.fulfilled, (state, action) => {
-        state.loading = false;
         state.addresses = action.payload;
+        const id = (action.meta.arg as any) || null;
+        if (!state.operationLoading) state.operationLoading = {};
+        if (id) state.operationLoading[`remove-${id}`] = false;
         // Clear selected address if it was deleted
         if (
           state.selectedAddressId &&
@@ -203,8 +258,10 @@ const userSlice = createSlice({
         }
       })
       .addCase(deleteAddressAsync.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
+        const id = action.meta.arg;
+        if (!state.operationLoading) state.operationLoading = {};
+        state.operationLoading[`remove-${id}`] = false;
       });
   },
 });

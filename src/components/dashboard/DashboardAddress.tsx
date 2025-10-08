@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Edit, Trash2 } from 'react-feather';
+import { Edit, Trash2, Loader } from 'react-feather';
 import toast from 'react-hot-toast';
 import type { RootState } from '../../app/store';
 import type { Address } from '../../features/user/userSlice';
 import AddAddressModal from './AddAddressModal';
 import RemoveConfirmationModal from './RemoveConfirmationModal';
 import RemoveDoneModal from './RemoveDoneModal';
-import { 
-  fetchAddresses, 
-  createAddress, 
-  updateAddressAsync, 
+import {
+  fetchAddresses,
+  createAddress,
+  updateAddressAsync,
   deleteAddressAsync,
-  clearError 
+  setSelectedAddress,
+  setDefaultAddressAsync,
+  clearError,
 } from '../../features/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
@@ -23,7 +25,20 @@ const DashboardAddress: React.FC = () => {
   const [addressToRemove, setAddressToRemove] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
-  const { addresses, loading, error } = useAppSelector((state: RootState) => state.user);
+  const { addresses, selectedAddressId, loading, error } = useAppSelector(
+    (state: RootState) => state.user
+  );
+  const operationLoading = useAppSelector((state: RootState) => state.user.operationLoading || {});
+
+  // Set default selected address when addresses load
+  useEffect(() => {
+    if (addresses.length > 0 && !selectedAddressId) {
+      const defaultAddress = addresses.find((addr) => addr.isDefault);
+      if (defaultAddress) {
+        dispatch(setSelectedAddress(defaultAddress.id));
+      }
+    }
+  }, [addresses, selectedAddressId, dispatch]);
 
   const openEditModal = (address: Address) => {
     setEditAddress(address);
@@ -47,10 +62,12 @@ const DashboardAddress: React.FC = () => {
   const handleSaveAddress = async (updatedAddress: Address) => {
     try {
       if (editAddress) {
-        await dispatch(updateAddressAsync({ 
-          id: editAddress.id, 
-          addressData: { ...editAddress, ...updatedAddress } 
-        })).unwrap();
+        await dispatch(
+          updateAddressAsync({
+            id: editAddress.id,
+            addressData: { ...editAddress, ...updatedAddress },
+          })
+        ).unwrap();
         toast.success('Address updated successfully!');
       } else {
         await dispatch(createAddress(updatedAddress)).unwrap();
@@ -73,6 +90,17 @@ const DashboardAddress: React.FC = () => {
     }
   };
 
+  const handleAddressSelect = (id: string) => {
+    // Optimistically set selected address locally for immediate UI feedback
+    dispatch(setSelectedAddress(id));
+    // Update backend to mark this address as default
+    dispatch(setDefaultAddressAsync(id))
+      .unwrap()
+      .catch((err: any) => {
+        toast.error(err || 'Failed to set default address');
+      });
+  };
+
   // Fetch addresses on component mount
   useEffect(() => {
     dispatch(fetchAddresses());
@@ -88,8 +116,7 @@ const DashboardAddress: React.FC = () => {
 
   // Toggle body scroll based on modal states
   useEffect(() => {
-    const anyModalOpen =
-       isAddAddressModalOpen || isRemoveConfirmationOpen || isRemoveDoneOpen;
+    const anyModalOpen = isAddAddressModalOpen || isRemoveConfirmationOpen || isRemoveDoneOpen;
 
     document.body.style.overflow = anyModalOpen ? 'hidden' : '';
   }, [isAddAddressModalOpen, isRemoveConfirmationOpen, isRemoveDoneOpen]);
@@ -115,7 +142,7 @@ const DashboardAddress: React.FC = () => {
       <div className='row g-sm-4 g-3'>
         {loading ? (
           <div className='text-center'>
-            <div className='spinner-border text-primary' role='status'>
+            <div className='spinner-border text-emerald-600' role='status'>
               <span className='visually-hidden'>Loading...</span>
             </div>
             <p className='mt-2'>Loading addresses...</p>
@@ -125,19 +152,31 @@ const DashboardAddress: React.FC = () => {
         ) : (
           addresses.map((address: Address) => (
             <div className='col-xxl-4 col-xl-6 col-lg-12 col-md-6' key={address.id}>
-              <div className='address-box'>
+              <div
+                className={`address-box ${selectedAddressId === address.id ? 'selected' : ''}`}
+                onClick={() => handleAddressSelect(address.id)}
+              >
                 <div>
-                  <div className='form-check'>
-                    <input
-                      className='form-check-input'
-                      type='radio'
-                      name='address'
-                      id={`address-${address.id}`}
-                    />
-                  </div>
-                  {/* <div className='label'>
-                    <label>{address.type}</label>
-                  </div> */}
+                  {operationLoading[`set-default-${address.id}`] ? (
+                    <div className='inline-flex mt-1.5'>
+                      <Loader className='w-4 h-4 animate-spin text-emerald-600' />
+                    </div>
+                  ) : (
+                    <div className='form-check'>
+                      <div className='flex items-center gap-2'>
+                        <input
+                          className='form-check-input'
+                          type='radio'
+                          name='address'
+                          id={`address-${address.id}`}
+                          checked={selectedAddressId === address.id}
+                          onChange={() => handleAddressSelect(address.id)}
+                          disabled={operationLoading[`set-default-${address.id}`]}
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <div className='table-responsive address-table'>
                     <table className='table'>
                       <tbody>
@@ -147,7 +186,9 @@ const DashboardAddress: React.FC = () => {
                         <tr>
                           <td>Address :</td>
                           <td>
-                            <p>{`${address.addressLine1}, ${address.addressLine2}, ${address.city}, ${address.state}, ${address.country}`}</p>
+                            <p>{`${address.addressLine1}, ${address.addressLine2 || ''}, ${
+                              address.city
+                            }, ${address.state}, ${address.country}`}</p>
                           </td>
                         </tr>
                         <tr>
@@ -165,13 +206,19 @@ const DashboardAddress: React.FC = () => {
                 <div className='button-group'>
                   <button
                     className='btn btn-sm add-button w-100'
-                    onClick={() => openEditModal(address)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openEditModal(address);
+                    }}
                   >
                     <Edit size={16} className='me-1' /> Edit
                   </button>
                   <button
                     className='btn btn-sm add-button w-100'
-                    onClick={() => openRemoveConfirmation(address.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openRemoveConfirmation(address.id);
+                    }}
                   >
                     <Trash2 size={16} className='me-1' /> Remove
                   </button>
@@ -192,7 +239,9 @@ const DashboardAddress: React.FC = () => {
       <RemoveConfirmationModal
         isOpen={isRemoveConfirmationOpen}
         onClose={closeRemoveConfirmation}
-        onConfirm={() => addressToRemove && handleRemoveAddress(addressToRemove)}
+        onConfirm={() =>
+          addressToRemove ? handleRemoveAddress(addressToRemove) : Promise.resolve()
+        }
       />
       <RemoveDoneModal isOpen={isRemoveDoneOpen} onClose={closeRemoveDone} />
     </div>

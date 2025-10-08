@@ -3,7 +3,8 @@ import React from 'react';
 interface RemoveConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  // onConfirm may return a Promise
+  onConfirm: () => Promise<any> | void;
 }
 
 const RemoveConfirmationModal: React.FC<RemoveConfirmationModalProps> = ({
@@ -11,6 +12,7 @@ const RemoveConfirmationModal: React.FC<RemoveConfirmationModalProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const [isProcessing, setIsProcessing] = React.useState(false);
   if (!isOpen) return null;
 
   return (
@@ -38,15 +40,40 @@ const RemoveConfirmationModal: React.FC<RemoveConfirmationModalProps> = ({
             </div>
           </div>
           <div className='modal-footer'>
-            <button type='button' className='btn btn-animation btn-md fw-bold' onClick={onClose}>
+            <button
+              type='button'
+              className='btn btn-animation btn-md fw-bold'
+              onClick={onClose}
+              disabled={isProcessing}
+            >
               No
             </button>
             <button
               type='button'
               className='btn theme-bg-color btn-md fw-bold text-light'
-              onClick={onConfirm}
+              onClick={async () => {
+                try {
+                  setIsProcessing(true);
+                  const res = onConfirm();
+                  if (res && typeof (res as any).then === 'function') {
+                    await res;
+                  }
+                } catch (err) {
+                  // swallow here; parent will show toast
+                } finally {
+                  setIsProcessing(false);
+                }
+              }}
+              disabled={isProcessing}
             >
-              Yes
+              {isProcessing ? (
+                <>
+                  <span className='spinner-border spinner-border-sm me-2' role='status' />
+                  Removing...
+                </>
+              ) : (
+                'Yes'
+              )}
             </button>
           </div>
         </div>

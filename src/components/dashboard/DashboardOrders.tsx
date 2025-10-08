@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getOrdersList } from '@/services/ordersService';
 import type { Order } from '@/services/ordersService';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 const DashboardOrders: React.FC = () => {
   const { currency } = useCurrency();
@@ -103,12 +104,12 @@ const DashboardOrders: React.FC = () => {
             <p className='mt-3 text-gray-600'>Loading orders...</p>
           </div>
         ) : orders.length === 0 ? (
-          <div className='text-center py-5'>
+          <div className='text-center py-5 w-full'>
             <h4>No Orders Found</h4>
             <p className='text-muted'>You haven't placed any orders yet.</p>
-            <a href='/books' className='btn btn-primary'>
+            <Link to='/books' className='btn !bg-[#0da487] text-white max-w-sm mx-auto'>
               Start Shopping
-            </a>
+            </Link>
           </div>
         ) : (
           <ul className='space-y-4 w-full max-w-full overflow-hidden'>

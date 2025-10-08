@@ -22,7 +22,8 @@ interface AddAddressModalProps {
   isOpen: boolean;
   onClose: () => void;
   address?: Address | null;
-  onSave: (updatedAddress: Address) => void;
+  // onSave may return a Promise to allow async saving
+  onSave: (updatedAddress: Address) => Promise<any> | void;
 }
 
 const countriesOptions = countries.map((country) => ({
@@ -49,6 +50,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
   const [selectedCode, setSelectedCode] = useState('+91');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isEdit, setIsEdit] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (address) {
@@ -133,12 +135,26 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
     onClose();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateForm()) return; // Prevent submission if validation fails
 
     const addressWithId = { ...formData, id: formData.id || `${Date.now()}` }; // Add unique ID if not present
-    onSave(addressWithId);
-    handleClose();
+    // Support async onSave (parent returns a Promise)
+    try {
+      const result = onSave(addressWithId);
+      if (result && typeof (result as any).then === 'function') {
+        setErrors({});
+        setIsSubmitting(true);
+        await result;
+        setIsSubmitting(false);
+        handleClose();
+      } else {
+        handleClose();
+      }
+    } catch (err: any) {
+      setIsSubmitting(false);
+      setErrors({ form: err?.message || 'Failed to save address' });
+    }
   };
 
   const statesOptions = formData.country
@@ -178,6 +194,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                       placeholder='Enter First Name'
                       value={formData.firstName}
                       onChange={handleChange}
+                      disabled={isSubmitting}
                     />
                     <label htmlFor='firstName'>First Name</label>
                     {errors.firstName && <div className='text-danger'>{errors.firstName}</div>}
@@ -262,6 +279,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                     }
                     value={countriesOptions.find((option) => option.value === formData.country)}
                     onChange={handleCountryChange}
+                    isDisabled={isSubmitting}
                   />
                   {errors.country && <div className='text-danger'>{errors.country}</div>}
 
@@ -307,6 +325,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                           state: selectedOption ? selectedOption.value : '',
                         }))
                       }
+                      isDisabled={isSubmitting}
                     />
                   ) : (
                     <div className='form-floating theme-form-floating'>
@@ -317,6 +336,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                         placeholder='Enter State'
                         value={formData.state}
                         onChange={handleChange}
+                        disabled={isSubmitting}
                       />
                       <label htmlFor='state'>State</label>
                     </div>
@@ -332,6 +352,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                       placeholder='Enter City'
                       value={formData.city}
                       onChange={handleChange}
+                      disabled={isSubmitting}
                     />
                     <label htmlFor='city'>City</label>
                     {errors.city && <div className='text-danger'>{errors.city}</div>}
@@ -346,6 +367,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                       placeholder='Enter Postal Code'
                       value={formData.postalCode}
                       onChange={handleChange}
+                      disabled={isSubmitting}
                     />
                     <label htmlFor='postalCode'>Postal Code</label>
                     {errors.postalCode && <div className='text-danger'>{errors.postalCode}</div>}
@@ -373,6 +395,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                         placeholder='Enter Phone Number'
                         value={formData.phone}
                         onChange={handlePhoneChange}
+                        disabled={isSubmitting}
                       />
                     </div>
                     {errors.phone && <div className='text-danger'>{errors.phone}</div>}
@@ -400,6 +423,7 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                 type='button'
                 className='btn btn-animation btn-md fw-bold'
                 onClick={handleClose}
+                disabled={isSubmitting}
               >
                 Close
               </button>
@@ -407,8 +431,16 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({ isOpen, onClose, addr
                 type='button'
                 className='btn theme-bg-color btn-md fw-bold text-light'
                 onClick={handleSubmit}
+                disabled={isSubmitting}
               >
-                Save changes
+                {isSubmitting ? (
+                  <>
+                    <span className='spinner-border spinner-border-sm me-2' role='status' />
+                    Saving...
+                  </>
+                ) : (
+                  'Save changes'
+                )}
               </button>
             </div>
           </form>

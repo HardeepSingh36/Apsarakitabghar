@@ -4,6 +4,7 @@ import {
   fetchAddresses,
   createAddress,
   updateAddressAsync,
+  setDefaultAddressAsync,
   setSelectedAddress,
   clearError,
   type Address,
@@ -11,7 +12,7 @@ import {
 import type { RootState } from '@/app/store';
 import AddAddressModal from '@/components/dashboard/AddAddressModal';
 import { useState, useEffect } from 'react';
-import { Edit } from 'react-feather';
+import { Edit, Loader } from 'react-feather';
 import { IMAGE_BASE_URL } from '@/constants';
 import toast from 'react-hot-toast';
 import PaymentOptions from '@/components/checkout/PaymentOptions';
@@ -28,6 +29,7 @@ const Checkout = () => {
   const { addresses, selectedAddressId, loading, error } = useAppSelector(
     (state: RootState) => state.user
   );
+  const operationLoading = useAppSelector((state: RootState) => state.user.operationLoading || {});
 
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
   const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
@@ -55,7 +57,14 @@ const Checkout = () => {
   const total = subtotal - coupon;
 
   const handleAddressSelect = (id: string) => {
+    // Optimistically update selection locally
     dispatch(setSelectedAddress(id));
+    // Update backend to mark default address
+    dispatch(setDefaultAddressAsync(id))
+      .unwrap()
+      .catch((err: any) => {
+        toast.error(err || 'Failed to set default address');
+      });
   };
 
   const handleAddAddress = async (newAddress: Address) => {
@@ -190,7 +199,7 @@ const Checkout = () => {
                         <div className='checkout-detail'>
                           {loading ? (
                             <div className='text-center'>
-                              <div className='spinner-border text-primary' role='status'>
+                              <div className='spinner-border text-emerald-600' role='status'>
                                 <span className='visually-hidden'>Loading...</span>
                               </div>
                               <p className='mt-2'>Loading addresses...</p>
@@ -215,16 +224,25 @@ const Checkout = () => {
                                     onClick={() => handleAddressSelect(address.id)}
                                   >
                                     <div>
-                                      <div className='form-check'>
-                                        <input
-                                          className='form-check-input'
-                                          type='radio'
-                                          name='address'
-                                          id={`address-${address.id}`}
-                                          checked={selectedAddressId === address.id}
-                                          onChange={() => handleAddressSelect(address.id)}
-                                        />
-                                      </div>
+                                      {operationLoading[`set-default-${address.id}`] ? (
+                                        <Loader className='w-4 h-4 animate-spin text-emerald-600' />
+                                      ) : (
+                                        <div className='form-check'>
+                                          <div className='flex items-center gap-2'>
+                                            <input
+                                              className='form-check-input'
+                                              type='radio'
+                                              name='address'
+                                              id={`address-${address.id}`}
+                                              checked={selectedAddressId === address.id}
+                                              onChange={() => handleAddressSelect(address.id)}
+                                              disabled={
+                                                operationLoading[`set-default-${address.id}`]
+                                              }
+                                            />
+                                          </div>
+                                        </div>
+                                      )}
 
                                       <ul className='delivery-address-detail'>
                                         <li>
