@@ -30,6 +30,14 @@ const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
   const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [sliderSettings, setSliderSettings] = useState<any>({
+    ...baseSliderSettings,
+    slidesToShow: getSlidesToShow(windowWidth),
+    centerMode: false,
+    centerPadding: '0px',
+    infinite: false,
+  });
+
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
@@ -70,10 +78,24 @@ const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
     fetchRelatedBooks();
   }, [bookId]);
 
-  const sliderSettings = {
-    ...baseSliderSettings,
-    slidesToShow: getSlidesToShow(windowWidth),
-  };
+  // recompute slider settings when windowWidth or relatedBooks change
+  useEffect(() => {
+    const defaultSlides = getSlidesToShow(windowWidth);
+
+    const slidesToShow = defaultSlides;
+
+    // Center only when there are MORE items than default visible slots (i.e., meaningful to center)
+    const shouldCenter = relatedBooks.length > defaultSlides;
+
+    setSliderSettings({
+      ...baseSliderSettings,
+      slidesToShow,
+      centerMode: shouldCenter,
+      centerPadding: shouldCenter ? '40px' : '0px',
+      // only infinite when we have enough items to loop nicely
+      infinite: shouldCenter,
+    });
+  }, [windowWidth, relatedBooks]);
 
   // Don't render if no bookId provided
   if (!bookId) {
@@ -111,6 +133,7 @@ const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
                     product={product}
                     idx={idx}
                     showOptions={true}
+                    showAddToCart={true}
                     className='!bg-secondary p-2 !block'
                   />
                 ))}

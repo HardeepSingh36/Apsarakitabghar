@@ -17,6 +17,7 @@ interface AddProductBoxProps {
   product: Book | BookFlag;
   idx: number;
   showOptions?: boolean;
+  showAddToCart?: boolean;
   removeButton?: boolean;
   className?: string;
 }
@@ -27,6 +28,7 @@ const AddProductBox = ({
   // showOptions = false,
   removeButton = false,
   className = '',
+  showAddToCart = false,
 }: AddProductBoxProps & { isLoading?: boolean }) => {
   const dispatch = useAppDispatch();
   const { currency } = useCurrency();
@@ -188,7 +190,11 @@ const AddProductBox = ({
             {'  '}
             <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
           </h6>
-          <div className='add-to-cart-box bg-white hidden md:block !mt-auto'>
+          <div
+            className={`add-to-cart-box bg-white ${
+              showAddToCart ? '' : 'hidden'
+            } md:block !mt-2 md:!mt-0`}
+          >
             {cartItem ? (
               <Link
                 to={'/cart'}
