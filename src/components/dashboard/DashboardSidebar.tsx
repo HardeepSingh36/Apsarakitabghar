@@ -199,94 +199,104 @@ const DashboardSidebar = ({ show, onClose }: DashboardSidebarProps) => {
             <button
               className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`}
               id='pills-dashboard-tab'
-              data-bs-toggle='pill'
-              data-bs-target='#pills-dashboard'
               type='button'
-              onClick={() => handleTabChange('dashboard')}
+              onClick={() => {
+                handleTabChange('dashboard');
+                navigate('/dashboard?tab=dashboard');
+              }}
             >
-              <Home size={16} className='me-2' /> DashBoard
+              <Home size={16} className='me-2' /> Dashboard
             </button>
           </li>
+
           <li className='nav-item' role='presentation'>
             <button
               className={`nav-link ${activeTab === 'orders' ? 'active' : ''}`}
               id='pills-order-tab'
-              data-bs-toggle='pill'
-              data-bs-target='#pills-order'
               type='button'
-              onClick={() => handleTabChange('orders')}
+              onClick={() => {
+                handleTabChange('orders');
+                navigate('/dashboard?tab=orders');
+              }}
             >
-              <ShoppingBag size={16} className='me-2' /> Order
+              <ShoppingBag size={16} className='me-2' /> Orders
             </button>
           </li>
+
           <li className='nav-item' role='presentation'>
             <button
               className={`nav-link ${activeTab === 'wishlist' ? 'active' : ''}`}
               id='pills-wishlist-tab'
-              data-bs-toggle='pill'
-              data-bs-target='#pills-wishlist'
               type='button'
-              onClick={() => handleTabChange('wishlist')}
+              onClick={() => {
+                handleTabChange('wishlist');
+                navigate('/dashboard?tab=wishlist');
+              }}
             >
               <Heart size={16} className='me-2' /> Wishlist
             </button>
           </li>
+
           <li className='nav-item' role='presentation'>
             <button
-              className='nav-link'
+              className={`nav-link ${activeTab === 'book-queries' ? 'active' : ''}`}
               id='pills-book-queries-tab'
-              data-bs-toggle='pill'
-              data-bs-target='#pills-book-queries'
               type='button'
-              onClick={onClose}
+              onClick={() => {
+                handleTabChange('book-queries');
+                navigate('/dashboard?tab=book-queries');
+              }}
             >
               <Book size={16} className='me-2' /> My Book Requests
             </button>
           </li>
+
           <li className='nav-item' role='presentation'>
             <button
-              className='nav-link'
+              className={`nav-link ${activeTab === 'support' ? 'active' : ''}`}
               id='pills-support-tab'
-              data-bs-toggle='pill'
-              data-bs-target='#pills-support'
               type='button'
-              role='tab'
-              onClick={onClose}
+              onClick={() => {
+                handleTabChange('support');
+                navigate('/dashboard?tab=support');
+              }}
             >
               <HelpCircle size={16} className='me-2' /> Support
             </button>
           </li>
+
           <li className='nav-item' role='presentation'>
             <button
-              className='nav-link'
+              className={`nav-link ${activeTab === 'address' ? 'active' : ''}`}
               id='pills-address-tab'
-              data-bs-toggle='pill'
-              data-bs-target='#pills-address'
               type='button'
-              role='tab'
-              onClick={onClose}
+              onClick={() => {
+                handleTabChange('address');
+                navigate('/dashboard?tab=address');
+              }}
             >
               <MapPin size={16} className='me-2' /> Address
             </button>
           </li>
+
           <li className='nav-item' role='presentation'>
             <button
-              className='nav-link'
+              className={`nav-link ${activeTab === 'profile' ? 'active' : ''}`}
               id='pills-profile-tab'
-              data-bs-toggle='pill'
-              data-bs-target='#pills-profile'
               type='button'
-              role='tab'
-              onClick={onClose}
+              onClick={() => {
+                handleTabChange('profile');
+                navigate('/dashboard?tab=profile');
+              }}
             >
               <User size={16} className='me-2' /> Profile
             </button>
           </li>
+
           <li className='nav-item' role='presentation'>
             <button
-              className='nav-link'
+              className='nav-link text-danger'
               type='button'
-              role='tab'
               onClick={() => setLogoutModalOpen(true)}
             >
               <LogOut size={16} className='me-2' /> Logout
