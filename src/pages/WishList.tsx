@@ -90,17 +90,7 @@ const WishList = () => {
         <div className='container-fluid-lg'>
           <div className='text-center mb-6'>
             <h2 className='text-2xl font-bold text-gray-800'>My Wishlist</h2>
-            <p className='text-gray-600'>
-              {wishlistItems.length} {wishlistItems.length === 1 ? 'book' : 'books'} saved
-            </p>
           </div>
-
-          {loading && wishlistItems.length > 0 && (
-            <div className='text-center mb-4'>
-              <Loader className='w-6 h-6 animate-spin text-emerald-600 mx-auto' />
-              <p className='text-sm text-gray-500 mt-2'>Updating wishlist...</p>
-            </div>
-          )}
 
           <div className='grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
             {wishlistItems.length > 0 ? (

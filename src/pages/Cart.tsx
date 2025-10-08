@@ -454,7 +454,7 @@ const Cart = () => {
                 </div>
 
                 <div className='summery-contain'>
-                  <div className='coupon-cart'>
+                  {/* <div className='coupon-cart'>
                     <h6 className='text-content mb-2'>Coupon Apply</h6>
                     <div className='mb-3 coupon-box input-group'>
                       <input
@@ -465,7 +465,7 @@ const Cart = () => {
                       />
                       <button className='btn-apply'>Apply</button>
                     </div>
-                  </div>
+                  </div> */}
                   <ul>
                     <li>
                       <h4>
