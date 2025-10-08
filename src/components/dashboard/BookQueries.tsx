@@ -98,29 +98,33 @@ const BookQueries = () => {
   };
 
   return (
-    <div className='dashboard-right-sidebar'>
-      <div className='dashboard-main'>
-        <div className='dashboard-main'>
-          <div className='d-flex align-items-center justify-content-between mb-4'>
-            <div className='title'>
-              <h2>My Book Publication Requests</h2>
-              <span className='title-leaf'>
-                <svg className='icon-width bg-gray'>
-                  <use xlinkHref='/assets/svg/leaf.svg#leaf'></use>
-                </svg>
-              </span>
-            </div>
-            <button className='btn btn-animation btn-sm' onClick={fetchQueries} disabled={loading}>
-              <RefreshCw className={`me-2 ${loading ? 'animate-spin' : ''}`} size={16} />
-              Refresh
-            </button>
+    <div className='dashboard-book-queries'>
+      <div className='dashboard-bg'>
+        <div className='title title-flex'>
+          <div>
+            <h2>My Book Publication Requests</h2>
+            <span className='title-leaf'>
+              <svg className='icon-width bg-gray'>
+                <use xlinkHref='/assets/svg/leaf.svg#leaf'></use>
+              </svg>
+            </span>
           </div>
+          <button
+            className='btn btn-theme rounded-3 text-white'
+            onClick={fetchQueries}
+            disabled={loading}
+          >
+            <RefreshCw className={`me-2 ${loading ? 'animate-spin' : ''}`} size={16} />
+            Refresh
+          </button>
+        </div>
 
-          {/* Filters */}
-          <div className='row mb-4'>
-            <div className='col-md-4'>
+        {/* Filters */}
+        <div className='filter-options mb-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
+            <div className='custom-select'>
               <select
-                className='form-select'
+                className='form-select bg-white border rounded-lg py-2 px-3 w-full focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500'
                 value={filters.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
               >
@@ -132,9 +136,9 @@ const BookQueries = () => {
                 <option value='published'>Published</option>
               </select>
             </div>
-            <div className='col-md-4'>
+            <div className='custom-select'>
               <select
-                className='form-select'
+                className='form-select bg-white border rounded-lg py-2 px-3 w-full focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500'
                 value={filters.category_id}
                 onChange={(e) => handleFilterChange('category_id', e.target.value)}
               >
@@ -155,9 +159,9 @@ const BookQueries = () => {
                 <option value='14'>Other</option>
               </select>
             </div>
-            <div className='col-md-4'>
+            <div className='custom-select'>
               <select
-                className='form-select'
+                className='form-select bg-white border rounded-lg py-2 px-3 w-full focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500'
                 value={filters.limit}
                 onChange={(e) => handleFilterChange('limit', parseInt(e.target.value))}
               >
@@ -169,162 +173,188 @@ const BookQueries = () => {
           </div>
 
           {loading ? (
-            <div className='text-center py-5'>
-              <div className='spinner-border text-primary' role='status'>
+            <div className='text-center py-8'>
+              <div className='spinner-border text-emerald-600' role='status'>
                 <span className='visually-hidden'>Loading...</span>
               </div>
-              <p className='mt-3 text-muted'>Loading your book queries...</p>
+              <p className='mt-3 text-gray-600'>Loading your book queries...</p>
             </div>
           ) : queries.length > 0 ? (
             <>
-              <div className='row'>
+              <div className='grid gap-4'>
                 {queries.map((query) => (
-                  <div key={query.id} className='col-12 mb-3'>
-                    <div className='card border-0 shadow-sm'>
-                      <div className='card-body'>
-                        <div className='row align-items-center'>
-                          <div className='col-md-8'>
-                            <div className='d-flex align-items-start'>
-                              <div className='me-3'>
-                                <span className='fs-3'>{getStatusIcon(query.status)}</span>
-                              </div>
-                              <div className='flex-grow-1'>
-                                <h5 className='mb-1'>
-                                  <Book className='me-2' size={18} />
-                                  {query.book_title}
-                                </h5>
-                                <p className='text-muted mb-2'>
-                                  <User className='me-1' size={14} />
-                                  {query.anonymous ? 'Anonymous Submission' : query.author_name}
-                                </p>
-                                <div className='d-flex flex-wrap gap-2'>
-                                  <small className='badge bg-light text-dark'>
-                                    📚 {query.category_name || 'No Category'}
-                                  </small>
-                                  <small className='badge bg-light text-dark'>
-                                    🌐{' '}
-                                    {query.book_language === 'en'
-                                      ? 'English'
-                                      : query.book_language === 'hi'
-                                      ? 'Hindi'
-                                      : query.book_language === 'pa'
-                                      ? 'Punjabi'
-                                      : 'Other'}
-                                  </small>
-                                  {query.genre_name && (
-                                    <small className='badge bg-light text-dark'>
-                                      🎭 {query.genre_name}
-                                    </small>
-                                  )}
-                                </div>
-                                {query.book_description && (
-                                  <p className='mt-2 mb-0 text-muted small'>
-                                    {query.book_description.length > 100
-                                      ? `${query.book_description.substring(0, 100)}...`
-                                      : query.book_description}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className='col-md-4 text-md-end'>
-                            <div className='mb-2'>
-                              <span className={`badge ${getStatusBadge(query.status)}`}>
-                                {query.status.replace('_', ' ').toUpperCase()}
-                              </span>
-                            </div>
-                            <small className='text-muted d-block'>
-                              <Calendar className='me-1' size={12} />
-                              {formatDate(query.created_at)}
-                            </small>
-                            {query.reviewed_at && (
-                              <small className='text-muted d-block mt-1'>
-                                📝 Reviewed: {formatDate(query.reviewed_at)}
-                              </small>
-                            )}
+                  <div
+                    key={query.id}
+                    className='bg-white rounded-lg shadow-sm p-4 transition-all hover:shadow-md'
+                  >
+                    <div className='flex flex-col md:flex-row md:items-start gap-4'>
+                      <div className='flex-grow space-y-3'>
+                        <div className='flex items-start gap-3'>
+                          <span className='text-2xl'>{getStatusIcon(query.status)}</span>
+                          <div className='flex-grow'>
+                            <h5 className='text-lg font-semibold flex items-center gap-2 text-gray-800'>
+                              <Book size={18} className='text-emerald-600' />
+                              {query.book_title}
+                            </h5>
+                            <p className='text-gray-600 flex items-center gap-1'>
+                              <User size={14} className='text-gray-500' />
+                              {query.anonymous ? 'Anonymous Submission' : query.author_name}
+                            </p>
                           </div>
                         </div>
 
-                        {query.admin_response && (
-                          <div className='mt-3 pt-3 border-top'>
-                            <h6 className='text-primary mb-2'>
-                              <i className='fa-solid fa-reply me-2'></i>
-                              Admin Response:
-                            </h6>
-                            <p className='mb-0 text-muted'>{query.admin_response}</p>
-                          </div>
-                        )}
+                        <div className='flex flex-wrap gap-2'>
+                          <span className='px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-700'>
+                            📚 {query.category_name || 'No Category'}
+                          </span>
+                          <span className='px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-700'>
+                            🌐{' '}
+                            {query.book_language === 'en'
+                              ? 'English'
+                              : query.book_language === 'hi'
+                              ? 'Hindi'
+                              : query.book_language === 'pa'
+                              ? 'Punjabi'
+                              : 'Other'}
+                          </span>
+                          {query.genre_name && (
+                            <span className='px-3 py-1 text-sm rounded-full bg-gray-100 text-gray-700'>
+                              🎭 {query.genre_name}
+                            </span>
+                          )}
+                        </div>
 
-                        {query.notes && (
-                          <div className='mt-2 pt-2 border-top'>
-                            <small className='text-muted'>
-                              <strong>Your Notes:</strong> {query.notes}
-                            </small>
-                          </div>
+                        {query.book_description && (
+                          <p className='text-gray-600 text-sm'>
+                            {query.book_description.length > 100
+                              ? `${query.book_description.substring(0, 100)}...`
+                              : query.book_description}
+                          </p>
                         )}
                       </div>
+
+                      <div className='md:text-right space-y-2'>
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-sm ${getStatusBadge(
+                            query.status
+                          )}`}
+                        >
+                          {query.status.replace('_', ' ').toUpperCase()}
+                        </span>
+                        <div className='text-gray-500 text-sm'>
+                          <div className='flex items-center gap-1 md:justify-end'>
+                            <Calendar size={12} />
+                            {formatDate(query.created_at)}
+                          </div>
+                          {query.reviewed_at && (
+                            <div className='flex items-center gap-1 md:justify-end mt-1'>
+                              📝 Reviewed: {formatDate(query.reviewed_at)}
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
+
+                    {query.admin_response && (
+                      <div className='mt-4 pt-4 border-t border-gray-200'>
+                        <h6 className='text-emerald-600 font-medium mb-2 flex items-center gap-2'>
+                          <i className='fa-solid fa-reply'></i>
+                          Admin Response:
+                        </h6>
+                        <p className='text-gray-600'>{query.admin_response}</p>
+                      </div>
+                    )}
+
+                    {query.notes && (
+                      <div className='mt-3 pt-3 border-t border-gray-200'>
+                        <p className='text-gray-600 text-sm'>
+                          <strong>Your Notes:</strong> {query.notes}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
 
               {/* Pagination */}
               {pagination.total_pages > 1 && (
-                <nav aria-label='Book queries pagination'>
-                  <ul className='pagination justify-content-center mt-4'>
-                    <li className={`page-item ${!pagination.has_prev ? 'disabled' : ''}`}>
-                      <button
-                        className='page-link'
-                        onClick={() => handlePageChange(pagination.current_page - 1)}
-                        disabled={!pagination.has_prev}
-                      >
-                        Previous
-                      </button>
-                    </li>
-
-                    {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map((page) => (
-                      <li
-                        key={page}
-                        className={`page-item ${page === pagination.current_page ? 'active' : ''}`}
-                      >
-                        <button className='page-link' onClick={() => handlePageChange(page)}>
-                          {page}
+                <div className='flex flex-col items-center gap-4 mt-6'>
+                  <nav className='flex justify-center' aria-label='Book queries pagination'>
+                    <ul className='flex gap-2'>
+                      <li>
+                        <button
+                          className={`px-4 py-2 rounded-lg border ${
+                            !pagination.has_prev
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : 'bg-white text-gray-700 hover:bg-gray-50'
+                          }`}
+                          onClick={() => handlePageChange(pagination.current_page - 1)}
+                          disabled={!pagination.has_prev}
+                        >
+                          Previous
                         </button>
                       </li>
-                    ))}
 
-                    <li className={`page-item ${!pagination.has_next ? 'disabled' : ''}`}>
-                      <button
-                        className='page-link'
-                        onClick={() => handlePageChange(pagination.current_page + 1)}
-                        disabled={!pagination.has_next}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
+                      {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map(
+                        (page) => (
+                          <li key={page}>
+                            <button
+                              className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                                page === pagination.current_page
+                                  ? 'bg-emerald-600 text-white'
+                                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                              }`}
+                              onClick={() => handlePageChange(page)}
+                            >
+                              {page}
+                            </button>
+                          </li>
+                        )
+                      )}
+
+                      <li>
+                        <button
+                          className={`px-4 py-2 rounded-lg border ${
+                            !pagination.has_next
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : 'bg-white text-gray-700 hover:bg-gray-50'
+                          }`}
+                          onClick={() => handlePageChange(pagination.current_page + 1)}
+                          disabled={!pagination.has_next}
+                        >
+                          Next
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+
+                  {/* Summary */}
+                  <div className='text-gray-600 text-sm'>
+                    Showing {(pagination.current_page - 1) * pagination.per_page + 1} to{' '}
+                    {Math.min(
+                      pagination.current_page * pagination.per_page,
+                      pagination.total_items
+                    )}{' '}
+                    of {pagination.total_items} book queries
+                  </div>
+                </div>
               )}
-
-              {/* Summary */}
-              <div className='mt-4 text-center text-muted'>
-                <small>
-                  Showing {(pagination.current_page - 1) * pagination.per_page + 1} to{' '}
-                  {Math.min(pagination.current_page * pagination.per_page, pagination.total_items)}{' '}
-                  of {pagination.total_items} book queries
-                </small>
-              </div>
             </>
           ) : (
-            <div className='text-center py-5'>
-              <div className='mb-4'>
-                <Book size={64} className='text-muted mx-auto' />
+            <div className='text-center py-12'>
+              <div className='mb-6'>
+                <div className='w-16 h-16 mx-auto text-gray-400'>
+                  <Book size={64} className='mx-auto' />
+                </div>
               </div>
-              <h4 className='text-muted'>No Book Queries Found</h4>
-              <p className='text-muted mb-4'>
+              <h4 className='text-xl font-semibold text-gray-700 mb-2'>No Book Queries Found</h4>
+              <p className='text-gray-600 mb-6'>
                 You haven't submitted any book publication requests yet.
               </p>
-              <a href='/publish-book' className='btn btn-animation'>
+              <a
+                href='/publish-book'
+                className='inline-block bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors'
+              >
                 <i className='fa-solid fa-plus me-2'></i>
                 Submit Your First Book
               </a>
