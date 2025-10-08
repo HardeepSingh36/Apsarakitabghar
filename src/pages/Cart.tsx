@@ -72,7 +72,7 @@ const Cart = () => {
                   )}
                 </button>
               </div>
-              <div className='cart-table'>
+              <div className='cart-table overflow-x-scroll' style={{ scrollbarWidth: 'none' }}>
                 {cartItems.length === 0 ? (
                   <div className='flex flex-col items-center py-5'>
                     {/* <img

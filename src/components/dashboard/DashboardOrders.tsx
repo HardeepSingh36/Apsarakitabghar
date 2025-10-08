@@ -96,11 +96,11 @@ const DashboardOrders: React.FC = () => {
 
       <div className='order-contain'>
         {loading ? (
-          <div className='text-center py-5'>
-            <div className='spinner-border text-primary' role='status'>
+          <div className='text-center py-10 w-full'>
+            <div className='spinner-border text-emerald-600' role='status'>
               <span className='visually-hidden'>Loading...</span>
             </div>
-            <p className='mt-2'>Loading orders...</p>
+            <p className='mt-3 text-gray-600'>Loading orders...</p>
           </div>
         ) : orders.length === 0 ? (
           <div className='text-center py-5'>
