@@ -4,7 +4,6 @@ import AddProductBox from '@/components/general/AddProductBox';
 import { fetchWishlistAsync } from '@/features/wishlist/wishlistSlice';
 import { useEffect } from 'react';
 import { useAuthDialog } from '@/context/AuthDialogContext';
-import { Loader } from 'react-feather';
 import ProductSkeleton from '@/components/ProductSkeleton';
 
 const WishList = () => {
@@ -56,7 +55,7 @@ const WishList = () => {
               </div>
               <button
                 onClick={() => dispatch(fetchWishlistAsync())}
-                className='btn bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition'
+                className='btn !bg-[#e42f22] text-white px-6 py-2 rounded-lg hover:!bg-[#e95520] transition'
               >
                 Try Again
               </button>
@@ -124,7 +123,7 @@ const WishList = () => {
                 </p>
                 <a
                   href='/books'
-                  className='inline-block bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition'
+                  className='inline-block !bg-[#e42f22] text-white px-6 py-3 rounded-lg hover:!bg-[#e95520] transition'
                 >
                   Browse Books
                 </a>

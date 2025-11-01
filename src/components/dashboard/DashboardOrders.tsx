@@ -98,7 +98,7 @@ const DashboardOrders: React.FC = () => {
       <div className='order-contain'>
         {loading ? (
           <div className='text-center py-10 w-full'>
-            <div className='spinner-border text-emerald-600' role='status'>
+            <div className='spinner-border !text-[#e42f22]' role='status'>
               <span className='visually-hidden'>Loading...</span>
             </div>
             <p className='mt-3 text-gray-600'>Loading orders...</p>
@@ -107,7 +107,7 @@ const DashboardOrders: React.FC = () => {
           <div className='text-center py-5 w-full'>
             <h4>No Orders Found</h4>
             <p className='text-muted'>You haven't placed any orders yet.</p>
-            <Link to='/books' className='btn !bg-[#0da487] text-white max-w-sm mx-auto'>
+            <Link to='/books' className='btn !bg-[#e42f22] text-white max-w-sm mx-auto'>
               Start Shopping
             </Link>
           </div>

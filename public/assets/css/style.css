@@ -1,29 +1,29 @@
 .theme-color-1 {
-  --theme-color: #d99f46;
-  --theme-color-rgb: 217, 159, 70;
+  --theme-color: #e42f22;
+  --theme-color-rgb: 228, 47, 34;
 }
 .theme-color-2 {
-  --theme-color: #0baf9a;
-  --theme-color-rgb: 11, 175, 154;
+  --theme-color: #e95520;
+  --theme-color-rgb: 233, 85, 32;
 }
 .theme-color-3 {
-  --theme-color: #239698;
-  --theme-color-rgb: 35, 150, 152;
+  --theme-color: #e42f22;
+  --theme-color-rgb: 228, 47, 34;
 }
 .theme-color-4 {
-  --theme-color: #6262a6;
-  --theme-color-rgb: 35, 150, 152;
+  --theme-color: #e95520;
+  --theme-color-rgb: 233, 85, 32;
 }
 .theme-color-5 {
-  --theme-color: #417394;
-  --theme-color-rgb: 65, 115, 148;
+  --theme-color: #e42f22;
+  --theme-color-rgb: 228, 47, 34;
 }
 .theme-color-6 {
-  --theme-color: #5f84a0;
+  --theme-color: #e95520;
 }
 .theme-color-7 {
-  --theme-color: #7b4397;
-  --theme-color2: #dc2430;
+  --theme-color: #e42f22;
+  --theme-color2: #e95520;
 }
 button,
 hr,
@@ -9680,10 +9680,10 @@ template {
   opacity: 0.75;
 }
 :root {
-  --theme-color: #0da487;
-  --theme-color-rgb: 13, 164, 135;
-  --theme-color1: #0e947a;
-  --theme-color1-rgb: 14, 148, 122;
+  --theme-color: #e42f22;
+  --theme-color-rgb: 228, 47, 34;
+  --theme-color1: #e95520;
+  --theme-color1-rgb: 233, 85, 32;
   --theme-color2: linear-gradient(90.56deg, var(--theme-color1) 8.46%, var(--theme-color) 62.97%);
 }
 @-webkit-keyframes scaleUpDown {
@@ -18906,7 +18906,7 @@ header .top-nav .navbar-top .rightside-box .right-side-menu .right-side .header-
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  background-color: #ff7272;
+  background-color: #e95520;
   font-size: 12px;
   padding: 0;
   border-radius: 2px;
@@ -25233,7 +25233,7 @@ header .offcanvas-backdrop {
   content: unset !important;
 }
 .menu-label {
-  background-color: #ff7272;
+  background-color: #e95520;
   font-size: 12px;
   border-radius: 2px;
   padding: 3px 5px;
@@ -25256,7 +25256,7 @@ body.rtl .menu-label {
   top: 50%;
   -webkit-transform: translateY(-50%) rotate(45deg);
   transform: translateY(-50%) rotate(45deg);
-  background-color: #ff7272;
+  background-color: #e95520;
   left: -5px;
   width: 12px;
   height: 12px;
@@ -26948,7 +26948,6 @@ body.rtl .menu-label {
   height: 2px;
   bottom: 0;
   left: 0;
-  
 }
 [dir='rtl'] .top-selling-box .top-selling-title::after {
   left: unset;
@@ -38624,7 +38623,7 @@ body.rtl .menu-label {
   color: var(--theme-color);
 }
 .product-table tbody tr td.edit-delete .feather.delete {
-  color: #ff7272;
+  color: #e95520;
   margin-left: 10px;
 }
 [dir='rtl'] .product-table tbody tr td.edit-delete .feather.delete {
@@ -38674,7 +38673,7 @@ body.rtl .menu-label {
 }
 .order-table tbody tr td label.danger {
   background-color: rgba(255, 114, 114, 0.1);
-  color: #ff7272;
+  color: #e95520;
 }
 .order-table tbody tr td:first-child {
   font-weight: 600;
@@ -40859,7 +40858,7 @@ body.rtl .question-answer li .question-box .link-dislike-box {
   -webkit-transform: translateY(-50%) rotate(45deg);
   transform: translateY(-50%) rotate(45deg);
   left: 0;
-  background-color: #ff7272;
+  background-color: #e95520;
   width: 100%;
   height: 1px;
   cursor: default;
@@ -40927,7 +40926,7 @@ body.rtl .question-answer li .question-box .link-dislike-box {
   border-bottom: 1px solid #ececec;
 }
 .product-section .right-box-contain .buy-now-button button {
-  background-color: #ff7272;
+  background-color: #e95520;
 }
 .product-section .right-box-contain .buy-box {
   display: -webkit-box;
@@ -41285,7 +41284,7 @@ body.rtl .question-answer li .question-box .link-dislike-box {
   .left-progressbar
   .progress.danger-progress
   .progress-bar {
-  background-color: #ff7272;
+  background-color: #e95520;
 }
 .product-section
   .right-box-contain
@@ -42835,7 +42834,7 @@ body.rtl
   -webkit-transform: translateY(-50%) rotate(45deg);
   transform: translateY(-50%) rotate(45deg);
   left: 0;
-  background-color: #ff7272;
+  background-color: #e95520;
   width: 100%;
   height: 1px;
   cursor: default;
@@ -43229,7 +43228,7 @@ body.rtl
 }
 .product-label-group .product-label-tag {
   padding: 5px 13px;
-  background-color: #ff7272;
+  background-color: #e95520;
   font-size: 14px;
   color: #fff;
   font-weight: 500;
@@ -43246,7 +43245,7 @@ body.rtl
   height: 15px;
   top: 0;
   right: -15px;
-  border-bottom: solid 15px #ff7272;
+  border-bottom: solid 15px #e95520;
   border-left: solid 15px rgba(0, 0, 0, 0);
   border-right: solid 15px rgba(0, 0, 0, 0);
   -webkit-transform: rotate(180deg);
@@ -43260,7 +43259,7 @@ body.rtl
   height: 15px;
   top: 16px;
   right: -15px;
-  border-bottom: solid 15px #ff7272;
+  border-bottom: solid 15px #e95520;
   border-left: solid 15px rgba(0, 0, 0, 0);
   border-right: solid 15px rgba(0, 0, 0, 0);
   -webkit-transform: rotate(0);

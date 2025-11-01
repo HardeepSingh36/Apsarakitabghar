@@ -51,6 +51,7 @@ const Cart = () => {
                       toast.success('Cart cleared successfully', {
                         duration: 3000,
                       });
+                      // eslint-disable-next-line
                     } catch (error: any) {
                       toast.error(error || 'Failed to clear cart. Please try again.', {
                         duration: 4000,
@@ -184,6 +185,7 @@ const Cart = () => {
                                                   toast.success('Quantity updated', {
                                                     duration: 2000,
                                                   });
+                                                  // eslint-disable-next-line
                                                 } catch (error: any) {
                                                   console.error('Failed to update cart:', error);
                                                   toast.error(
@@ -236,6 +238,7 @@ const Cart = () => {
                                                   toast.success('Quantity updated', {
                                                     duration: 2000,
                                                   });
+                                                  // eslint-disable-next-line
                                                 } catch (error: any) {
                                                   console.error('Failed to update cart:', error);
                                                   toast.error(
@@ -312,6 +315,7 @@ const Cart = () => {
                                             ).unwrap();
                                             dispatch(fetchCartList());
                                             toast.success('Quantity updated', { duration: 2000 });
+                                            // eslint-disable-next-line
                                           } catch (error: any) {
                                             console.error('Failed to update cart:', error);
                                             toast.error(error || 'Failed to update quantity', {
@@ -364,6 +368,7 @@ const Cart = () => {
                                           ).unwrap();
                                           dispatch(fetchCartList());
                                           toast.success('Quantity updated', { duration: 2000 });
+                                          // eslint-disable-next-line
                                         } catch (error: any) {
                                           console.error('Failed to update cart:', error);
                                           toast.error(error || 'Failed to update quantity', {
@@ -418,6 +423,7 @@ const Cart = () => {
                                       toast.success(`"${item.title}" removed from cart`, {
                                         duration: 3000,
                                       });
+                                      // eslint-disable-next-line
                                     } catch (error: any) {
                                       console.error('Failed to remove item:', error);
                                       toast.error(error || 'Failed to remove item from cart', {

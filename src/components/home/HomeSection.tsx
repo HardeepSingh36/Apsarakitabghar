@@ -8,8 +8,12 @@ const HomeSection = () => {
           <div className='col-12'>
             <div className='slider-animate skeleton-banner-xl'>
               <div>
-                <div className='!h-60 md:!h-80 bg-gradient-to-br from-teal-300 to-teal-500'>
-                  <img src='assets/images/book/banner/banner.jpg' alt='banner' className='w-full object-cover h-full'/>
+                <div className='!h-60 md:!h-80 !bg-gradient-to-br !from-[#e95520] !to-[#e42f22]'>
+                  {/* <img
+                    src='assets/images/book/banner/banner.jpg'
+                    alt='banner'
+                    className='w-full object-cover h-full'
+                  /> */}
                   <div></div>
                 </div>
               </div>

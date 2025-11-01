@@ -175,7 +175,7 @@ const AddProductBox = ({
           <h5 className='name !font-medium text-muted !text-sm !line-clamp-2'>
             {'description' in product ? product.description : ''}
           </h5>
-          <h6 className='byers text-base !text-emerald-600'>
+          <h6 className='byers text-base !text-[#e42f22]'>
             <span>By</span>{' '}
             {('author_name' in product ? product.author_name : product.author_display_name) ||
               'Unknown Author'}
@@ -188,7 +188,9 @@ const AddProductBox = ({
               ).toFixed(2)}
             </span>
             {'  '}
-            <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
+            {product.discounted_price && product.discounted_price < product.price && (
+              <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
+            )}
           </h6>
           <div
             className={`add-to-cart-box bg-white ${

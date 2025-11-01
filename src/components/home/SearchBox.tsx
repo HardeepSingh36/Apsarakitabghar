@@ -377,7 +377,7 @@ const SearchBox = () => {
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className={`!text-sm flex-1 md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:bg-teal-600 data-[state=active]:text-primary-foreground data-[state=active]:shadow-emerald transition-all duration-200 px-4`}
+                className={`!text-sm flex-1 md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:!bg-[#e42f22] data-[state=active]:text-primary-foreground data-[state=active]:shadow-emerald transition-all duration-200 px-4`}
               >
                 <TabIcon className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />
                 {tab.label}

@@ -9,7 +9,6 @@ const DashboardHome: React.FC = () => {
   const [userStats, setUserStats] = useState<UserStatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-
   // Fetch user statistics
   const fetchUserStats = async () => {
     try {
@@ -100,7 +99,6 @@ const DashboardHome: React.FC = () => {
         </div>
       </div>
       <div className='row g-4'>
-
         {/* Recent Order Activity */}
         {userStats?.data.recent_activity?.recent_order && (
           <div className='col-xxl-6'>
@@ -145,7 +143,7 @@ const DashboardHome: React.FC = () => {
               Address Book{' '}
               <button
                 type='button'
-                className='!text-[15px] text-emerald-600'
+                className='!text-[15px] !text-[#e42f22]'
                 onClick={openEditModal}
               >
                 Edit
@@ -159,7 +157,7 @@ const DashboardHome: React.FC = () => {
                 <h6 className='text-content'>You have not set a default billing address.</h6>
                 <button
                   type='button'
-                  className='!text-[15px] text-emerald-600'
+                  className='!text-[15px] !text-[#e42f22]'
                   onClick={openEditModal}
                 >
                   Edit Address
@@ -172,7 +170,7 @@ const DashboardHome: React.FC = () => {
                 <h6 className='text-content'>You have not set a default shipping address.</h6>
                 <button
                   type='button'
-                  className='!text-[15px] text-emerald-600'
+                  className='!text-[15px] !text-[#e42f22]'
                   onClick={openEditModal}
                 >
                   Edit Address

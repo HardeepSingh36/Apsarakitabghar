@@ -175,6 +175,7 @@ const BookDetail = () => {
         duration: 2000,
       });
       navigate('/cart', { state: { isBuyNow: true } });
+      // eslint-disable-next-line
     } catch (error: any) {
       console.error('Failed to add item to cart:', error);
       toast.error(error || 'Failed to add item to cart. Please try again.', {
@@ -398,7 +399,7 @@ const BookDetail = () => {
                           )}
                         </button>
                         <button
-                          className={`btn btn-md !bg-gradient-to-r !from-red-400 !to-red-500 cart-button mt-2 text-white w-100 ${
+                          className={`btn btn-md !bg-gradient-to-r !from-[#e42f22] !to-[#e95520] cart-button mt-2 text-white w-100 ${
                             isAddingToCart && cartAction === 'buy'
                               ? 'opacity-75 cursor-not-allowed'
                               : ''
@@ -522,24 +523,13 @@ const BookDetail = () => {
                             <p>{book.description || 'No description available.'}</p>
                           </div>
 
-                          <div className='nav-desh'>
-                            <div className='desh-title'>
-                              <h5>About the Book:</h5>
-                            </div>
-                            <p>
-                              Dive into a world of adventure and mystery with "The Lost Tales". This
-                              book takes you on a journey through mystical lands, where every
-                              chapter reveals new secrets and challenges. Follow the protagonist as
-                              they unravel ancient puzzles, encounter magical creatures, and
-                              discover the true meaning of courage and friendship. With vivid
-                              storytelling and unforgettable characters, "The Lost Tales" is a
-                              must-read for anyone who loves epic adventures and heartwarming tales.
-                            </p>
-                          </div>
-
                           <div className='banner-contain nav-desh'>
                             {mainBanner ? (
-                              <a href={mainBanner.url || undefined} target={mainBanner.url ? '_blank' : undefined} rel='noopener noreferrer'>
+                              <a
+                                href={mainBanner.url || undefined}
+                                target={mainBanner.url ? '_blank' : undefined}
+                                rel='noopener noreferrer'
+                              >
                                 <img
                                   src={getBannerImageUrl(mainBanner.image)}
                                   className='bg-img blur-up lazyload'
@@ -553,13 +543,6 @@ const BookDetail = () => {
                                 alt=''
                               />
                             )}
-                            <div className='banner-details p-center banner-b-space w-100 text-center'>
-                              <div>
-                                <h6 className='ls-expanded theme-color mb-sm-3 mb-1'>FEATURED</h6>
-                                <h2>THE LOST TALES</h2>
-                                <p className='mx-auto mt-1'>A Journey Beyond Imagination</p>
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -706,7 +689,11 @@ const BookDetail = () => {
                 <div className='ratio_156 pt-25'>
                   <div className='home-contain'>
                     {sidebarBanner ? (
-                      <a href={sidebarBanner.url || undefined} target={sidebarBanner.url ? '_blank' : undefined} rel='noopener noreferrer'>
+                      <a
+                        href={sidebarBanner.url || undefined}
+                        target={sidebarBanner.url ? '_blank' : undefined}
+                        rel='noopener noreferrer'
+                      >
                         <img
                           src={getBannerImageUrl(sidebarBanner.image)}
                           className='bg-img blur-up lazyload'

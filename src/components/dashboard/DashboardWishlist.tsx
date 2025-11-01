@@ -61,7 +61,7 @@ const DashboardWishlist = () => {
           </div>
           <button
             onClick={() => dispatch(fetchWishlistAsync())}
-            className='btn bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition'
+            className='btn !bg-[#e42f22] text-white px-6 py-2 rounded-lg hover:!bg-[#e95520] transition'
           >
             Try Again
           </button>
@@ -101,7 +101,7 @@ const DashboardWishlist = () => {
 
       {loading && wishlistItems.length > 0 && (
         <div className='text-center mb-4'>
-          <Loader className='w-6 h-6 animate-spin text-emerald-600 mx-auto' />
+          <Loader className='w-6 h-6 animate-spin !text-[#e42f22] mx-auto' />
           <p className='text-sm text-gray-500 mt-2'>Updating wishlist...</p>
         </div>
       )}
@@ -130,7 +130,7 @@ const DashboardWishlist = () => {
             </p>
             <a
               href='/books'
-              className='inline-block bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition'
+              className='inline-block !bg-[#e42f22] text-white px-6 py-3 rounded-lg hover:!bg-[#e95520] transition'
             >
               Browse Books
             </a>
@@ -138,7 +138,13 @@ const DashboardWishlist = () => {
         ) : (
           <div className='grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4 md:gap-4 w-full'>
             {wishlistItems.map((item, idx) => (
-              <AddProductBox key={item.id} product={item} idx={idx} removeButton={true} className='!bg-white !block p-2' />
+              <AddProductBox
+                key={item.id}
+                product={item}
+                idx={idx}
+                removeButton={true}
+                className='!bg-white !block p-2'
+              />
             ))}
           </div>
         )}

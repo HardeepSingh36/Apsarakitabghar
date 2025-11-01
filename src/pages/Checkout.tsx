@@ -187,7 +187,7 @@ const Checkout = () => {
                           target='.nav-item'
                           src='https://cdn.lordicon.com/ggihhudh.json'
                           trigger='loop-on-hover'
-                          colors='primary:#121331,secondary:#646e78,tertiary:#0baf9a'
+                          colors='primary:#e42f22,secondary:#e95520,tertiary:#e95520'
                           className='lord-icon'
                         />
                       </div>
@@ -199,7 +199,7 @@ const Checkout = () => {
                         <div className='checkout-detail'>
                           {loading ? (
                             <div className='text-center'>
-                              <div className='spinner-border text-emerald-600' role='status'>
+                              <div className='spinner-border !text-[#e42f22]' role='status'>
                                 <span className='visually-hidden'>Loading...</span>
                               </div>
                               <p className='mt-2'>Loading addresses...</p>
@@ -225,7 +225,7 @@ const Checkout = () => {
                                   >
                                     <div>
                                       {operationLoading[`set-default-${address.id}`] ? (
-                                        <Loader className='w-4 h-4 animate-spin text-emerald-600' />
+                                        <Loader className='w-4 h-4 animate-spin !text-[#e42f22]' />
                                       ) : (
                                         <div className='form-check'>
                                           <div className='flex items-center gap-2'>
@@ -399,7 +399,7 @@ const Checkout = () => {
                           target='.nav-item'
                           src='https://cdn.lordicon.com/qmcsqnle.json'
                           trigger='loop-on-hover'
-                          colors='primary:#0baf9a,secondary:#0baf9a'
+                          colors='primary:#e42f22,secondary:#e95520,tertiary:#e95520'
                           className='lord-icon'
                         />
                         {/* </lord-icon> */}

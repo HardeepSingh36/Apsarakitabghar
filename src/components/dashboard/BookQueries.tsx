@@ -174,7 +174,7 @@ const BookQueries = () => {
 
           {loading ? (
             <div className='text-center py-8'>
-              <div className='spinner-border text-emerald-600' role='status'>
+              <div className='spinner-border !text-[#e42f22]' role='status'>
                 <span className='visually-hidden'>Loading...</span>
               </div>
               <p className='mt-3 text-gray-600'>Loading your book queries...</p>
@@ -193,7 +193,7 @@ const BookQueries = () => {
                           <span className='text-2xl'>{getStatusIcon(query.status)}</span>
                           <div className='flex-grow'>
                             <h5 className='text-lg font-semibold flex items-center gap-2 text-gray-800'>
-                              <Book size={18} className='text-emerald-600' />
+                              <Book size={18} className='!text-[#e42f22]' />
                               {query.book_title}
                             </h5>
                             <p className='text-gray-600 flex items-center gap-1'>
@@ -257,7 +257,7 @@ const BookQueries = () => {
 
                     {query.admin_response && (
                       <div className='mt-4 pt-4 border-t border-gray-200'>
-                        <h6 className='text-emerald-600 font-medium mb-2 flex items-center gap-2'>
+                        <h6 className='!text-[#e42f22] font-medium mb-2 flex items-center gap-2'>
                           <i className='fa-solid fa-reply'></i>
                           Admin Response:
                         </h6>
@@ -301,7 +301,7 @@ const BookQueries = () => {
                             <button
                               className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                                 page === pagination.current_page
-                                  ? 'bg-emerald-600 text-white'
+                                  ? '!bg-[#e42f22] text-white'
                                   : 'bg-white text-gray-700 hover:bg-gray-50'
                               }`}
                               onClick={() => handlePageChange(page)}
@@ -353,7 +353,7 @@ const BookQueries = () => {
               </p>
               <a
                 href='/publish-book'
-                className='inline-block bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors'
+                className='inline-block !bg-[#e42f22] text-white px-6 py-3 rounded-lg hover:!bg-[#e95520] transition-colors'
               >
                 <i className='fa-solid fa-plus me-2'></i>
                 Submit Your First Book

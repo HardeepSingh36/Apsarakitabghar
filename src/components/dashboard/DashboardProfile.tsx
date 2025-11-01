@@ -113,7 +113,7 @@ const DashboardProfile: React.FC = () => {
                     <td>
                       <button
                         type='button'
-                        className='!text-[15px] text-emerald-600'
+                        className='!text-[15px] !text-[#e42f22]'
                         onClick={openEditModal}
                       >
                         Edit Profile

@@ -142,7 +142,7 @@ const DashboardAddress: React.FC = () => {
       <div className='row g-sm-4 g-3'>
         {loading ? (
           <div className='text-center'>
-            <div className='spinner-border text-emerald-600' role='status'>
+            <div className='spinner-border !text-[#e42f22]' role='status'>
               <span className='visually-hidden'>Loading...</span>
             </div>
             <p className='mt-2'>Loading addresses...</p>
@@ -159,7 +159,7 @@ const DashboardAddress: React.FC = () => {
                 <div>
                   {operationLoading[`set-default-${address.id}`] ? (
                     <div className='inline-flex mt-1.5'>
-                      <Loader className='w-4 h-4 animate-spin text-emerald-600' />
+                      <Loader className='w-4 h-4 animate-spin !text-[#e42f22]' />
                     </div>
                   ) : (
                     <div className='form-check'>

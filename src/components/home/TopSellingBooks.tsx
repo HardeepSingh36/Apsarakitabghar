@@ -74,9 +74,9 @@ const TopSellingBooks = () => {
             to={`#`}
             onClick={(e) => {
               e.preventDefault();
-               navigateToBooks(flag);
+              navigateToBooks(flag);
             }}
-            className='!text-base category-name hover:!text-emerald-600 flex justify-end items-center'
+            className='!text-base category-name hover:!text-[#e42f22] flex justify-end items-center'
           >
             View All
             <ChevronRight size={18} />

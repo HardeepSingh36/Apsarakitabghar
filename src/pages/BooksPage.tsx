@@ -65,7 +65,7 @@ const BooksPage = () => {
   const searchQuery = searchParams.get('search');
   const authorId = searchParams.get('author');
   const authorName = searchParams.get('author_name');
-  const categoryId = location.state?.categoryId
+  const categoryId = location.state?.categoryId;
   const categoryName = location.state?.categoryName || searchParams.get('category_name');
   const genreId = searchParams.get('genre');
   const genreSlug = searchParams.get('genre_slug');
@@ -144,9 +144,10 @@ const BooksPage = () => {
         // If we have category ID, use it directly with books-by-category endpoint
         response = await getBooksByCategory(categoryId, { page: 1, limit: 20 });
         const categoryNameFromState = location.state?.categoryName;
-        title = categoryNameFromState ? `Books in ${categoryNameFromState}` : `Books in Category (ID: ${categoryId})`;
-      }
-       else if (genreSlug) {
+        title = categoryNameFromState
+          ? `Books in ${categoryNameFromState}`
+          : `Books in Category (ID: ${categoryId})`;
+      } else if (genreSlug) {
         // Books by genre slug - use ID from state if available, otherwise search by slug/name
         const genreIdFromState = location.state?.genreId;
         const genreNameFromState = location.state?.genreName;
@@ -447,11 +448,11 @@ const BooksPage = () => {
                   <div className='w-full space-y-3'>
                     {/* Top labels */}
                     <div className='flex justify-between text-sm font-semibold'>
-                      <span className='px-2 py-1 bg-emerald-600 text-white rounded'>
+                      <span className='px-2 py-1 !bg-[#e42f22] text-white rounded'>
                         $ {min.toLocaleString()}
                       </span>
 
-                      <span className='px-2 py-1 bg-emerald-600 text-white rounded'>
+                      <span className='px-2 py-1 !bg-[#e42f22] text-white rounded'>
                         $ {value[0].toLocaleString()}
                       </span>
 
