@@ -80,7 +80,7 @@ const HeaderTop = () => {
   };
 
   return (
-    <div className='header-top'>
+    <div className='header-top bg-theme-gradient-radial'>
       <div className='container-fluid-lg flex justify-between'>
         <div className=' text-white'>
           <Link to='/publish-book' className='flex text-white gap-2 min-w-36'>
