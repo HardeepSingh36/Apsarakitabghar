@@ -35,9 +35,10 @@ interface SearchFieldProps {
   placeholder: string;
   ariaLabel: string;
   activeTab: string;
+  onClose?: () => void;
 }
 
-const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) => {
+const SearchField = ({ placeholder, ariaLabel, activeTab, onClose }: SearchFieldProps) => {
   const [query, setQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<
@@ -122,6 +123,8 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
           state: { authorId, authorName },
         });
       }
+      // Close dialog after navigation
+      onClose?.();
     } catch (error) {
       console.error('Navigation error:', error);
       toast.error('Failed to navigate. Please try again.');
@@ -186,6 +189,8 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
           toast.error('No authors found for your search.');
         }
       }
+      // Close dialog after search
+      onClose?.();
     } catch (error) {
       console.error('Search error:', error);
       toast.error('Search failed. Please try again.');
@@ -222,7 +227,6 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
       try {
         searchBooks({ q: e.target.value })
           .then(({ data }) => {
-            console.log('The data is: ', data);
             const books = data.books.map(
               (book: { id: string; title: string; cover_image_name: string; slug?: string }) => ({
                 id: book.id,
@@ -318,9 +322,8 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
               top: inputRect.bottom + window.scrollY,
               left: inputRect.left + window.scrollX,
               width: inputRect.width,
-              zIndex: 100,
             }}
-            className='mt-2 bg-background border border-border rounded-lg shadow-dropdown max-h-52 overflow-y-auto'
+            className='mt-2 !z-[9999] bg-background border border-border rounded-lg shadow-dropdown max-h-52 overflow-y-auto'
           >
             <div className='max-h-64 py-2'>
               {filteredSuggestions.map((suggestion, index) => {
@@ -361,7 +364,11 @@ const SearchField = ({ placeholder, ariaLabel, activeTab }: SearchFieldProps) =>
   );
 };
 
-const SearchBox = () => {
+interface SearchBoxProps {
+  onClose?: () => void;
+}
+
+const SearchBox = ({ onClose }: SearchBoxProps = {}) => {
   const [activeTab, setActiveTab] = useState('book');
   return (
     <div className='w-full bg-white/95 px-2 sm:!px-6 py-6 max-w-3xl rounded-md mx-auto'>
@@ -377,7 +384,7 @@ const SearchBox = () => {
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className={`!text-sm flex-1 md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:bg-teal-600 data-[state=active]:text-primary-foreground data-[state=active]:shadow-emerald transition-all duration-200 px-4`}
+                className={`!text-sm flex-1 md:!text-base font-medium !rounded-lg py-1.5 data-[state=active]:!bg-[#fc2403] data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-200 px-4`}
               >
                 <TabIcon className='inline w-3 h-3 sm:w-4 sm:h-4 mr-1' />
                 {tab.label}
@@ -394,6 +401,7 @@ const SearchBox = () => {
                 placeholder={tab.placeholder}
                 ariaLabel={`Search ${tab.label.toLowerCase()}`}
                 activeTab={tab.value}
+                onClose={onClose}
               />
             </TabsContent>
           ))}

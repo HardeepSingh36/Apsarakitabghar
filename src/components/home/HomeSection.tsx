@@ -1,4 +1,3 @@
-import SearchBox from './SearchBox';
 
 const HomeSection = () => {
   return (
@@ -16,8 +15,10 @@ const HomeSection = () => {
             </div>
           </div>
           {/* 🔍 Search Bar Overlay */}
-          <div className='absolute inset-0 top-1/5 flex items-start justify-center px-4 overflow-hidden'>
-            <SearchBox />
+          <div className='absolute inset-0 flex items-start justify-center px-4 overflow-hidden'>
+            <div className='text-white text-3xl font-bold my-auto'>
+              Discover your next favorite books here
+            </div>
           </div>
         </div>
       </div>

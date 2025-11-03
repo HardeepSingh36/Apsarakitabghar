@@ -1,13 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingCart, User } from 'react-feather';
+import { Heart, ShoppingCart, User, Search } from 'react-feather';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import type { CartItem } from '@/types/types';
 import { fetchCartList } from '@/features/cart/cartSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { IMAGE_BASE_URL } from '@/constants';
 import { useCurrency } from '@/context/CurrencyContext';
+import SearchDialog from './SearchDialog';
 
 const RightSideBox = () => {
   // ✅ Auth UI actions (from dialog context)
@@ -22,6 +23,9 @@ const RightSideBox = () => {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
+
+  // ✅ Search Dialog state
+  const [searchDialogOpen, setSearchDialogOpen] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -57,7 +61,15 @@ const RightSideBox = () => {
 
       <ul className='right-side-menu !mb-0'>
         {/* Search */}
-        <li className='right-side'>
+        <li className='right-side !block'>
+          <button
+            type='button'
+            className='btn p-0 position-relative header-wishlist'
+            onClick={() => setSearchDialogOpen(true)}
+            aria-label='Open search'
+          >
+            <Search size={22} />
+          </button>
         </li>
 
         {/* Wishlist */}
@@ -250,6 +262,9 @@ const RightSideBox = () => {
           </div>
         </li>
       </ul>
+
+      {/* Search Dialog */}
+      <SearchDialog open={searchDialogOpen} onOpenChange={setSearchDialogOpen} />
     </div>
   );
 };
