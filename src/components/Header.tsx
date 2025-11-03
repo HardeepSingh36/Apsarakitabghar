@@ -17,7 +17,7 @@ const Header = () => {
       <HeaderTop />
 
       <div
-        className={`top-nav top-header sticky-header ${
+        className={`top-nav top-header sticky-header !py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_6px_-1px_rgba(0,0,0,0.1)] mb-2 out ${
           isSpecialPage ? 'bg-[#f8f8f8] shadow-md shadow-black/15' : ''
         }`}
       >

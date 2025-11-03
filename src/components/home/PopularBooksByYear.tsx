@@ -23,12 +23,12 @@ const PopularBooksByYear = () => {
   }, [books.length]);
   return (
     <section className='book-category'>
-      <div className='container-fluid-lg'>
+      <div className='container-fluid-lg lg:!p-0 lg:!pl-4'>
         <div className='title'>
           <h2>Popular books this year</h2>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 items-stretch'>
+        <div className='grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-4 items-stretch'>
           {isLoading ? (
             Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
           ) : books.length > 0 ? (

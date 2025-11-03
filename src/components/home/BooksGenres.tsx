@@ -30,7 +30,7 @@ const BooksGenres = () => {
 
   return (
     <section className='book-genre'>
-      <div className='container-fluid-lg'>
+      <div className='container-fluid-lg lg:!p-0 lg:!pl-4'>
         <div className='title'>
           <h2 className='!text-center'>Explore Genres</h2>
         </div>

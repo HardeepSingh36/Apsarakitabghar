@@ -13,7 +13,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className='section-t-space footer-section-2 footer-color-3 mt-16'>
+    <footer className='section-t-space footer-section-2 footer-color-3'>
       <div className='container-fluid-lg'>
         <div className='main-footer'>
           <div className='row g-md-4 gy-sm-5'>

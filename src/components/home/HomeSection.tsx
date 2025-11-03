@@ -34,7 +34,7 @@ const HomeSection = () => {
   }, []);
 
   return (
-    <section className='home-section-2 home-section-bg pt-4 md:!pt-0 overflow-x-hidden'>
+    <section className='home-section-2 home-section-bg pt-4 md:!pt-0 rounded-t-xl !shadow-muted overflow-x-hidden'>
       <div className='relative container-fluid p-0 ratio_27'>
         <div className='row'>
           <div className='col-12'>
@@ -47,7 +47,7 @@ const HomeSection = () => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -100 }}
                     transition={{ duration: 0.7, ease: 'easeInOut' }}
-                    className={`absolute inset-0 ${bannerSlides[currentSlide].gradient}`}
+                    className={`absolute inset-0 ${bannerSlides[currentSlide].gradient} rounded-t-xl`}
                   >
                     <div className='absolute inset-0 flex flex-col items-center justify-center px-4 text-center'>
                       <motion.h1

@@ -85,7 +85,7 @@ const TopSellingBooks = () => {
       )}
       <div className='col-12'>
         <div className='top-selling-box'>
-          <div className='grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4'>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
             {isLoading ? (
               Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
             ) : items.length > 0 ? (
@@ -100,17 +100,20 @@ const TopSellingBooks = () => {
   );
 
   return (
-    <Tabs defaultValue='top' className='container-fluid-lg' onValueChange={handleTabChange}>
+    <Tabs
+      defaultValue='top'
+      className='container-fluid-lg lg:!p-0 lg:!pl-4'
+      onValueChange={handleTabChange}
+    >
       <div className='row'>
         <div className='col-xxl-9 col-lg-8'>
           <TabsList
             className='relative top-selling-box w-full flex justify-between md:justify-start md:gap-8 items-center mt-12 mb-8 bg-transparent overflow-x-scroll min-h-12 overflow-y-hidden'
             style={{ scrollbarWidth: 'none' }}
           >
-            <div className='absolute bottom-[13px] w-full bg-gray-100 h-0.5 '></div>
             <TabsTrigger
               className={clsx(
-                'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100',
+                'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100 bg-transparent',
                 activeTab === 'top' && '!border-gray-500/80'
               )}
               value='top'
@@ -120,7 +123,7 @@ const TopSellingBooks = () => {
 
             <TabsTrigger
               className={clsx(
-                'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100',
+                'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100 bg-transparent',
                 activeTab === 'trending' && '!border-gray-500/80'
               )}
               value='trending'
@@ -132,7 +135,7 @@ const TopSellingBooks = () => {
 
             <TabsTrigger
               className={clsx(
-                'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100',
+                'top-selling-title mb-3 shadow-none !border-b-2 !border-gray-100 bg-transparent',
                 activeTab === 'recent' && '!border-gray-500/80'
               )}
               value='recent'

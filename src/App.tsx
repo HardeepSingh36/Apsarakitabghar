@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import feather from 'feather-icons';
 import Header from './components/Header';
 import MobileFixMenu from './components/MobileFixMenu';
+import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import BooksPage from './pages/BooksPage';
@@ -37,74 +38,105 @@ const App = () => {
   useEffect(() => {
     feather.replace();
   }, []);
+
+  // Determine if sidebar should be shown
+  const showSidebar =
+    location.pathname !== '/dashboard' &&
+    location.pathname !== '/signin' &&
+    location.pathname !== '/signup' &&
+    location.pathname !== '/forgot-password' &&
+    location.pathname !== '/publish-book';
+
   return (
     <AuthDialogProvider>
       {/* Conditionally render Header */}
-      {location.pathname !== '/dashboard' &&
-      location.pathname !== '/signin' &&
-      location.pathname !== '/signup' &&
-      location.pathname !== '/forgot-password' &&
-      location.pathname !== '/publish-book' ? (
+      {showSidebar ? (
         <>
           <Header />
           <MobileFixMenu />
         </>
       ) : null}
       <ScrollToTop />
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/signin' element={<SignIn />} />
-        <Route path='/signup' element={<SignUp />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/reset-password' element={<ResetPassword />} />
-        <Route path='/publish-book' element={<PublishBook />} />
-        <Route path='/books/:id' element={<BookDetail />} />
-        <Route path='/books' element={<BooksPage />} />
-        {/* Protected routes */}
-        <Route
-          path='/cart'
-          element={
-            <ProtectedRoute>
-              <Cart />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/checkout'
-          element={
-            <ProtectedRoute>
-              <Checkout />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/wishlist'
-          element={
-            <ProtectedRoute>
-              <WishList />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/dashboard'
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route path='/about' element={<About />} />
-        <Route path='/contact-us' element={<Contact />} />
-        <Route path='/query-form' element={<QueryForm />} />
-        <Route path='/privacy-policy' element={<PrivacyPolicy />} />
-        <Route path='/terms-conditions' element={<TermConditions />} />
-        <Route path='*' element={<div>404 Not Found</div>} />
-      </Routes>
-      {location.pathname !== '/dashboard' &&
-        location.pathname !== '/signin' &&
-        location.pathname !== '/signup' &&
-        location.pathname !== '/forgot-password' &&
-        location.pathname !== '/publish-book' && <Footer />}
+
+      {/* Main layout with Sidebar */}
+      <div className='flex '>
+        {/* Sidebar - only on desktop screens (1024px+) for pages with header/footer */}
+        {showSidebar && (
+          <div className='hidden lg:block'>
+            <Sidebar />
+          </div>
+        )}
+
+        {/* Main content area */}
+        <main className='flex-1 min-w-0 pb-10 !overflow-x-hidden relative bg-[#fdf6e3] rounded-t-xl'>
+          <svg
+            className='absolute inset-0 w-full h-full opacity-20 mix-blend-multiply'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <filter id='noise'>
+              <feTurbulence
+                type='fractalNoise'
+                baseFrequency='0.8'
+                numOctaves='4'
+                stitchTiles='stitch'
+              />
+            </filter>
+            <rect width='100%' height='100%' filter='url(#noise)' />
+          </svg>
+
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/signin' element={<SignIn />} />
+            <Route path='/signup' element={<SignUp />} />
+            <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route path='/reset-password' element={<ResetPassword />} />
+            <Route path='/publish-book' element={<PublishBook />} />
+            <Route path='/books/:id' element={<BookDetail />} />
+            <Route path='/books' element={<BooksPage />} />
+            {/* Protected routes */}
+            <Route
+              path='/cart'
+              element={
+                <ProtectedRoute>
+                  <Cart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/checkout'
+              element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/wishlist'
+              element={
+                <ProtectedRoute>
+                  <WishList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/dashboard'
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path='/about' element={<About />} />
+            <Route path='/contact-us' element={<Contact />} />
+            <Route path='/query-form' element={<QueryForm />} />
+            <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+            <Route path='/terms-conditions' element={<TermConditions />} />
+            <Route path='*' element={<div>404 Not Found</div>} />
+          </Routes>
+        </main>
+      </div>
+      {showSidebar && <Footer />}
+
       <Toaster position='top-right' />
     </AuthDialogProvider>
   );
