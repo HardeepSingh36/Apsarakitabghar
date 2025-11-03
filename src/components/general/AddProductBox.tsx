@@ -120,7 +120,7 @@ const AddProductBox = ({
 
   return (
     <div
-      className={`flex gap-3 md:gap-0 md:flex-col justify-between book-product-box wow fadeIn md:p-3 md:bg-gray-50 h-full ${className}`}
+      className={`flex gap-3 md:gap-0 md:flex-col justify-between book-product-box wow fadeIn px-3 md:px-0 py-3 md:pt-4 bg-gray-50 h-full shadow-md hover:shadow-xl ${className}`}
       data-wow-delay={idx ? `0.${(idx * 5).toString().padStart(2, '0')}s` : undefined}
     >
       <div className='product-header '>
@@ -131,7 +131,7 @@ const AddProductBox = ({
               onError={(e) => {
                 e.currentTarget.src = '/assets/images/book/product/1.jpg';
               }}
-              className='img-fluid blur-up lazyload !w-full !h-full !object-cover hover:scale-105 transition'
+              className='img-fluid blur-up lazyload !w-full !h-full hover:scale-105 transition'
               alt=''
             />
           </Link>
@@ -158,7 +158,7 @@ const AddProductBox = ({
           <Link
             to={`/books/${product.slug}`}
             state={{ item: product }}
-            className='name !font-semibold notranslate !text-xl leading-6 !text-gray-900 mb-1 cursor-pointer'
+            className='name !font-semibold text-center notranslate !text-xl leading-6 !text-gray-900 cursor-pointer'
           >
             {product.title}
           </Link>
@@ -172,15 +172,15 @@ const AddProductBox = ({
             </ul>
             <span>(5)</span>
           </div> */}
-          <h5 className='name !font-medium text-muted !text-sm !line-clamp-2'>
+          {/* <h5 className='name !font-medium text-muted !text-sm !line-clamp-2'>
             {'description' in product ? product.description : ''}
-          </h5>
-          <h6 className='byers text-base !text-emerald-600'>
+          </h5> */}
+          <h6 className='byers text-base !text-emerald-600 text-center lg:!mb-0'>
             <span>By</span>{' '}
             {('author_name' in product ? product.author_name : product.author_display_name) ||
               'Unknown Author'}
           </h6>
-          <h6 className='price md:!mb-3'>
+          <h6 className='price md:!mb-3 text-center'>
             {currency.sign}
             <span className=''>
               {(
@@ -191,20 +191,20 @@ const AddProductBox = ({
             <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
           </h6>
           <div
-            className={`add-to-cart-box bg-white ${
-              showAddToCart ? '' : 'hidden'
+            className={`bg-theme-gradient-orange ${
+              showAddToCart ? '' : ''
             } md:block !mt-2 md:!mt-0`}
           >
             {cartItem ? (
               <Link
                 to={'/cart'}
-                className='btn btn-add-cart addcart-button !py-5 !mt-0 !text-gray-800'
+                className='md:!text-xl !py-3 md:!py-5 !mt-0 !text-white text-center'
               >
                 ✔ In Cart
               </Link>
             ) : (
               <button
-                className={`btn btn-add-cart addcart-button !py-5 !mt-0 w-full !text-gray-800 !font-medium ${
+                className={`md:!text-xl !py-4 md:!py-5 !mt-0 w-full !font-medium !text-white ${
                   isAddingToCart ? 'opacity-75 cursor-not-allowed' : ''
                 }`}
                 onClick={handleAddToCart}

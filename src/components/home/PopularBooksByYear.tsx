@@ -23,7 +23,7 @@ const PopularBooksByYear = () => {
   }, [books.length]);
   return (
     <section className='book-category'>
-      <div className='container-fluid-lg lg:!p-0 lg:!pl-4'>
+      <div className='container-fluid-lg lg:!p-0 lg:!px-4'>
         <div className='title'>
           <h2>Popular books this year</h2>
         </div>

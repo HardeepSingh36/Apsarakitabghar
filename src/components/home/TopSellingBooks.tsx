@@ -85,7 +85,7 @@ const TopSellingBooks = () => {
       )}
       <div className='col-12'>
         <div className='top-selling-box'>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+          <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4'>
             {isLoading ? (
               Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
             ) : items.length > 0 ? (
@@ -102,11 +102,11 @@ const TopSellingBooks = () => {
   return (
     <Tabs
       defaultValue='top'
-      className='container-fluid-lg lg:!p-0 lg:!pl-4'
+      className='container-fluid-lg lg:!p-0 lg:!px-4'
       onValueChange={handleTabChange}
     >
       <div className='row'>
-        <div className='col-xxl-9 col-lg-8'>
+        <div className=''>
           <TabsList
             className='relative top-selling-box w-full flex justify-between md:justify-start md:gap-8 items-center mt-12 mb-8 bg-transparent overflow-x-scroll min-h-12 overflow-y-hidden'
             style={{ scrollbarWidth: 'none' }}
@@ -167,13 +167,13 @@ const TopSellingBooks = () => {
         </div>
 
         {/* Right-side banner */}
-        <div className='col-xxl-3 col-lg-4 d-lg-block d-none'>
+        {/* <div className='col-xxl-3 col-lg-4 d-lg-block d-none'>
           <div className='ratio_156'>
             <div className='banner-contain-2 hover-effect'>
               <img src='/assets/images/book/banner/3.jpg' className='bg-img lazyload' alt='' />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </Tabs>
   );

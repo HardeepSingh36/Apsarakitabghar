@@ -59,7 +59,7 @@ const App = () => {
       <ScrollToTop />
 
       {/* Main layout with Sidebar */}
-      <div className='flex '>
+      <div className='flex my-2 '>
         {/* Sidebar - only on desktop screens (1024px+) for pages with header/footer */}
         {showSidebar && (
           <div className='hidden lg:block'>
@@ -68,9 +68,9 @@ const App = () => {
         )}
 
         {/* Main content area */}
-        <main className='flex-1 min-w-0 pb-10 !overflow-x-hidden relative bg-[#fdf6e3] rounded-t-xl'>
+        <main className='flex-1 min-w-0 pb-10 !overflow-x-hidden relative bg-[#fdf6e3] rounded-xl shadow-md'>
           <svg
-            className='absolute inset-0 w-full h-full opacity-20 mix-blend-multiply'
+            className='absolute -z-10 inset-0 w-full h-full opacity-20 mix-blend-multiply'
             xmlns='http://www.w3.org/2000/svg'
           >
             <filter id='noise'>

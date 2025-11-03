@@ -174,7 +174,7 @@ const Checkout = () => {
     <div>
       {/* Checkout section Start */}
       <section className='checkout-section-2 section-b-space'>
-        <div className='container-fluid-lg'>
+        <div className='px-4'>
           <div className='row g-sm-4 g-3'>
             <div className='col-lg-8'>
               <div className='left-sidebar-checkout'>
@@ -187,11 +187,11 @@ const Checkout = () => {
                           target='.nav-item'
                           src='https://cdn.lordicon.com/ggihhudh.json'
                           trigger='loop-on-hover'
-                          colors='primary:#121331,secondary:#646e78,tertiary:#0baf9a'
+                          colors='primary:#fc2403,secondary:#fc6603,tertiary:#ff8a50'
                           className='lord-icon'
                         />
                       </div>
-                      <div className='checkout-box'>
+                      <div className='checkout-box !shadow-md'>
                         <div className='checkout-title'>
                           <h4>Delivery Address</h4>
                         </div>
@@ -199,15 +199,18 @@ const Checkout = () => {
                         <div className='checkout-detail'>
                           {loading ? (
                             <div className='text-center'>
-                              <div className='spinner-border text-emerald-600' role='status'>
-                                <span className='visually-hidden'>Loading...</span>
+                              <div className='!flex !justify-center !items-center !gap-2'>
+                                <Loader
+                                  className='!w-6 !h-6 animate-spin'
+                                  style={{ color: '#fc2403' }}
+                                />
+                                <p className='!mb-0'>Loading addresses...</p>
                               </div>
-                              <p className='mt-2'>Loading addresses...</p>
                             </div>
                           ) : addresses.length === 0 ? (
                             <div className='text-center'>
                               <button
-                                className='btn theme-bg-color text-white btn-md'
+                                className='font-public-sans !px-6 !py-3 bg-theme-gradient-orange hover:!from-[#e42003] hover:!to-[#e55503] !text-white !font-semibold !rounded-lg !shadow-md hover:!shadow-lg !transition-all !duration-200 !border-0'
                                 onClick={() => setAddAddressModalOpen(true)}
                               >
                                 Add Address
@@ -225,7 +228,10 @@ const Checkout = () => {
                                   >
                                     <div>
                                       {operationLoading[`set-default-${address.id}`] ? (
-                                        <Loader className='w-4 h-4 animate-spin text-emerald-600' />
+                                        <Loader
+                                          className='!w-4 !h-4 animate-spin'
+                                          style={{ color: '#fc2403' }}
+                                        />
                                       ) : (
                                         <div className='form-check'>
                                           <div className='flex items-center gap-2'>
@@ -276,7 +282,7 @@ const Checkout = () => {
                                       </ul>
 
                                       <button
-                                        className='btn theme-bg-color text-white btn-md !absolute top-0 right-0 p-2 !rounded-full'
+                                        className='!absolute top-0 right-0 !p-2 !rounded-full bg-theme-gradient-orange hover:!from-[#e42003] hover:!to-[#e55503] !text-white !shadow-md hover:!shadow-lg !transition-all !duration-200 !border-0'
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           handleEditAddress(address);
@@ -399,12 +405,12 @@ const Checkout = () => {
                           target='.nav-item'
                           src='https://cdn.lordicon.com/qmcsqnle.json'
                           trigger='loop-on-hover'
-                          colors='primary:#0baf9a,secondary:#0baf9a'
+                          colors='primary:#fc2403,secondary:#fc6603,tertiary:#ff8a50'
                           className='lord-icon'
                         />
                         {/* </lord-icon> */}
                       </div>
-                      <div className='checkout-box'>
+                      <div className='checkout-box !shadow-md'>
                         <div className='checkout-title'>
                           <h4>Payment Option</h4>
                         </div>
@@ -420,8 +426,8 @@ const Checkout = () => {
             </div>
 
             <div className='col-lg-4'>
-              <div className='right-side-summery-box'>
-                <div className='summery-box-2'>
+              <div className='right-side-summery-box !top-0'>
+                <div className='summery-box-2 shadow-md'>
                   <div className='summery-header'>
                     <h3>Order Summery</h3>
                   </div>
@@ -469,7 +475,7 @@ const Checkout = () => {
                   </ul>
                 </div>
 
-                <div className='summery-box-2 mt-4'>
+                <div className='summery-box-2 mt-4 shadow-md'>
                   {/* Transaction ID Input */}
                   <div className='mb-3'>
                     <label htmlFor='transactionId' className='form-label fw-semibold'>
@@ -553,19 +559,15 @@ const Checkout = () => {
                 </div> */}
 
                 <button
-                  className='btn theme-bg-color text-white btn-md w-100 mt-4 fw-bold'
+                  className='font-public-sans !w-full !px-6 !py-3 !text-lg bg-theme-gradient-orange hover:!from-[#e42003] hover:!to-[#e55503] !text-white !font-semibold !rounded-sm !shadow-md hover:!shadow-lg !transition-all !duration-200 !border-0 !mt-4 disabled:!opacity-50 disabled:!cursor-not-allowed'
                   onClick={handlePlaceOrder}
                   disabled={isPlacingOrder || !selectedAddressId || cartItems.length === 0}
                 >
                   {isPlacingOrder ? (
-                    <>
-                      <span
-                        className='spinner-border spinner-border-sm me-2'
-                        role='status'
-                        aria-hidden='true'
-                      ></span>
-                      Placing Order...
-                    </>
+                    <div className='!flex !items-center !justify-center !gap-2'>
+                      <Loader className='!w-5 !h-5 animate-spin' />
+                      <span>Placing Order...</span>
+                    </div>
                   ) : (
                     'Place Order'
                   )}

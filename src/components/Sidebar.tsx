@@ -70,7 +70,7 @@ const Sidebar = () => {
       <div>
         {/* Apsra Spotlight Section */}
         <div className=''>
-          <div className='bg-gradient-to-r from-[#ff8a50] to-[#fc6603] px-4 py-3 text-white font-semibold text-base shadow-md'>
+          <div className='bg-theme-gradient-orange px-4 py-3 text-white font-semibold !text-lg shadow-md'>
             Apsra Spotlight
           </div>
           <div className='bg-white border-x border-gray-200'>
@@ -88,10 +88,10 @@ const Sidebar = () => {
                     key={category.id}
                     to={`/books?category_name=${category.category_name}`}
                     state={{ categoryId: category.id, categoryName: category.category_name }}
-                    className='block !px-4 !py-2.5 !text-gray-700 hover:!bg-gradient-to-r hover:!from-[#fc2403] hover:!to-[#fc6603] hover:!text-white !transition-all !duration-200 !border-b !border-gray-100 !text-sm !font-medium'
+                    className='block !px-4 !py-2.5 !text-gray-700 hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-b !border-gray-100 !text-base !font-medium'
                   >
                     <span className='!flex !items-center !gap-2'>
-                      <span className='!text-[#fc6603] group-hover:!text-white'>▸</span>
+                      <span className='!text-[#fc6603] !text-lg'>▸</span>
                       {category.category_name}
                     </span>
                   </Link>
@@ -105,10 +105,10 @@ const Sidebar = () => {
                       genre.slug || genre.genre_name.toLowerCase().replace(/\s+/g, '-')
                     )}`}
                     state={{ genreId: genre.id, genreName: genre.genre_name }}
-                    className='block !px-4 !py-2.5 !text-gray-700 hover:!bg-gradient-to-r hover:!from-[#fc2403] hover:!to-[#fc6603] hover:!text-white !transition-all !duration-200 !border-b !border-gray-100 !text-sm !font-medium'
+                    className='block !px-4 !py-2.5 !text-gray-700 hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-b !border-gray-100 !text-base !font-medium'
                   >
                     <span className='!flex !items-center !gap-2'>
-                      <span className='!text-[#fc6603] group-hover:!text-white'>▸</span>
+                      <span className='!text-[#fc6603] !text-lg'>▸</span>
                       {genre.genre_name}
                     </span>
                   </Link>
@@ -120,7 +120,7 @@ const Sidebar = () => {
 
         {/* Trending Books Section */}
         <div>
-          <div className='bg-gradient-to-r from-[#ff8a50] to-[#fc6603] px-4 py-3 text-white font-semibold text-base shadow-md'>
+          <div className='bg-theme-gradient-orange px-4 py-3 text-white font-semibold !text-lg shadow-md'>
             Trending Books
           </div>
           <div className='bg-white border-x border-gray-200'>
@@ -137,15 +137,15 @@ const Sidebar = () => {
                     key={book.id}
                     to={`/books/${book.slug || book.id}`}
                     state={{ item: book }}
-                    className='block !px-4 !py-2.5 hover:!bg-gradient-to-r hover:!from-[#fc2403] hover:!to-[#fc6603] !transition-all !duration-200 !border-b !border-gray-100 notranslate group'
+                    className='block !px-4 !py-2.5 hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-b !border-gray-100 notranslate'
                   >
                     <div className='!flex !items-start !gap-2'>
-                      <TrendingUp className='!w-3 !h-3 !flex-shrink-0 !text-[#fc6603] group-hover:!text-white !mt-1' />
+                      <TrendingUp className='!w-4 !h-4 !flex-shrink-0 !text-[#fc6603] !mt-1' />
                       <div className='!flex-1 !min-w-0'>
-                        <p className='!text-sm !font-semibold !text-gray-800 group-hover:!text-white !truncate !mb-0'>
+                        <p className='!text-base !font-semibold !text-gray-800 !truncate !mb-0'>
                           {book.title}
                         </p>
-                        <p className='!text-xs !text-gray-500 group-hover:!text-gray-100 !truncate !mb-0'>
+                        <p className='!text-sm !text-gray-500 !truncate !mb-0'>
                           {book.author_name}
                         </p>
                       </div>
@@ -154,7 +154,7 @@ const Sidebar = () => {
                 ))}
                 <Link
                   to='/books?is_trending=1'
-                  className='block !px-4 !py-2.5 !text-center !text-sm !font-semibold !text-[#fc2403] hover:!bg-gradient-to-r hover:!from-[#fc2403] hover:!to-[#fc6603] hover:!text-white !transition-all !duration-200 !border-t !border-gray-200'
+                  className='block !px-4 !py-2.5 !text-center !text-base !font-semibold !text-[#fc2403] hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-t !border-gray-200'
                 >
                   View All Trending Books →
                 </Link>
@@ -165,7 +165,7 @@ const Sidebar = () => {
 
         {/* Best Sellers Section */}
         <div>
-          <div className='bg-gradient-to-r from-[#ff8a50] to-[#fc6603] px-4 py-3 text-white font-semibold text-base shadow-md'>
+          <div className='bg-theme-gradient-orange px-4 py-3 text-white font-semibold !text-lg shadow-md'>
             Best Sellers
           </div>
           <div className='bg-white border-x border-gray-200'>
@@ -182,15 +182,15 @@ const Sidebar = () => {
                     key={book.id}
                     to={`/books/${book.slug || book.id}`}
                     state={{ item: book }}
-                    className='block !px-4 !py-2.5 hover:!bg-gradient-to-r hover:!from-[#fc2403] hover:!to-[#fc6603] !transition-all !duration-200 !border-b !border-gray-100 notranslate group'
+                    className='block !px-4 !py-2.5 hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-b !border-gray-100 notranslate'
                   >
                     <div className='!flex !items-start !gap-2'>
-                      <Award className='!w-3 !h-3 !flex-shrink-0 !text-[#fc6603] group-hover:!text-white !mt-1' />
+                      <Award className='!w-4 !h-4 !flex-shrink-0 !text-[#fc6603] !mt-1' />
                       <div className='!flex-1 !min-w-0'>
-                        <p className='!text-sm !font-semibold !text-gray-800 group-hover:!text-white !truncate !mb-0'>
+                        <p className='!text-base !font-semibold !text-gray-800 !truncate !mb-0'>
                           {book.title}
                         </p>
-                        <p className='!text-xs !text-gray-500 group-hover:!text-gray-100 !truncate !mb-0'>
+                        <p className='!text-sm !text-gray-500 !truncate !mb-0'>
                           {book.author_name}
                         </p>
                       </div>
@@ -199,7 +199,7 @@ const Sidebar = () => {
                 ))}
                 <Link
                   to='/books?is_best_seller=1'
-                  className='block !px-4 !py-2.5 !text-center !text-sm !font-semibold !text-[#fc2403] hover:!bg-gradient-to-r hover:!from-[#fc2403] hover:!to-[#fc6603] hover:!text-white !transition-all !duration-200 !border-t !border-gray-200'
+                  className='block !px-4 !py-2.5 !text-center !text-base !font-semibold !text-[#fc2403] hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-t !border-gray-200'
                 >
                   View All Best Sellers →
                 </Link>
@@ -210,7 +210,7 @@ const Sidebar = () => {
 
         {/* Recently Added Section */}
         <div className='mb-4'>
-          <div className='bg-gradient-to-r from-[#fc6603] to-[#ff8a50] px-4 py-3 text-white font-semibold text-base shadow-md'>
+          <div className='bg-gradient-to-r from-[#fc6603] to-[#ff8a50] px-4 py-3 text-white font-semibold !text-lg shadow-md'>
             Recently Added
           </div>
           <div className='bg-white border-x border-gray-200'>
@@ -227,15 +227,15 @@ const Sidebar = () => {
                     key={book.id}
                     to={`/books/${book.slug || book.id}`}
                     state={{ item: book }}
-                    className='block !px-4 !py-2.5 hover:!bg-gradient-to-r hover:!from-[#fc2403] hover:!to-[#fc6603] !transition-all !duration-200 !border-b !border-gray-100 notranslate group'
+                    className='block !px-4 !py-2.5 hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-b !border-gray-100 notranslate'
                   >
                     <div className='!flex !items-start !gap-2'>
-                      <Clock className='!w-3 !h-3 !flex-shrink-0 !text-[#fc6603] group-hover:!text-white !mt-1' />
+                      <Clock className='!w-4 !h-4 !flex-shrink-0 !text-[#fc6603] !mt-1' />
                       <div className='!flex-1 !min-w-0'>
-                        <p className='!text-sm !font-semibold !text-gray-800 group-hover:!text-white !truncate !mb-0'>
+                        <p className='!text-base !font-semibold !text-gray-800 !truncate !mb-0'>
                           {book.title}
                         </p>
-                        <p className='!text-xs !text-gray-500 group-hover:!text-gray-100 !truncate !mb-0'>
+                        <p className='!text-sm !text-gray-500 !truncate !mb-0'>
                           {book.author_name}
                         </p>
                       </div>
@@ -244,7 +244,7 @@ const Sidebar = () => {
                 ))}
                 <Link
                   to='/books?is_new=1'
-                  className='block !px-4 !py-2.5 !text-center !text-sm !font-semibold !text-[#fc2403] hover:!bg-gradient-to-r hover:!from-[#fc2403] hover:!to-[#fc6603] hover:!text-white !transition-all !duration-200 !border-t !border-gray-200'
+                  className='block !px-4 !py-2.5 !text-center !text-base !font-semibold !text-[#fc2403] hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-t !border-gray-200'
                 >
                   View All New Books →
                 </Link>

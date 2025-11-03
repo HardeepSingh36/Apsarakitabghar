@@ -134,32 +134,40 @@
   .bg-theme-gradient {
     background: linear-gradient(135deg, #fc2403 0%, #fc6603 50%, #ff8a50 100%);
   }
-  
+
   .bg-theme-gradient-r {
     background: linear-gradient(to right, #fc2403 0%, #fc6603 50%, #ff8a50 100%);
   }
-  
+
   .bg-theme-gradient-l {
     background: linear-gradient(to left, #fc2403 0%, #fc6603 50%, #ff8a50 100%);
   }
-  
+
   .bg-theme-gradient-t {
     background: linear-gradient(to top, #fc2403 0%, #fc6603 50%, #ff8a50 100%);
   }
-  
+
   .bg-theme-gradient-b {
     background: linear-gradient(to bottom, #fc2403 0%, #fc6603 50%, #ff8a50 100%);
   }
-  
+
   .bg-theme-gradient-radial {
     background: radial-gradient(circle, #fc2403 0%, #fc6603 50%, #ff8a50 100%);
   }
-  
+
   .text-theme-gradient {
     background: linear-gradient(135deg, #fc2403 0%, #fc6603 50%, #ff8a50 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  .font-public-sans {
+    font-family: 'Public Sans', sans-serif;
+  }
+
+  .bg-theme-gradient-orange {
+    background: linear-gradient(to right, #ff8a50, #fc6603) !important;
   }
 }
 

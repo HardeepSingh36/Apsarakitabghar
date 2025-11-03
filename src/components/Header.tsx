@@ -17,7 +17,7 @@ const Header = () => {
       <HeaderTop />
 
       <div
-        className={`top-nav top-header sticky-header !py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_6px_-1px_rgba(0,0,0,0.1)] mb-2 out ${
+        className={`top-nav top-header sticky-header !py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1),0_4px_6px_-1px_rgba(0,0,0,0.1)] out ${
           isSpecialPage ? 'bg-[#f8f8f8] shadow-md shadow-black/15' : ''
         }`}
       >
@@ -26,7 +26,7 @@ const Header = () => {
             <div className='col-12'>
               <div className='navbar-top'>
                 <button
-                  className='navbar-toggler d-xl-none d-inline navbar-menu-button me-2'
+                  className='navbar-toggler lg:hidden navbar-menu-button me-2'
                   type='button'
                   data-bs-toggle='offcanvas'
                   onClick={() => setShowMenu(!showMenu)}
@@ -36,7 +36,7 @@ const Header = () => {
                   </span>
                 </button>
                 <Link to='/' className='web-logo nav-logo'>
-                  <img src='/assets/logo/apsra.svg' className='img-fluid lazyload' alt='' />
+                  <img src='/assets/logo/apsra.png' className='img-fluid lazyload !h-10 !w-32 !object-cover' alt='' />
                 </Link>
 
                 <div className='header-nav-middle'>

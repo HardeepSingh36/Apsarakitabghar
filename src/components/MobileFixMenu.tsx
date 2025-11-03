@@ -19,7 +19,7 @@ const MobileFixMenu = () => {
   };
   return (
     <>
-      <div className='mobile-menu d-md-none d-block mobile-cart'>
+      <div className='mobile-menu lg:hidden mobile-cart'>
         <ul>
           <li className='active'>
             <Link to='/'>

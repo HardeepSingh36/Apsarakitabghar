@@ -40,10 +40,10 @@ const Cart = () => {
     <div>
       {/* Cart Section Start */}
       <section className='cart-section section-b-space'>
-        <div className='container-fluid-lg'>
+        <div className='px-4'>
           <div className='row g-sm-5 g-3'>
             <div className='col-xxl-9'>
-              <div>
+              <div className='!flex !justify-end !mb-3'>
                 <button
                   onClick={async () => {
                     try {
@@ -57,22 +57,28 @@ const Cart = () => {
                       });
                     }
                   }}
-                  className={`btn btn-danger !text-sm mb-2 !ml-auto ${
-                    isClearingCart ? 'opacity-75 cursor-not-allowed' : ''
+                  className={`font-public-sans !px-6 !py-2.5 bg-theme-gradient-orange hover:!from-[#e42003] hover:!to-[#e55503] !text-white !font-semibold !text-sm !rounded-lg !shadow-md hover:!shadow-lg !transition-all !duration-200 !flex !items-center !gap-2 !border-0 ${
+                    isClearingCart ? '!opacity-75 !cursor-not-allowed' : ''
                   }`}
                   disabled={isClearingCart}
                 >
                   {isClearingCart ? (
-                    <div className='flex items-center gap-2'>
-                      <Loader className='w-4 h-4 animate-spin' />
-                      Clearing...
-                    </div>
+                    <>
+                      <Loader className='!w-4 !h-4 animate-spin' />
+                      <span className='font-public-sans'>Clearing...</span>
+                    </>
                   ) : (
-                    'Clear Cart'
+                    <>
+                      <X className='!w-4 !h-4' />
+                      <span className='font-public-sans'>Clear Cart</span>
+                    </>
                   )}
                 </button>
               </div>
-              <div className='cart-table overflow-x-scroll' style={{ scrollbarWidth: 'none' }}>
+              <div
+                className='cart-table overflow-x-scroll shadow-md'
+                style={{ scrollbarWidth: 'none' }}
+              >
                 {cartItems.length === 0 ? (
                   <div className='flex flex-col items-center py-5'>
                     {/* <img
@@ -82,11 +88,14 @@ const Cart = () => {
                     /> */}
                     <h3 className='mb-2'>Your Cart is Empty</h3>
                     <p className='text-content mb-4'>
-                      Looks like you haven’t added anything to your cart yet.
+                      Looks like you haven't added anything to your cart yet.
                     </p>
-                    <Link to={'#'} className='btn btn-animation fw-bold'>
+                    <Link
+                      to={'/books'}
+                      className='font-public-sans !px-6 !py-3 bg-theme-gradient-orange hover:!from-[#e42003] hover:!to-[#e55503] !text-white !font-semibold !rounded-lg !shadow-md hover:!shadow-lg !transition-all !duration-200 !flex !items-center !gap-2 !no-underline !border-0'
+                    >
                       Continue Shopping
-                      <i className='fa-solid fa-arrow-right-long ms-2'></i>
+                      <i className='fa-solid fa-arrow-right-long'></i>
                     </Link>
                   </div>
                 ) : (
@@ -448,7 +457,7 @@ const Cart = () => {
             </div>
 
             <div className='col-xxl-3'>
-              <div className='summery-box p-sticky'>
+              <div className='summery-box p-sticky shadow-md'>
                 <div className='summery-header'>
                   <h3>Cart Total</h3>
                 </div>
@@ -504,19 +513,20 @@ const Cart = () => {
                     <li>
                       <Link
                         to={'/checkout'}
-                        className='btn btn-animation proceed-btn fw-bold !text-sm'
+                        className='font-public-sans !w-full !block !text-center !px-6 !py-3 bg-theme-gradient-orange hover:!from-[#e42003] hover:!to-[#e55503] !text-white !font-semibold !rounded-lg !shadow-md hover:!shadow-lg !transition-all !duration-200 !no-underline !border-0'
                       >
-                        Process To Checkout
+                        Proceed To Checkout
                       </Link>
                     </li>
 
                     <li>
-                      <button
-                        onClick={() => (window.location.href = '/')}
-                        className='btn btn-light shopping-button text-dark'
+                      <Link
+                        to='/books'
+                        className='font-public-sans !w-full !text-center !px-6 !py-3 !bg-white hover:!bg-gray-50 !text-gray-700 !font-semibold !rounded-lg !border-2 !border-gray-300 hover:!border-[#fc6603] !transition-all !duration-200 !no-underline !flex !items-center !justify-center !gap-2'
                       >
-                        <i className='fa-solid fa-arrow-left-long'></i>Return To Shopping
-                      </button>
+                        <i className='fa-solid fa-arrow-left-long'></i>
+                        Return To Shopping
+                      </Link>
                     </li>
                   </ul>
                 </div>

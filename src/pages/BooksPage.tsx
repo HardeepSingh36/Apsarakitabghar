@@ -40,7 +40,7 @@ const SearchForm = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className='btn theme-bg-color text-white m-0' type='submit'>
+          <button className='btn bg-theme-gradient-orange text-white m-0' type='submit'>
             Search
           </button>
         </div>
@@ -230,7 +230,7 @@ const BooksPage = () => {
   ]);
   return (
     <section className='section-b-space shop-section -mt-8 md:-mt-16'>
-      <div className='container-fluid-lg'>
+      <div className='p-4'>
         <div className='row !mt-6'>
           <div className='col-12'>
             {/* Search Bar Section Start */}

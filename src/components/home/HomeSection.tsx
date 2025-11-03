@@ -91,7 +91,7 @@ const HomeSection = () => {
                       (prev) => (prev - 1 + bannerSlides.length) % bannerSlides.length
                     )
                   }
-                  className='absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-200'
+                  className='absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all duration-200'
                   aria-label='Previous slide'
                 >
                   <svg
