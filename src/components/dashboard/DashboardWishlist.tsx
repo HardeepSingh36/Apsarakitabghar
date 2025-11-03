@@ -136,9 +136,9 @@ const DashboardWishlist = () => {
             </a>
           </div>
         ) : (
-          <div className='grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4 md:gap-4 w-full'>
+          <div className='grid grid-cols-1 gap-2 md:grid-cols-3 3xl:grid-cols-4 md:gap-4 w-full'>
             {wishlistItems.map((item, idx) => (
-              <AddProductBox key={item.id} product={item} idx={idx} removeButton={true} className='!bg-white !block p-2' />
+              <AddProductBox key={item.id} product={item} idx={idx} removeButton={true} className='' />
             ))}
           </div>
         )}

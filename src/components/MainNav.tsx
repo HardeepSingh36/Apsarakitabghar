@@ -2,11 +2,15 @@ import { Link } from 'react-router-dom';
 import { useAuthDialog, type UserRole } from '@/context/AuthDialogContext';
 import { useEffect, useState } from 'react';
 import categoriesService from '@/services/categoriesService';
+import { BOOKS_GENRES } from '@/services/API';
+import type { Genre } from '@/types/types';
 
 interface DropdownMenuItem {
   label: string;
   to?: string;
-  state?: { categoryId: number; categoryName: string };
+  state?:
+    | { categoryId: number; categoryName: string }
+    | { genreId: number; genreName: string; genreSlug: string };
   hasSubmenu?: boolean;
   submenu?: DropdownMenuItem[];
 }
@@ -54,12 +58,18 @@ const navItems: NavItem[] = [
     type: 'link',
     label: 'Featured',
     to: '/books?featured=1',
-    className: 'lg:!ml-4',
+    className: '!hidden 2xl:!block xl:!ml-4',
     isDropdown: false,
   },
   {
     type: 'dropdown',
     label: 'Categories',
+    className: 'dropdown dropdown-mega lg:!mx-4',
+    dropdownMenu: [], // This will be populated from the API
+  },
+  {
+    type: 'dropdown',
+    label: 'Genres',
     className: 'dropdown dropdown-mega lg:!ml-4',
     dropdownMenu: [], // This will be populated from the API
   },
@@ -233,17 +243,18 @@ const MainNav = ({
   const [navItemsState, setNavItemsState] = useState<NavItem[]>(navItems);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchCategoriesAndGenres = async () => {
       try {
-        const data = await categoriesService.getCategories();
-        if (data.status === 'success') {
+        // Fetch categories
+        const categoriesData = await categoriesService.getCategories();
+        if (categoriesData.status === 'success') {
           const updatedNavItems = [...navItemsState];
           const categoryIndex = updatedNavItems.findIndex((item) => item.label === 'Categories');
 
           if (categoryIndex !== -1) {
             updatedNavItems[categoryIndex] = {
               ...updatedNavItems[categoryIndex],
-              dropdownMenu: data.data.categories.map((category) => ({
+              dropdownMenu: categoriesData.data.categories.map((category) => ({
                 label: category.category_name,
                 hasSubmenu: category.children.length > 0,
                 submenu: category.children.map((child) => ({
@@ -257,15 +268,41 @@ const MainNav = ({
                 }),
               })),
             };
-            setNavItemsState(updatedNavItems);
           }
+
+          // Fetch genres
+          const genresRes = await fetch(BOOKS_GENRES);
+          if (genresRes.ok) {
+            const { data } = await genresRes.json();
+            const { genres } = data as { genres: Genre[] };
+
+            const genreIndex = updatedNavItems.findIndex((item) => item.label === 'Genres');
+            if (genreIndex !== -1 && genres && genres.length > 0) {
+              updatedNavItems[genreIndex] = {
+                ...updatedNavItems[genreIndex],
+                dropdownMenu: genres.map((genre) => ({
+                  label: genre.genre_name,
+                  to: `/books?genre_slug=${encodeURIComponent(
+                    genre.slug || genre.genre_name.toLowerCase().replace(/\s+/g, '-')
+                  )}`,
+                  state: {
+                    genreId: genre.id,
+                    genreName: genre.genre_name,
+                    genreSlug: genre.slug,
+                  },
+                })),
+              };
+            }
+          }
+
+          setNavItemsState(updatedNavItems);
         }
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Error fetching categories and genres:', error);
       }
     };
 
-    fetchCategories();
+    fetchCategoriesAndGenres();
   }, []);
 
   const handleJoinClick = (label: string) => {

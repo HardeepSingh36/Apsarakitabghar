@@ -192,7 +192,7 @@ const BookDetail = () => {
   return (
     <>
       <section className='product-section !max-w-screen'>
-        <div className='container-fluid-lg'>
+        <div className='px-4'>
           <div className='row'>
             <div className='col-xxl-9 col-xl-8 col-lg-7 wow fadeInUp'>
               <div className='row g-4'>
@@ -312,13 +312,15 @@ const BookDetail = () => {
                       </ul>
                     </div>
                     <div className='price-rating mt-4'>
-                      <h3 className='theme-color price'>
-                        ₹{book.discounted_price || book.price}{' '}
-                        <del className='text-content'>₹{book.price}</del>{' '}
-                        <span className='offer theme-color'>
-                          ({book.discount_percent ? `${book.discount_percent}% off` : '8% off'})
-                        </span>
-                      </h3>
+                      {book.discounted_price && book.discounted_price < book.price && (
+                        <h3 className='theme-color price'>
+                          ₹{book.discounted_price || book.price}{' '}
+                          <del className='text-content'>₹{book.price}</del>{' '}
+                          <span className='offer theme-color'>
+                            {book.discount_percent && `(${book.discount_percent}% off)`}
+                          </span>
+                        </h3>
+                      )}
                       {/* <div className='product-rating custom-rate'>
                         <ul className='rating'>
                           <li>
@@ -522,24 +524,15 @@ const BookDetail = () => {
                             <p>{book.description || 'No description available.'}</p>
                           </div>
 
-                          <div className='nav-desh'>
-                            <div className='desh-title'>
-                              <h5>About the Book:</h5>
-                            </div>
-                            <p>
-                              Dive into a world of adventure and mystery with "The Lost Tales". This
-                              book takes you on a journey through mystical lands, where every
-                              chapter reveals new secrets and challenges. Follow the protagonist as
-                              they unravel ancient puzzles, encounter magical creatures, and
-                              discover the true meaning of courage and friendship. With vivid
-                              storytelling and unforgettable characters, "The Lost Tales" is a
-                              must-read for anyone who loves epic adventures and heartwarming tales.
-                            </p>
-                          </div>
+
 
                           <div className='banner-contain nav-desh'>
                             {mainBanner ? (
-                              <a href={mainBanner.url || undefined} target={mainBanner.url ? '_blank' : undefined} rel='noopener noreferrer'>
+                              <a
+                                href={mainBanner.url || undefined}
+                                target={mainBanner.url ? '_blank' : undefined}
+                                rel='noopener noreferrer'
+                              >
                                 <img
                                   src={getBannerImageUrl(mainBanner.image)}
                                   className='bg-img blur-up lazyload'
@@ -553,55 +546,7 @@ const BookDetail = () => {
                                 alt=''
                               />
                             )}
-                            <div className='banner-details p-center banner-b-space w-100 text-center'>
-                              <div>
-                                <h6 className='ls-expanded theme-color mb-sm-3 mb-1'>FEATURED</h6>
-                                <h2>THE LOST TALES</h2>
-                                <p className='mx-auto mt-1'>A Journey Beyond Imagination</p>
-                              </div>
-                            </div>
                           </div>
-                        </div>
-                      </div>
-
-                      <div className='tab-pane fade' id='info' role='tabpanel'>
-                        <div className='table-responsive'>
-                          <table className='table info-table'>
-                            <tbody>
-                              <tr>
-                                <td>Specialty</td>
-                                <td>Vegetarian</td>
-                              </tr>
-                              <tr>
-                                <td>Ingredient Type</td>
-                                <td>Vegetarian</td>
-                              </tr>
-                              <tr>
-                                <td>Brand</td>
-                                {/* <td>{book.publisher_name || 'Lavian Exotique'}</td> */}
-                              </tr>
-                              <tr>
-                                <td>Form</td>
-                                {/* <td>{book.format || 'Bar Brownie'}</td> */}
-                              </tr>
-                              <tr>
-                                <td>Package Information</td>
-                                <td>Box</td>
-                              </tr>
-                              {/* <tr>
-                                <td>Manufacturer</td>
-                                <td>{book.publisher_name || 'Prayagh Nutri Product Pvt Ltd'}</td>
-                              </tr> */}
-                              <tr>
-                                <td>Item part number</td>
-                                <td>{book.isbn || 'LE 014 - 20pcs Crème Bakes (Pack of 2)'}</td>
-                              </tr>
-                              <tr>
-                                <td>Net Quantity</td>
-                                <td>{book.pages || '40.00 count'}</td>
-                              </tr>
-                            </tbody>
-                          </table>
                         </div>
                       </div>
 
@@ -706,7 +651,11 @@ const BookDetail = () => {
                 <div className='ratio_156 pt-25'>
                   <div className='home-contain'>
                     {sidebarBanner ? (
-                      <a href={sidebarBanner.url || undefined} target={sidebarBanner.url ? '_blank' : undefined} rel='noopener noreferrer'>
+                      <a
+                        href={sidebarBanner.url || undefined}
+                        target={sidebarBanner.url ? '_blank' : undefined}
+                        rel='noopener noreferrer'
+                      >
                         <img
                           src={getBannerImageUrl(sidebarBanner.image)}
                           className='bg-img blur-up lazyload'

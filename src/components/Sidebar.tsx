@@ -77,7 +77,7 @@ const Sidebar = () => {
             {loading ? (
               <div className='px-4 py-2 space-y-2'>
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <Skeleton key={i} height={32} className='custom-skeleton' />
+                  <Skeleton key={i} height={20} borderRadius={6} />
                 ))}
               </div>
             ) : (
@@ -154,7 +154,7 @@ const Sidebar = () => {
                 ))}
                 <Link
                   to='/books?is_trending=1'
-                  className='block !px-4 !py-2.5 !text-center !text-base !font-semibold !text-[#fc2403] hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-t !border-gray-200'
+                  className='block !px-4 !py-2.5 !text-center !text-base font-public-sans !font-semibold !text-[#fc2403] hover:!text-[#fc6603] hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-t !border-gray-200'
                 >
                   View All Trending Books →
                 </Link>
@@ -199,7 +199,7 @@ const Sidebar = () => {
                 ))}
                 <Link
                   to='/books?is_best_seller=1'
-                  className='block !px-4 !py-2.5 !text-center !text-base !font-semibold !text-[#fc2403] hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-t !border-gray-200'
+                  className='block !px-4 !py-2.5 !text-center !text-base font-public-sans !font-semibold !text-[#fc2403] hover:!text-[#fc6603] hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-t !border-gray-200'
                 >
                   View All Best Sellers →
                 </Link>
@@ -244,7 +244,7 @@ const Sidebar = () => {
                 ))}
                 <Link
                   to='/books?is_new=1'
-                  className='block !px-4 !py-2.5 !text-center !text-base !font-semibold !text-[#fc2403] hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-t !border-gray-200'
+                  className='block !px-4 !py-2.5 !text-center !text-base font-public-sans !font-semibold !text-[#fc2403] hover:!text-[#fc6603] hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-t !border-gray-200'
                 >
                   View All New Books →
                 </Link>

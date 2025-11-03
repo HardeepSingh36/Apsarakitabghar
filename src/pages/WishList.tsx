@@ -4,7 +4,6 @@ import AddProductBox from '@/components/general/AddProductBox';
 import { fetchWishlistAsync } from '@/features/wishlist/wishlistSlice';
 import { useEffect } from 'react';
 import { useAuthDialog } from '@/context/AuthDialogContext';
-import { Loader } from 'react-feather';
 import ProductSkeleton from '@/components/ProductSkeleton';
 
 const WishList = () => {
@@ -25,12 +24,12 @@ const WishList = () => {
     return (
       <div>
         <section className='wishlist-section section-b-space'>
-          <div className='container-fluid-lg'>
+          <div className='px-4'>
             <div className='text-center mb-4'>
               <h2 className='text-2xl font-bold text-gray-800'>My Wishlist</h2>
               <p className='text-gray-600'>Loading your saved books...</p>
             </div>
-            <div className='grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+            <div className='grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4'>
               {Array.from({ length: 8 }).map((_, idx) => (
                 <div key={idx}>
                   <ProductSkeleton />
@@ -48,7 +47,7 @@ const WishList = () => {
     return (
       <div>
         <section className='wishlist-section section-b-space'>
-          <div className='container-fluid-lg'>
+          <div className='px-4'>
             <div className='text-center py-12'>
               <h2 className='text-2xl font-bold text-gray-800 mb-4'>My Wishlist</h2>
               <div className='text-red-500 mb-4'>
@@ -72,7 +71,7 @@ const WishList = () => {
     return (
       <div>
         <section className='wishlist-section section-b-space'>
-          <div className='container-fluid-lg'>
+          <div className='px-4'>
             <div className='text-center py-12'>
               <h2 className='text-2xl font-bold text-gray-800 mb-4'>My Wishlist</h2>
               <p className='text-gray-600 mb-4'>Please sign in to view your wishlist</p>
@@ -87,12 +86,12 @@ const WishList = () => {
     <div>
       {/* Wishlist Section Start */}
       <section className='wishlist-section section-b-space'>
-        <div className='container-fluid-lg'>
+        <div className='px-4'>
           <div className='text-center mb-6'>
             <h2 className='text-2xl font-bold text-gray-800'>My Wishlist</h2>
           </div>
 
-          <div className='grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+          <div className='grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4'>
             {wishlistItems.length > 0 ? (
               wishlistItems.map((item) => (
                 <div key={item.id}>

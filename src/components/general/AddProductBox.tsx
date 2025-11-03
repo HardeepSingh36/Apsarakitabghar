@@ -123,6 +123,22 @@ const AddProductBox = ({
       className={`flex gap-3 md:gap-0 md:flex-col justify-between book-product-box wow fadeIn px-3 md:px-0 py-3 md:pt-4 bg-gray-50 h-full shadow-md hover:shadow-xl ${className}`}
       data-wow-delay={idx ? `0.${(idx * 5).toString().padStart(2, '0')}s` : undefined}
     >
+      {removeButton && (
+        <button
+          className={`btn !absolute top-1 right-1 bg-white !rounded-full w-9 h-9 !p-2 shadow-md !z-50 ${
+            isWishlistLoading ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+          onClick={handleWishlistToggle}
+          disabled={isWishlistLoading}
+          title={isWishlistLoading ? 'Removing...' : 'Remove from wishlist'}
+        >
+          {isWishlistLoading ? (
+            <Loader className='w-4 h-4 text-gray-500 animate-spin' />
+          ) : (
+            <X className='w-10 h-10 text-gray-500' />
+          )}
+        </button>
+      )}
       <div className='product-header '>
         <div className='product-image p-0 md:!mb-0 !size-36 md:!h-72 md:!w-auto'>
           <Link to={`/books/${product.slug}`} state={{ item: product }}>
@@ -135,22 +151,6 @@ const AddProductBox = ({
               alt=''
             />
           </Link>
-          {removeButton && (
-            <button
-              className={`btn !absolute top-0 right-0 bg-white !rounded-full w-9 h-9 !p-2 shadow-md ${
-                isWishlistLoading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-              onClick={handleWishlistToggle}
-              disabled={isWishlistLoading}
-              title={isWishlistLoading ? 'Removing...' : 'Remove from wishlist'}
-            >
-              {isWishlistLoading ? (
-                <Loader className='w-4 h-4 text-gray-500 animate-spin' />
-              ) : (
-                <X className='w-10 h-10 text-gray-500' />
-              )}
-            </button>
-          )}
         </div>
       </div>
       <div className='product-footer flex flex-col flex-grow justify-between'>
@@ -187,8 +187,11 @@ const AddProductBox = ({
                 ('discounted_price' in product ? product.discounted_price : product.price) || 0
               ).toFixed(2)}
             </span>
-            {'  '}
-            <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
+            {
+              product.discounted_price && product.discounted_price < product.price && (
+                <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
+              )
+            }
           </h6>
           <div
             className={`bg-theme-gradient-orange ${

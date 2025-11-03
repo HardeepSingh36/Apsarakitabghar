@@ -10,6 +10,8 @@ import 'react-tooltip/dist/react-tooltip.css';
 import { store } from '@/app/store';
 import { Provider } from 'react-redux';
 import { setUser, finishLoading } from '@/features/auth/authSlice';
+import 'react-loading-skeleton/dist/skeleton.css';
+import '/public/assets/css/custom-shimmer.css';
 
 // Initialize auth before rendering the app
 const raw = localStorage.getItem('auth_user');

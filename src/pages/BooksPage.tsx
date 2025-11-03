@@ -65,7 +65,7 @@ const BooksPage = () => {
   const searchQuery = searchParams.get('search');
   const authorId = searchParams.get('author');
   const authorName = searchParams.get('author_name');
-  const categoryId = location.state?.categoryId
+  const categoryId = location.state?.categoryId;
   const categoryName = location.state?.categoryName || searchParams.get('category_name');
   const genreId = searchParams.get('genre');
   const genreSlug = searchParams.get('genre_slug');
@@ -144,9 +144,10 @@ const BooksPage = () => {
         // If we have category ID, use it directly with books-by-category endpoint
         response = await getBooksByCategory(categoryId, { page: 1, limit: 20 });
         const categoryNameFromState = location.state?.categoryName;
-        title = categoryNameFromState ? `Books in ${categoryNameFromState}` : `Books in Category (ID: ${categoryId})`;
-      }
-       else if (genreSlug) {
+        title = categoryNameFromState
+          ? `Books in ${categoryNameFromState}`
+          : `Books in Category (ID: ${categoryId})`;
+      } else if (genreSlug) {
         // Books by genre slug - use ID from state if available, otherwise search by slug/name
         const genreIdFromState = location.state?.genreId;
         const genreNameFromState = location.state?.genreName;
@@ -690,15 +691,15 @@ const BooksPage = () => {
                   tagSlug) && (
                   <button
                     onClick={() => navigate('/books')}
-                    className='text-sm text-blue-600 hover:underline'
+                    className='font-public-sans !px-4 !py-2 bg-theme-gradient-orange hover:!from-[#e42003] hover:!to-[#e55503] !text-white !text-sm rounded-sm font-public-sans !shadow-md hover:!shadow-lg !transition-all !duration-200 !border-0'
                   >
-                    Clear filters
+                    Clear Filters
                   </button>
                 )}
             </div>
 
             {/* Product List Section */}
-            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:!gap-4 product-list-section mt-4'>
+            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:!gap-4 product-list-section mt-4'>
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} className='col'>
@@ -738,7 +739,7 @@ const BooksPage = () => {
                     tagSlug) && (
                     <button
                       onClick={() => navigate('/books')}
-                      className='btn theme-bg-color text-white m-0 mx-auto'
+                      className='font-public-sans !text-xl !px-6 !py-3 bg-theme-gradient-orange hover:!from-[#e42003] hover:!to-[#e55503] !text-white  !rounded-sm !shadow-md hover:!shadow-lg !transition-all !duration-200 !border-0'
                     >
                       Browse All Books
                     </button>
