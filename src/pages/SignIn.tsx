@@ -115,7 +115,7 @@ const SignIn = () => {
               <div className='text-center mb-3'>
                 <Link to='/' className='web-logo mx-auto'>
                   <img
-                    src='/assets/logo/apsra.svg'
+                    src='/assets/logo/apsra.png'
                     className='img-fluid mx-auto'
                     alt='Apsara Kitab Ghar'
                     style={{ maxHeight: '50px' }}

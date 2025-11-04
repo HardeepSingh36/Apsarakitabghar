@@ -6,7 +6,7 @@ const MobileFixMenu = () => {
   const [showCategories, setShowCategories] = useState(false);
   return (
     <>
-      <div className='mobile-menu lg:hidden mobile-cart'>
+      <div className='mobile-menu lg:hidden mobile-cart bg-theme-gradient-radial'>
         <ul>
           <li className='active'>
             <Link to='/'>

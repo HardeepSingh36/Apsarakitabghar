@@ -20,7 +20,7 @@ const Footer = () => {
             {/* Logo & Social */}
             <div className='col-xxl-3 col-xl-4 col-sm-6'>
               <Link to='/' className='foot-logo theme-logo'>
-                <img src='/assets/logo/apsra.svg' className='img-fluid blur-up lazyload' alt='' />
+                <img src='/assets/logo/apsra.png' className='img-fluid blur-up lazyload' alt='' />
               </Link>
               <p className='information-text information-text-2'>
                 it is a long established fact that a reader will be distracted by the readable

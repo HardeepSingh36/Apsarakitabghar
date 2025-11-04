@@ -63,7 +63,7 @@ const BookDetail = () => {
     fetchBanners();
   }, []);
   const dispatch = useAppDispatch();
-  const { isAuthenticated, openSignIn } = useAuthDialog();
+  const { isAuthenticated } = useAuthDialog();
   const [quantity, setQuantity] = useState(1);
   const { id } = useParams();
   const [book, setBook] = useState<Book | null>(null);

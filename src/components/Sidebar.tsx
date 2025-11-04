@@ -39,7 +39,7 @@ const CategoryItem = ({ category }: { category: Category }) => {
 
       {/* Nested children dropdown */}
       {hasChildren && isHovered && (
-        <div className='absolute left-[98%] top-0 ml-1 min-w-[250px] bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-[400px] overflow-y-visible'>
+        <div className='absolute left-[98%] top-0 ml-1 min-w-[250px] bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-y-visible'>
           {category.children.map((child) => (
             <NestedCategoryItem key={child.id} category={child} level={1} />
           ))}
@@ -64,7 +64,7 @@ const NestedCategoryItem = ({ category, level }: { category: Category; level: nu
         to={`/books?category_name=${category.category_name}`}
         state={{ categoryId: category.id, categoryName: category.category_name }}
         className='group block !px-4 !py-2.5 !text-gray-700 hover:!bg-gradient-to-r hover:!from-[#ffe8e0] hover:!to-[#ffede5] !transition-all !duration-200 !border-b !border-gray-100 !text-sm !font-medium'
-        style={{ paddingLeft: `${level * 12 + 16}px` }}
+        style={{ paddingLeft: `${level * 12 + 16}px`}}
       >
         <span className='!flex !items-center !justify-between'>
           <span className='!flex !items-center !gap-2'>
@@ -100,14 +100,14 @@ const Sidebar = () => {
         const categoriesData = await categoriesService.getCategories();
         if (categoriesData.status === 'success') {
           console.log('Fetched categories:', categoriesData.data.categories);
-          setCategories(categoriesData.data.categories.slice(0, 6)); // Limit to 6
+          setCategories(categoriesData.data.categories); // Limit to 6
         }
 
         // Fetch Genres
         const genresRes = await fetch(BOOKS_GENRES);
         const genresData = await genresRes.json();
         if (genresData.status === 'success') {
-          setGenres(genresData.data.genres.slice(0, 8)); // Limit to 8
+          setGenres(genresData.data.genres); // Limit to 8
         }
       } catch (error) {
         console.error('Error fetching sidebar data:', error);
