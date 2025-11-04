@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/app/hooks';
-import { login } from '@/features/auth/authSlice';
+import { login, syncCartAfterLogin } from '@/features/auth/authSlice';
 import { register } from '@/services/authService';
 import { getCaptchaConfig } from '@/services/captchaService';
+import { fetchCartList } from '@/features/cart/cartSlice';
 import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
 import type { CaptchaConfig } from '@/types/types';
@@ -143,6 +144,17 @@ const SignUp = () => {
       localStorage.setItem('token_expires_in', expires_in);
 
       toast.success('Account created successfully!');
+
+      // Sync localStorage cart with server
+      try {
+        await dispatch(syncCartAfterLogin(token)).unwrap();
+        // Fetch updated cart from server
+        await dispatch(fetchCartList()).unwrap();
+      } catch (error) {
+        console.error('Failed to sync cart:', error);
+        // Don't show error to user, just log it
+      }
+
       navigate('/');
     } catch (error: any) {
       console.log(error);

@@ -4,7 +4,7 @@ import { type BookFlag } from '@/services/booksByFlagsService';
 // import { Tooltip } from 'react-tooltip';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
-import { addToCartAsync } from '@/features/cart/cartSlice';
+import { addToCartAsync, addToLocalCartAction } from '@/features/cart/cartSlice';
 import { addToWishlistAsync, removeFromWishlistAsync } from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
@@ -59,16 +59,17 @@ const AddProductBox = ({
   // };
 
   const handleAddToCart = async () => {
-    if (!isAuthenticated) {
-      toast.error('Please sign in to add items to cart');
-      openSignIn('/cart');
-      return;
-    }
-
     if (isAddingToCart) return; // Prevent multiple clicks
 
     try {
-      await dispatch(addToCartAsync({ book_id: product.id, quantity: 1 })).unwrap();
+      if (isAuthenticated) {
+        // If authenticated, add to server and localStorage
+        await dispatch(addToCartAsync({ book_id: product.id, quantity: 1 })).unwrap();
+      } else {
+        // If not authenticated, only add to localStorage
+        dispatch(addToLocalCartAction({ book: product, quantity: 1 }));
+      }
+
       toast.success(`"${product.title}" added to cart`, {
         duration: 3000,
       });
@@ -187,11 +188,9 @@ const AddProductBox = ({
                 ('discounted_price' in product ? product.discounted_price : product.price) || 0
               ).toFixed(2)}
             </span>
-            {
-              product.discounted_price && product.discounted_price < product.price && (
-                <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
-              )
-            }
+            {product.discounted_price && product.discounted_price < product.price && (
+              <span className='text-muted line-through ms-2'>{product.price.toFixed(2)}</span>
+            )}
           </h6>
           <div
             className={`bg-theme-gradient-orange ${

@@ -1,5 +1,6 @@
 // src/features/auth/authSlice.ts
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { syncCartWithServer } from '@/services/localStorageCartService';
 
 export type UserRole = 'customer' | 'publisher' | 'reseller';
 
@@ -33,6 +34,19 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loading: true,
 };
+
+// Async thunk to sync cart after login
+export const syncCartAfterLogin = createAsyncThunk(
+  'auth/syncCartAfterLogin',
+  async (token: string, { rejectWithValue }) => {
+    try {
+      await syncCartWithServer(token);
+      return true;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to sync cart');
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: 'auth',

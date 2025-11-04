@@ -36,7 +36,7 @@ const Header = () => {
                   </span>
                 </button>
                 <Link to='/' className='web-logo nav-logo'>
-                  <img src='/assets/logo/apsra.png' className='img-fluid lazyload !h-10 !w-32 !object-cover' alt='' />
+                  <img src='/assets/logo/apsra.png' className='img-fluid lazyload !h-10 !w-32' alt='' />
                 </Link>
 
                 <div className='header-nav-middle'>

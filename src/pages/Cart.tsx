@@ -5,6 +5,8 @@ import {
   removeCartItemAsync,
   clearCartAsync,
   fetchCartList,
+  updateLocalCartAction,
+  removeFromLocalCartAction,
 } from '@/features/cart/cartSlice';
 import { useEffect } from 'react';
 import { Bookmark, Minus, Plus, X, Loader } from 'react-feather';
@@ -13,10 +15,12 @@ import { Tooltip } from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import { IMAGE_BASE_URL } from '@/constants';
 import toast from 'react-hot-toast';
+import { useAuthDialog } from '@/context/AuthDialogContext';
 
 const Cart = () => {
   const { currency } = useCurrency();
   const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAuthDialog();
   const cartState = useAppSelector((state: RootState) => state.cart);
   const { items: cartItems } = cartState;
 
@@ -24,8 +28,11 @@ const Cart = () => {
   const isClearingCart = cartState.operationLoading['clear-cart'] || false;
 
   useEffect(() => {
-    dispatch(fetchCartList());
-  }, [dispatch]);
+    // Only fetch from server if authenticated
+    if (isAuthenticated) {
+      dispatch(fetchCartList());
+    }
+  }, [dispatch, isAuthenticated]);
 
   // Calculate correct totals using discounted prices
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -35,6 +42,47 @@ const Cart = () => {
   const itemsCount = cartItems.length;
   const shipping = 0; // Will be calculated by backend
   const total = discountedSubtotal + shipping;
+
+  // Helper function to handle cart updates for both auth states
+  const handleUpdateQuantity = async (item: any, newQuantity: number) => {
+    try {
+      if (isAuthenticated) {
+        // Update on server
+        await dispatch(
+          updateCartItemAsync({
+            cartItemId: item.cart_item_id,
+            quantity: newQuantity,
+          })
+        ).unwrap();
+        dispatch(fetchCartList());
+      } else {
+        // Update in localStorage only
+        dispatch(updateLocalCartAction({ bookId: item.book_id, quantity: newQuantity }));
+      }
+      toast.success('Quantity updated', { duration: 2000 });
+    } catch (error: any) {
+      console.error('Failed to update cart:', error);
+      toast.error(error || 'Failed to update quantity', { duration: 3000 });
+    }
+  };
+
+  // Helper function to handle cart item removal for both auth states
+  const handleRemoveItem = async (item: any) => {
+    try {
+      if (isAuthenticated) {
+        // Remove from server
+        await dispatch(removeCartItemAsync({ cartItemId: item.cart_item_id })).unwrap();
+        dispatch(fetchCartList());
+      } else {
+        // Remove from localStorage only
+        dispatch(removeFromLocalCartAction({ bookId: item.book_id }));
+      }
+      toast.success('Item removed from cart', { duration: 2000 });
+    } catch (error: any) {
+      console.error('Failed to remove item:', error);
+      toast.error(error || 'Failed to remove item', { duration: 3000 });
+    }
+  };
 
   return (
     <div>
@@ -47,7 +95,13 @@ const Cart = () => {
                 <button
                   onClick={async () => {
                     try {
-                      await dispatch(clearCartAsync()).unwrap();
+                      if (isAuthenticated) {
+                        // Clear from server (which also clears localStorage)
+                        await dispatch(clearCartAsync()).unwrap();
+                      } else {
+                        // Clear from localStorage only
+                        dispatch({ type: 'cart/clearCart' });
+                      }
                       toast.success('Cart cleared successfully', {
                         duration: 3000,
                       });
@@ -182,24 +236,7 @@ const Cart = () => {
                                             }
                                             onClick={async () => {
                                               if (item.quantity > 1) {
-                                                try {
-                                                  await dispatch(
-                                                    updateCartItemAsync({
-                                                      cartItemId: item.cart_item_id,
-                                                      quantity: item.quantity - 1,
-                                                    })
-                                                  ).unwrap();
-                                                  dispatch(fetchCartList());
-                                                  toast.success('Quantity updated', {
-                                                    duration: 2000,
-                                                  });
-                                                } catch (error: any) {
-                                                  console.error('Failed to update cart:', error);
-                                                  toast.error(
-                                                    error || 'Failed to update quantity',
-                                                    { duration: 3000 }
-                                                  );
-                                                }
+                                                await handleUpdateQuantity(item, item.quantity - 1);
                                               }
                                             }}
                                           >
@@ -234,24 +271,7 @@ const Cart = () => {
                                             }
                                             onClick={async () => {
                                               if (item.quantity < item.max_quantity) {
-                                                try {
-                                                  await dispatch(
-                                                    updateCartItemAsync({
-                                                      cartItemId: item.cart_item_id,
-                                                      quantity: item.quantity + 1,
-                                                    })
-                                                  ).unwrap();
-                                                  dispatch(fetchCartList());
-                                                  toast.success('Quantity updated', {
-                                                    duration: 2000,
-                                                  });
-                                                } catch (error: any) {
-                                                  console.error('Failed to update cart:', error);
-                                                  toast.error(
-                                                    error || 'Failed to update quantity',
-                                                    { duration: 3000 }
-                                                  );
-                                                }
+                                                await handleUpdateQuantity(item, item.quantity + 1);
                                               }
                                             }}
                                           >
@@ -312,21 +332,7 @@ const Cart = () => {
                                       }
                                       onClick={async () => {
                                         if (item.quantity > 1) {
-                                          try {
-                                            await dispatch(
-                                              updateCartItemAsync({
-                                                cartItemId: item.cart_item_id,
-                                                quantity: item.quantity - 1,
-                                              })
-                                            ).unwrap();
-                                            dispatch(fetchCartList());
-                                            toast.success('Quantity updated', { duration: 2000 });
-                                          } catch (error: any) {
-                                            console.error('Failed to update cart:', error);
-                                            toast.error(error || 'Failed to update quantity', {
-                                              duration: 3000,
-                                            });
-                                          }
+                                          await handleUpdateQuantity(item, item.quantity - 1);
                                         }
                                       }}
                                     >
@@ -341,15 +347,10 @@ const Cart = () => {
                                       type='text'
                                       name='quantity'
                                       value={item.quantity}
-                                      onChange={(e) => {
+                                      onChange={async (e) => {
                                         const val = parseInt(e.target.value, 10);
                                         if (!isNaN(val) && val > 0 && val <= item.max_quantity) {
-                                          dispatch(
-                                            updateCartItemAsync({
-                                              cartItemId: item.cart_item_id,
-                                              quantity: val,
-                                            })
-                                          );
+                                          await handleUpdateQuantity(item, val);
                                         }
                                       }}
                                     />
@@ -364,20 +365,8 @@ const Cart = () => {
                                         cartState.operationLoading[`update-${item.cart_item_id}`]
                                       }
                                       onClick={async () => {
-                                        try {
-                                          await dispatch(
-                                            updateCartItemAsync({
-                                              cartItemId: item.cart_item_id,
-                                              quantity: item.quantity + 1,
-                                            })
-                                          ).unwrap();
-                                          dispatch(fetchCartList());
-                                          toast.success('Quantity updated', { duration: 2000 });
-                                        } catch (error: any) {
-                                          console.error('Failed to update cart:', error);
-                                          toast.error(error || 'Failed to update quantity', {
-                                            duration: 3000,
-                                          });
+                                        if (item.quantity < item.max_quantity) {
+                                          await handleUpdateQuantity(item, item.quantity + 1);
                                         }
                                       }}
                                     >
@@ -420,19 +409,7 @@ const Cart = () => {
                                     cartState.operationLoading[`remove-${item.cart_item_id}`]
                                   }
                                   onClick={async () => {
-                                    try {
-                                      await dispatch(
-                                        removeCartItemAsync({ cartItemId: item.cart_item_id })
-                                      ).unwrap();
-                                      toast.success(`"${item.title}" removed from cart`, {
-                                        duration: 3000,
-                                      });
-                                    } catch (error: any) {
-                                      console.error('Failed to remove item:', error);
-                                      toast.error(error || 'Failed to remove item from cart', {
-                                        duration: 4000,
-                                      });
-                                    }
+                                    await handleRemoveItem(item);
                                   }}
                                   data-tooltip-id='remove-tooltip'
                                 >

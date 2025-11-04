@@ -6,7 +6,7 @@ import type { Book } from '@/types/types';
 import { getBooks } from '@/services/bookService';
 import { Heart, Loader } from 'react-feather';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { addToCartAsync } from '@/features/cart/cartSlice';
+import { addToCartAsync, addToLocalCartAction } from '@/features/cart/cartSlice';
 import { addToWishlistAsync, fetchWishlistAsync } from '@/features/wishlist/wishlistSlice';
 import type { RootState } from '@/app/store';
 import { useAuthDialog } from '@/context/AuthDialogContext';
@@ -92,18 +92,19 @@ const BookDetail = () => {
   }, [id, passedBook, isAuthenticated, dispatch]);
 
   const handleAddToCart = async () => {
-    if (!isAuthenticated) {
-      toast.error('Please sign in to add items to cart');
-      openSignIn('/cart'); // Pass redirect path
-      return;
-    }
-
     if (!book || isAddingToCart) return;
 
     setCartAction('add'); // Set which action is being performed
 
     try {
-      await dispatch(addToCartAsync({ book_id: book.id, quantity: quantity })).unwrap();
+      if (isAuthenticated) {
+        // If authenticated, add to server and localStorage
+        await dispatch(addToCartAsync({ book_id: book.id, quantity: quantity })).unwrap();
+      } else {
+        // If not authenticated, only add to localStorage
+        dispatch(addToLocalCartAction({ book: book, quantity: quantity }));
+      }
+
       const itemText = quantity > 1 ? `${quantity} copies of "${book.title}"` : `"${book.title}"`;
       toast.success(`${itemText} added to cart`, {
         duration: 3000,
@@ -159,18 +160,19 @@ const BookDetail = () => {
   };
 
   const handleBuyNow = async () => {
-    if (!isAuthenticated) {
-      toast.error('Please sign in to purchase items');
-      openSignIn('/cart'); // Pass redirect path
-      return;
-    }
-
     if (!book || isAddingToCart) return;
 
     setCartAction('buy'); // Set which action is being performed
 
     try {
-      await dispatch(addToCartAsync({ book_id: book.id, quantity: 1 })).unwrap();
+      if (isAuthenticated) {
+        // If authenticated, add to server and localStorage
+        await dispatch(addToCartAsync({ book_id: book.id, quantity: 1 })).unwrap();
+      } else {
+        // If not authenticated, only add to localStorage
+        dispatch(addToLocalCartAction({ book: book, quantity: 1 }));
+      }
+
       toast.success(`"${book.title}" added to cart!`, {
         duration: 2000,
       });
@@ -523,8 +525,6 @@ const BookDetail = () => {
                           <div className='nav-desh'>
                             <p>{book.description || 'No description available.'}</p>
                           </div>
-
-
 
                           <div className='banner-contain nav-desh'>
                             {mainBanner ? (

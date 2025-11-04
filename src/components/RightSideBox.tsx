@@ -38,8 +38,15 @@ const RightSideBox = () => {
 
   // Handle protected navigation
   const handleProtectedNav = (path: string) => {
+    // Cart is now accessible to everyone
+    if (path === '/cart') {
+      navigate(path);
+      return;
+    }
+
+    // Other paths still require authentication
     if (!isAuthenticated) {
-      openSignIn('/cart');
+      openSignIn(path);
       return;
     }
     navigate(path);
@@ -101,20 +108,15 @@ const RightSideBox = () => {
             </button>
 
             <div className='onhover-div'>
-              {!isAuthenticated ? (
-                <div className='p-3 text-center'>
-                  <p className='mb-2'>Please log in to view your cart.</p>
-                  <button
-                    className='btn btn-sm theme-bg-color text-white mx-auto'
-                    onClick={() => openSignIn('/cart')}
-                  >
-                    Log In
-                  </button>
-                </div>
-              ) : cartItems.length === 0 ? (
+              {cartItems.length === 0 ? (
                 // Empty cart message
                 <div className='p-3 text-center'>
                   <p>Your cart is empty</p>
+                  {!isAuthenticated && (
+                    <p className='text-sm text-gray-500 mt-2'>
+                      Sign in to sync your cart across devices
+                    </p>
+                  )}
                 </div>
               ) : (
                 <>

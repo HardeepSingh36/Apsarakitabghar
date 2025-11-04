@@ -7,6 +7,14 @@ import {
   removeCartItem,
   clearCartAPI,
 } from '@/services/cartService';
+import {
+  getLocalCart,
+  addToLocalCart,
+  updateLocalCartItem,
+  removeFromLocalCart,
+  clearLocalCart,
+  type LocalCartItem,
+} from '@/services/localStorageCartService';
 
 interface CartState {
   items: CartItem[];
@@ -16,8 +24,47 @@ interface CartState {
   operationLoading: { [key: string]: boolean }; // For individual operations
 }
 
+// Helper function to convert LocalCartItem to CartItem
+const convertLocalToCartItem = (localItem: LocalCartItem): CartItem => {
+  return {
+    cart_item_id: localItem.book_id, // Use book_id as temporary ID for local items
+    cart_id: 0,
+    book_id: localItem.book_id,
+    quantity: localItem.quantity,
+    price_at_add: localItem.price,
+    added_at: localItem.added_at,
+    cart_subtotal: (localItem.discounted_price * localItem.quantity).toString(),
+    cart_discount: ((localItem.price - localItem.discounted_price) * localItem.quantity).toString(),
+    cart_total: (localItem.discounted_price * localItem.quantity).toString(),
+    title: localItem.title,
+    slug: localItem.slug,
+    price: localItem.price,
+    discount_percent: localItem.discount_percent,
+    cover_image_name: localItem.cover_image_name,
+    stock_quantity: localItem.stock_quantity,
+    book_status: 'active',
+    author_name: localItem.author_name || '',
+    author_pen_name: localItem.author_pen_name || '',
+    current_discounted_price: localItem.discounted_price,
+    discounted_price_at_add: localItem.discounted_price,
+    line_total: localItem.discounted_price * localItem.quantity,
+    current_line_total: localItem.discounted_price * localItem.quantity,
+    price_changed: false,
+    price_difference: 0,
+    in_stock: localItem.stock_quantity > 0,
+    max_quantity: localItem.stock_quantity,
+    availability_status: localItem.stock_quantity > 0 ? 'in_stock' : 'out_of_stock',
+  };
+};
+
+// Load initial state from localStorage
+const loadInitialCart = (): CartItem[] => {
+  const localCart = getLocalCart();
+  return localCart.map(convertLocalToCartItem);
+};
+
 const initialState: CartState = {
-  items: [],
+  items: loadInitialCart(),
   summary: null,
   loading: false,
   error: null,
@@ -107,6 +154,39 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
       state.summary = null;
+      clearLocalCart();
+    },
+    // Add item to localStorage cart (for non-authenticated users)
+    addToLocalCartAction: (state, action) => {
+      const { book, quantity } = action.payload;
+      addToLocalCart(book, quantity);
+
+      // Update Redux state
+      const localCart = getLocalCart();
+      state.items = localCart.map(convertLocalToCartItem);
+    },
+    // Update item in localStorage cart
+    updateLocalCartAction: (state, action) => {
+      const { bookId, quantity } = action.payload;
+      updateLocalCartItem(bookId, quantity);
+
+      // Update Redux state
+      const localCart = getLocalCart();
+      state.items = localCart.map(convertLocalToCartItem);
+    },
+    // Remove item from localStorage cart
+    removeFromLocalCartAction: (state, action) => {
+      const { bookId } = action.payload;
+      removeFromLocalCart(bookId);
+
+      // Update Redux state
+      const localCart = getLocalCart();
+      state.items = localCart.map(convertLocalToCartItem);
+    },
+    // Load cart from localStorage
+    loadCartFromLocalStorage: (state) => {
+      const localCart = getLocalCart();
+      state.items = localCart.map(convertLocalToCartItem);
     },
   },
   extraReducers: (builder) => {
@@ -123,6 +203,22 @@ const cartSlice = createSlice({
         // Add the returned cart item to the state
         if (action.payload && action.payload) {
           const payload = action.payload;
+
+          // Also update localStorage
+          addToLocalCart(
+            {
+              book_id: payload.book_id,
+              title: payload.title,
+              slug: payload.slug,
+              price: payload.price,
+              discount_percent: payload.discount_percent,
+              discounted_price: payload.discounted_price,
+              cover_image_name: payload.cover_image_name,
+              stock_quantity: payload.stock_quantity,
+            },
+            payload.quantity
+          );
+
           const newCartItem: CartItem = {
             cart_item_id: payload.cart_item_id,
             cart_id: payload.cart_id,
@@ -212,6 +308,9 @@ const cartSlice = createSlice({
             const newQuantity = action.payload.quantity;
             const newLineTotal = item.current_discounted_price * newQuantity;
 
+            // Update localStorage
+            updateLocalCartItem(item.book_id, newQuantity);
+
             state.items[itemIndex] = {
               ...item,
               quantity: newQuantity,
@@ -239,6 +338,16 @@ const cartSlice = createSlice({
 
         // Remove the cart item from state
         if (action.payload && action.payload.cartItemId) {
+          // Find the item to get book_id for localStorage removal
+          const itemToRemove = state.items.find(
+            (item) => item.cart_item_id === action.payload.cartItemId
+          );
+
+          if (itemToRemove) {
+            // Remove from localStorage
+            removeFromLocalCart(itemToRemove.book_id);
+          }
+
           state.items = state.items.filter(
             (item) => item.cart_item_id !== action.payload.cartItemId
           );
@@ -257,6 +366,8 @@ const cartSlice = createSlice({
         state.items = [];
         state.summary = null;
         state.operationLoading['clear-cart'] = false;
+        // Clear localStorage
+        clearLocalCart();
       })
       .addCase(clearCartAsync.rejected, (state, action) => {
         state.operationLoading['clear-cart'] = false;
@@ -265,5 +376,11 @@ const cartSlice = createSlice({
   },
 });
 
-export const { clearCart } = cartSlice.actions;
+export const {
+  clearCart,
+  addToLocalCartAction,
+  updateLocalCartAction,
+  removeFromLocalCartAction,
+  loadCartFromLocalStorage,
+} = cartSlice.actions;
 export default cartSlice.reducer;
