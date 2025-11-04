@@ -1,6 +1,7 @@
 // src/features/auth/authSlice.ts
 import { createSlice, type PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { syncCartWithServer } from '@/services/localStorageCartService';
+import { syncWishlistWithServer } from '@/services/localStorageWishlistService';
 
 export type UserRole = 'customer' | 'publisher' | 'reseller';
 
@@ -44,6 +45,19 @@ export const syncCartAfterLogin = createAsyncThunk(
       return true;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to sync cart');
+    }
+  }
+);
+
+// Async thunk to sync wishlist after login
+export const syncWishlistAfterLogin = createAsyncThunk(
+  'auth/syncWishlistAfterLogin',
+  async (token: string, { rejectWithValue }) => {
+    try {
+      await syncWishlistWithServer(token);
+      return true;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Failed to sync wishlist');
     }
   }
 );

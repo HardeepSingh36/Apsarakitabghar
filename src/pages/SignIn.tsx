@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch } from '@/app/hooks';
-import { login, syncCartAfterLogin } from '@/features/auth/authSlice';
+import { login, syncCartAfterLogin, syncWishlistAfterLogin } from '@/features/auth/authSlice';
 import { login as loginApi } from '@/services/authService';
 import { fetchCartList } from '@/features/cart/cartSlice';
+import { fetchWishlistAsync } from '@/features/wishlist/wishlistSlice';
 import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
 
@@ -78,6 +79,16 @@ const SignIn = () => {
         await dispatch(fetchCartList()).unwrap();
       } catch (error) {
         console.error('Failed to sync cart:', error);
+        // Don't show error to user, just log it
+      }
+
+      // Sync localStorage wishlist with server
+      try {
+        await dispatch(syncWishlistAfterLogin(token)).unwrap();
+        // Fetch updated wishlist from server
+        await dispatch(fetchWishlistAsync()).unwrap();
+      } catch (error) {
+        console.error('Failed to sync wishlist:', error);
         // Don't show error to user, just log it
       }
 

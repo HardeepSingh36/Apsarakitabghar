@@ -7,7 +7,11 @@ import { getBooks } from '@/services/bookService';
 import { Heart, Loader } from 'react-feather';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { addToCartAsync, addToLocalCartAction } from '@/features/cart/cartSlice';
-import { addToWishlistAsync, fetchWishlistAsync } from '@/features/wishlist/wishlistSlice';
+import {
+  addToWishlistAsync,
+  fetchWishlistAsync,
+  addToLocalWishlistAction,
+} from '@/features/wishlist/wishlistSlice';
 import type { RootState } from '@/app/store';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import { Tooltip } from 'react-tooltip';
@@ -134,18 +138,18 @@ const BookDetail = () => {
   const [cartAction, setCartAction] = useState<'add' | 'buy' | null>(null);
 
   const handleAddToWishlist = async () => {
-    if (!isAuthenticated) {
-      toast.error('Please sign in to manage your wishlist');
-      openSignIn('/wishlist'); // Pass redirect path
-      return;
-    }
-
     if (!book || isWishlistLoading) return;
 
     try {
       if (!isInWishlist) {
-        // Add to wishlist using API
-        await dispatch(addToWishlistAsync(book.id)).unwrap();
+        // Add to wishlist
+        if (isAuthenticated) {
+          // If authenticated, add to server and localStorage
+          await dispatch(addToWishlistAsync(book.id)).unwrap();
+        } else {
+          // If not authenticated, only add to localStorage
+          dispatch(addToLocalWishlistAction({ book: book }));
+        }
 
         toast.success(`"${book.title}" added to wishlist`, {
           duration: 3000,

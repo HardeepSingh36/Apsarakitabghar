@@ -1,10 +1,14 @@
 import { useAppSelector, useAppDispatch } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import AddProductBox from '@/components/general/AddProductBox';
-import { fetchWishlistAsync } from '@/features/wishlist/wishlistSlice';
+import {
+  fetchWishlistAsync,
+  loadWishlistFromLocalStorage,
+} from '@/features/wishlist/wishlistSlice';
 import { useEffect } from 'react';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import ProductSkeleton from '@/components/ProductSkeleton';
+import { Link } from 'react-router-dom';
 
 const WishList = () => {
   const dispatch = useAppDispatch();
@@ -16,6 +20,9 @@ const WishList = () => {
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchWishlistAsync());
+    } else {
+      // Load from localStorage for non-authenticated users
+      dispatch(loadWishlistFromLocalStorage());
     }
   }, [dispatch, isAuthenticated]);
 
@@ -66,21 +73,7 @@ const WishList = () => {
     );
   }
 
-  // Show empty state if not authenticated
-  if (!isAuthenticated) {
-    return (
-      <div>
-        <section className='wishlist-section section-b-space'>
-          <div className='px-4'>
-            <div className='text-center py-12'>
-              <h2 className='text-2xl font-bold text-gray-800 mb-4'>My Wishlist</h2>
-              <p className='text-gray-600 mb-4'>Please sign in to view your wishlist</p>
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
+  // Remove the authentication requirement - wishlist now works for everyone
 
   return (
     <div>
@@ -96,7 +89,13 @@ const WishList = () => {
               wishlistItems.map((item) => (
                 <div key={item.id}>
                   <div className='wishlist-box'>
-                    <AddProductBox key={item.id} product={item} idx={item.id} removeButton={true} />
+                    <AddProductBox
+                      key={item.id}
+                      product={item}
+                      idx={item.id}
+                      removeButton={true}
+                      className='!flex-col items-center'
+                    />
                   </div>
                 </div>
               ))
@@ -121,12 +120,12 @@ const WishList = () => {
                 <p className='text-gray-500 mb-4'>
                   Discover amazing books and add them to your wishlist
                 </p>
-                <a
-                  href='/books'
+                <Link
+                  to='/books'
                   className='inline-block bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition'
                 >
                   Browse Books
-                </a>
+                </Link>
               </div>
             )}
           </div>

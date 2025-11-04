@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/app/hooks';
-import { login, syncCartAfterLogin } from '@/features/auth/authSlice';
+import { login, syncCartAfterLogin, syncWishlistAfterLogin } from '@/features/auth/authSlice';
 import { register } from '@/services/authService';
 import { getCaptchaConfig } from '@/services/captchaService';
 import { fetchCartList } from '@/features/cart/cartSlice';
+import { fetchWishlistAsync } from '@/features/wishlist/wishlistSlice';
 import toast from 'react-hot-toast';
 import { Loader } from 'react-feather';
 import type { CaptchaConfig } from '@/types/types';
@@ -152,6 +153,16 @@ const SignUp = () => {
         await dispatch(fetchCartList()).unwrap();
       } catch (error) {
         console.error('Failed to sync cart:', error);
+        // Don't show error to user, just log it
+      }
+
+      // Sync localStorage wishlist with server
+      try {
+        await dispatch(syncWishlistAfterLogin(token)).unwrap();
+        // Fetch updated wishlist from server
+        await dispatch(fetchWishlistAsync()).unwrap();
+      } catch (error) {
+        console.error('Failed to sync wishlist:', error);
         // Don't show error to user, just log it
       }
 

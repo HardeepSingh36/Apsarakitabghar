@@ -8,6 +8,13 @@ import {
   clearWishlistAPI,
   type WishlistItem as APIWishlistItem,
 } from '@/services/wishlistService';
+import {
+  getLocalWishlist,
+  addToLocalWishlist,
+  removeFromLocalWishlist,
+  clearLocalWishlist,
+  type LocalWishlistItem,
+} from '@/services/localStorageWishlistService';
 
 interface WishlistState {
   items: WishlistItem[];
@@ -16,8 +23,55 @@ interface WishlistState {
   operationLoading: { [key: string]: boolean }; // For individual operations
 }
 
+// Helper function to convert LocalWishlistItem to WishlistItem
+const convertLocalToWishlistItem = (localItem: LocalWishlistItem): WishlistItem => {
+  return {
+    id: localItem.id,
+    title: localItem.title,
+    slug: localItem.slug,
+    description: '',
+    isbn: '',
+    language: '',
+    price: localItem.price,
+    discount_percent: localItem.discount_percent,
+    stock_quantity: localItem.stock_quantity,
+    pages: 0,
+    author_name: localItem.author_name || '',
+    publisher_name: '',
+    publish_date: '',
+    cover_image_name: localItem.cover_image_name,
+    featured: 0,
+    views_count: 0,
+    sales_count: 0,
+    rating_avg: localItem.rating || 0,
+    rating_count: 0,
+    created_at: localItem.added_at,
+    updated_at: localItem.added_at,
+    author_id: 0,
+    category_id: 0,
+    genre_id: 0,
+    author_table_id: null,
+    author_pen_name: localItem.author_pen_name || null,
+    category_table_id: 0,
+    category_name: localItem.category_name || '',
+    genre_table_id: null,
+    genre_name: localItem.genre_name || null,
+    tags: [],
+    discounted_price: localItem.discounted_price,
+    rating: localItem.rating || 0,
+    wishlist_id: undefined,
+    in_stock: localItem.stock_quantity > 0,
+  };
+};
+
+// Load initial state from localStorage
+const loadInitialWishlist = (): WishlistItem[] => {
+  const localWishlist = getLocalWishlist();
+  return localWishlist.map(convertLocalToWishlistItem);
+};
+
 const initialState: WishlistState = {
-  items: [],
+  items: loadInitialWishlist(),
   loading: false,
   error: null,
   operationLoading: {},
@@ -133,6 +187,30 @@ const wishlistSlice = createSlice({
     },
     clearWishlist: (state) => {
       state.items = [];
+      clearLocalWishlist();
+    },
+    // Add item to localStorage wishlist (for non-authenticated users)
+    addToLocalWishlistAction: (state, action) => {
+      const { book } = action.payload;
+      addToLocalWishlist(book);
+
+      // Update Redux state
+      const localWishlist = getLocalWishlist();
+      state.items = localWishlist.map(convertLocalToWishlistItem);
+    },
+    // Remove item from localStorage wishlist
+    removeFromLocalWishlistAction: (state, action) => {
+      const { bookId } = action.payload;
+      removeFromLocalWishlist(bookId);
+
+      // Update Redux state
+      const localWishlist = getLocalWishlist();
+      state.items = localWishlist.map(convertLocalToWishlistItem);
+    },
+    // Load wishlist from localStorage
+    loadWishlistFromLocalStorage: (state) => {
+      const localWishlist = getLocalWishlist();
+      state.items = localWishlist.map(convertLocalToWishlistItem);
     },
     setOperationLoading: (
       state,
@@ -171,6 +249,19 @@ const wishlistSlice = createSlice({
         const apiWishlistData = action.payload.wishlistData;
         const wishlistItem = convertAPIWishlistItem(apiWishlistData);
 
+        // Also update localStorage
+        addToLocalWishlist({
+          id: apiWishlistData.book_id,
+          title: apiWishlistData.title,
+          slug: apiWishlistData.slug,
+          price: apiWishlistData.price,
+          discount_percent: apiWishlistData.discount_percent,
+          discounted_price: apiWishlistData.discounted_price,
+          cover_image_name: apiWishlistData.cover_image_name,
+          author_name: apiWishlistData.author_name,
+          stock_quantity: apiWishlistData.stock_quantity,
+        });
+
         // Check if item already exists to avoid duplicates
         const exists = state.items.find((item) => item.id === wishlistItem.id);
         if (!exists) {
@@ -188,6 +279,10 @@ const wishlistSlice = createSlice({
       })
       .addCase(removeFromWishlistAsync.fulfilled, (state, action) => {
         state.operationLoading[`remove-${action.payload}`] = false;
+
+        // Remove from localStorage
+        removeFromLocalWishlist(action.payload);
+
         state.items = state.items.filter((item) => item.id !== action.payload);
       })
       .addCase(removeFromWishlistAsync.rejected, (state, action) => {
@@ -202,6 +297,8 @@ const wishlistSlice = createSlice({
       .addCase(clearWishlistAsync.fulfilled, (state) => {
         state.operationLoading['clear'] = false;
         state.items = [];
+        // Clear localStorage
+        clearLocalWishlist();
       })
       .addCase(clearWishlistAsync.rejected, (state, action) => {
         state.operationLoading['clear'] = false;
@@ -210,7 +307,15 @@ const wishlistSlice = createSlice({
   },
 });
 
-export const { addToWishlist, removeFromWishlist, clearWishlist, setOperationLoading, clearError } =
-  wishlistSlice.actions;
+export const {
+  addToWishlist,
+  removeFromWishlist,
+  clearWishlist,
+  addToLocalWishlistAction,
+  removeFromLocalWishlistAction,
+  loadWishlistFromLocalStorage,
+  setOperationLoading,
+  clearError,
+} = wishlistSlice.actions;
 
 export default wishlistSlice.reducer;

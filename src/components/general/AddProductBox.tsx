@@ -5,7 +5,12 @@ import { type BookFlag } from '@/services/booksByFlagsService';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import type { RootState } from '@/app/store';
 import { addToCartAsync, addToLocalCartAction } from '@/features/cart/cartSlice';
-import { addToWishlistAsync, removeFromWishlistAsync } from '@/features/wishlist/wishlistSlice';
+import {
+  addToWishlistAsync,
+  removeFromWishlistAsync,
+  addToLocalWishlistAction,
+  removeFromLocalWishlistAction,
+} from '@/features/wishlist/wishlistSlice';
 import { useAuthDialog } from '@/context/AuthDialogContext';
 import type { Book } from '@/types/types';
 import { useCurrency } from '@/context/CurrencyContext';
@@ -32,7 +37,7 @@ const AddProductBox = ({
 }: AddProductBoxProps & { isLoading?: boolean }) => {
   const dispatch = useAppDispatch();
   const { currency } = useCurrency();
-  const { isAuthenticated, openSignIn } = useAuthDialog();
+  const { isAuthenticated } = useAuthDialog();
 
   // Get cart state for this product
   const cartItem = useAppSelector((state: RootState) =>
@@ -82,30 +87,36 @@ const AddProductBox = ({
   };
 
   const handleWishlistToggle = async () => {
-    if (!isAuthenticated) {
-      toast.error('Please sign in to manage your wishlist');
-      openSignIn('/wishlist');
-      return;
-    }
-
     if (isWishlistLoading) return; // Prevent multiple clicks
 
     try {
       if (removeButton && isInWishlist) {
-        // Remove from wishlist using API
-        await dispatch(
-          removeFromWishlistAsync({
-            wishlistId: isInWishlist.wishlist_id || 0,
-            bookId: product.id,
-          })
-        ).unwrap();
+        // Remove from wishlist
+        if (isAuthenticated) {
+          // If authenticated, remove from server and localStorage
+          await dispatch(
+            removeFromWishlistAsync({
+              wishlistId: isInWishlist.wishlist_id || 0,
+              bookId: product.id,
+            })
+          ).unwrap();
+        } else {
+          // If not authenticated, only remove from localStorage
+          dispatch(removeFromLocalWishlistAction({ bookId: product.id }));
+        }
 
         toast.success(`"${product.title}" removed from wishlist`, {
           duration: 3000,
         });
       } else if (!isInWishlist) {
-        // Add to wishlist using API
-        await dispatch(addToWishlistAsync(product.id)).unwrap();
+        // Add to wishlist
+        if (isAuthenticated) {
+          // If authenticated, add to server and localStorage
+          await dispatch(addToWishlistAsync(product.id)).unwrap();
+        } else {
+          // If not authenticated, only add to localStorage
+          dispatch(addToLocalWishlistAction({ book: product }));
+        }
 
         toast.success(`"${product.title}" added to wishlist`, {
           duration: 3000,

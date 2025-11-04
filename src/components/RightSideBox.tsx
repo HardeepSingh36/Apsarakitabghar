@@ -43,12 +43,6 @@ const RightSideBox = () => {
       navigate(path);
       return;
     }
-
-    // Other paths still require authentication
-    if (!isAuthenticated) {
-      openSignIn(path);
-      return;
-    }
     navigate(path);
   };
 
