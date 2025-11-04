@@ -79,7 +79,7 @@ const NavItem = ({ label, to, href, className, state, setShowMenu }: any) =>
   to ? (
     <li className={`nav-item ${className || ''}`}>
       <Link
-        className='nav-link no-dropdown ps-xl-2 ps-0'
+        className='nav-link no-dropdown ps-xl-2 ps-0 !text-[16px]'
         to={to}
         state={state}
         onClick={() => setShowMenu(false)}
@@ -90,7 +90,7 @@ const NavItem = ({ label, to, href, className, state, setShowMenu }: any) =>
   ) : (
     <li className={`nav-item ${className || ''}`}>
       <Link
-        className='nav-link dropdown-toggle no-dropdown'
+        className='nav-link dropdown-toggle no-dropdown !text-[16px]'
         to={href || '#'}
         onClick={(e) => {
           if (!href) e.preventDefault();
@@ -115,7 +115,7 @@ const DropdownNavItem = ({
       {dropdownContent ? (
         <>
           <Link
-            className='nav-link dropdown-toggle'
+            className='nav-link dropdown-toggle !text-[16px]'
             to='#'
             data-bs-toggle='dropdown'
             onClick={(e) => e.preventDefault()}
@@ -173,7 +173,7 @@ const DropdownNavItem = ({
       ) : (
         <>
           <Link
-            className='nav-link dropdown-toggle ps-xl-2 ps-0'
+            className='nav-link dropdown-toggle ps-xl-2 ps-0 !text-[16px]'
             to='#'
             data-bs-toggle='dropdown'
             onClick={(e) => e.preventDefault()}
@@ -185,13 +185,14 @@ const DropdownNavItem = ({
               <li key={idx} className={item.hasSubmenu ? 'sub-dropdown-hover' : ''}>
                 {item.hasSubmenu ? (
                   <>
-                    <a className='dropdown-item' href='javascript:void(0)'>
+                    <a className='dropdown-item !text-[14px]' href='javascript:void(0)'>
                       {item.label}
                     </a>
                     <ul className='sub-menu'>
                       {item.submenu.map((subItem: any, subIdx: number) => (
                         <li key={subIdx}>
                           <Link
+                            className='!text-[14px]'
                             to={subItem.to}
                             state={subItem.state}
                             onClick={() => setShowMenu(false)}
@@ -204,7 +205,7 @@ const DropdownNavItem = ({
                   </>
                 ) : item.to ? (
                   <Link
-                    className='dropdown-item'
+                    className='dropdown-item !text-[14px]'
                     to={item.to}
                     state={item.state}
                     onClick={() => setShowMenu(false)}
@@ -213,7 +214,7 @@ const DropdownNavItem = ({
                   </Link>
                 ) : (
                   <a
-                    className='dropdown-item'
+                    className='dropdown-item !text-[14px]'
                     href='javascript:void(0)'
                     onClick={() => {
                       onJoinClick && onJoinClick(item.label);
