@@ -19,6 +19,8 @@ import PaymentOptions from '@/components/checkout/PaymentOptions';
 import { placeOrder, type PlaceOrderRequest } from '@/services/orderService';
 import { useNavigate } from 'react-router-dom';
 import { clearCart } from '@/features/cart/cartSlice';
+import { login as loginApi } from '@/services/authService';
+import { login } from '@/features/auth/authSlice';
 
 const Checkout = () => {
   const { currency } = useCurrency();
@@ -26,6 +28,7 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
+  const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
   const { addresses, selectedAddressId, loading, error } = useAppSelector(
     (state: RootState) => state.user
   );
@@ -39,10 +42,26 @@ const Checkout = () => {
   const [notes, setNotes] = useState('');
   const [adminUpiId, setAdminUpiId] = useState('');
 
-  // Fetch addresses on component mount
+  // Guest checkout form fields
+  const [guestForm, setGuestForm] = useState({
+    fullName: '',
+    email: '',
+    mobile: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    state: '',
+    pincode: '',
+    landmark: '',
+    country: 'India',
+  });
+
+  // Fetch addresses on component mount (only for authenticated users)
   useEffect(() => {
-    dispatch(fetchAddresses());
-  }, [dispatch]);
+    if (isAuthenticated) {
+      dispatch(fetchAddresses());
+    }
+  }, [dispatch, isAuthenticated]);
 
   // Handle API errors
   useEffect(() => {
@@ -96,10 +115,42 @@ const Checkout = () => {
   };
 
   const handlePlaceOrder = async () => {
-    // Validation
-    if (!selectedAddressId) {
+    // Validation for authenticated users
+    if (isAuthenticated && !selectedAddressId) {
       toast.error('Please select a delivery address');
       return;
+    }
+
+    // Validation for guest users
+    if (!isAuthenticated) {
+      if (!guestForm.fullName.trim()) {
+        toast.error('Please enter your full name');
+        return;
+      }
+      if (!guestForm.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email)) {
+        toast.error('Please enter a valid email address');
+        return;
+      }
+      if (!guestForm.mobile.trim() || !/^[0-9]{10,15}$/.test(guestForm.mobile)) {
+        toast.error('Please enter a valid mobile number (10-15 digits)');
+        return;
+      }
+      if (!guestForm.addressLine1.trim()) {
+        toast.error('Please enter your address');
+        return;
+      }
+      if (!guestForm.city.trim()) {
+        toast.error('Please enter your city');
+        return;
+      }
+      if (!guestForm.state.trim()) {
+        toast.error('Please enter your state');
+        return;
+      }
+      if (!guestForm.pincode.trim() || !/^[0-9]{6}$/.test(guestForm.pincode)) {
+        toast.error('Please enter a valid 6-digit pincode');
+        return;
+      }
     }
 
     if (!transactionId.trim()) {
@@ -126,12 +177,16 @@ const Checkout = () => {
       return;
     }
 
+    // Check if cart is empty
+    if (cartItems.length === 0) {
+      toast.error('Your cart is empty');
+      return;
+    }
+
     try {
       setIsPlacingOrder(true);
 
-      // Get the UPI ID from the selected address (we'll need to get this from QR API)
       const orderData: PlaceOrderRequest = {
-        address_id: parseInt(selectedAddressId),
         payment_method: 'upi',
         transaction_id: transactionId.trim(),
         paid_to_upi_id: adminUpiId,
@@ -139,21 +194,119 @@ const Checkout = () => {
         notes: notes.trim() || undefined,
       };
 
+      // Add authenticated user data
+      if (isAuthenticated && selectedAddressId) {
+        orderData.address_id = parseInt(selectedAddressId);
+      }
+
+      // Add guest user data
+      if (!isAuthenticated) {
+        orderData.full_name = guestForm.fullName.trim();
+        orderData.email = guestForm.email.trim();
+        orderData.mobile = guestForm.mobile.trim();
+        orderData.address_line1 = guestForm.addressLine1.trim();
+        orderData.address_line2 = guestForm.addressLine2.trim() || undefined;
+        orderData.city = guestForm.city.trim();
+        orderData.state = guestForm.state.trim();
+        orderData.pincode = guestForm.pincode.trim();
+        orderData.landmark = guestForm.landmark.trim() || undefined;
+        orderData.country = guestForm.country || 'India';
+
+        // Convert cart items to format expected by API
+        orderData.cart_items = cartItems.map((item) => ({
+          book_id: item.book_id,
+          quantity: item.quantity,
+        }));
+      }
+      console.log('The orderData is: ', orderData);
       const response = await placeOrder(orderData);
 
       if (response.status === 'success') {
         // Clear the cart
         dispatch(clearCart());
 
-        toast.success(`Order ${response.data.order_number} placed successfully!`);
+        // Handle guest user auto-login
+        if (
+          !isAuthenticated &&
+          response.data.user_account_created &&
+          response.data.user_credentials
+        ) {
+          toast.success(
+            `Order placed! Account created.\nEmail: ${response.data.user_credentials.email}\nPassword: ${response.data.user_credentials.password}\n\nLogging you in...`,
+            { duration: 8000 }
+          );
 
-        // Navigate to order success page or orders list
-        navigate('/dashboard?tab=order', {
-          state: {
-            orderNumber: response.data.order_number,
-            orderTotal: response.data.total_amount,
-          },
-        });
+          try {
+            // Auto-login the newly created guest user
+            const loginResponse = await loginApi(
+              response.data.user_credentials.email,
+              response.data.user_credentials.password
+            );
+
+            if (loginResponse.status === 'success') {
+              const { user, token } = loginResponse.data;
+
+              // Dispatch login with user details
+              dispatch(
+                login({
+                  username: user.username,
+                  email: user.email,
+                  full_name: `${user.username}`,
+                  first_name: user.username.split('_')[0],
+                  last_name: user.username.split('_')[1] || '',
+                  phone_number: user.phone_number || '',
+                  role: user.role,
+                  status: user.status,
+                  created_at: user.created_at,
+                })
+              );
+
+              // Store token in local storage
+              localStorage.setItem('auth_token', token);
+              localStorage.setItem('token_expires_in', loginResponse.data.expires_in);
+
+              toast.success('Logged in successfully!');
+
+              // Navigate to orders page
+              navigate('/dashboard?tab=orders', {
+                state: {
+                  orderNumber: response.data.order_number,
+                  orderTotal: response.data.total_amount,
+                  newAccount: true,
+                },
+              });
+            } else {
+              // If auto-login fails, just redirect to home with credentials
+              navigate('/', {
+                state: {
+                  orderPlaced: true,
+                  orderNumber: response.data.order_number,
+                  userCredentials: response.data.user_credentials,
+                },
+              });
+            }
+          } catch (loginError) {
+            console.error('Auto-login failed:', loginError);
+            // If auto-login fails, redirect to home with credentials
+            navigate('/', {
+              state: {
+                orderPlaced: true,
+                orderNumber: response.data.order_number,
+                userCredentials: response.data.user_credentials,
+              },
+            });
+          }
+        } else {
+          toast.success(`Order ${response.data.order_number} placed successfully!`);
+
+          // Navigate to orders page for authenticated users
+          navigate('/dashboard?tab=orders', {
+            state: {
+              orderNumber: response.data.order_number,
+              orderTotal: response.data.total_amount,
+            },
+          });
+        }
       }
     } catch (error) {
       console.error('Error placing order:', error);
@@ -197,7 +350,154 @@ const Checkout = () => {
                         </div>
 
                         <div className='checkout-detail'>
-                          {loading ? (
+                          {!isAuthenticated ? (
+                            // Guest Checkout Form
+                            <div className='guest-checkout-form'>
+                              <p className='text-muted mb-3'>
+                                Please fill in your details to place the order. An account will be
+                                created for you automatically.
+                              </p>
+                              <div className='row g-3'>
+                                <div className='col-md-6'>
+                                  <label className='form-label'>
+                                    Full Name <span className='text-danger'>*</span>
+                                  </label>
+                                  <input
+                                    type='text'
+                                    className='form-control'
+                                    placeholder='Enter your full name'
+                                    value={guestForm.fullName}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, fullName: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div className='col-md-6'>
+                                  <label className='form-label'>
+                                    Email <span className='text-danger'>*</span>
+                                  </label>
+                                  <input
+                                    type='email'
+                                    className='form-control'
+                                    placeholder='Enter your email'
+                                    value={guestForm.email}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, email: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div className='col-md-6'>
+                                  <label className='form-label'>
+                                    Mobile Number <span className='text-danger'>*</span>
+                                  </label>
+                                  <input
+                                    type='tel'
+                                    className='form-control'
+                                    placeholder='Enter 10-digit mobile number'
+                                    value={guestForm.mobile}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, mobile: e.target.value })
+                                    }
+                                  />
+                                  <small className='text-muted'>
+                                    Your mobile number will be used as your password
+                                  </small>
+                                </div>
+                                <div className='col-md-6'>
+                                  <label className='form-label'>
+                                    Pincode <span className='text-danger'>*</span>
+                                  </label>
+                                  <input
+                                    type='text'
+                                    className='form-control'
+                                    placeholder='Enter 6-digit pincode'
+                                    value={guestForm.pincode}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, pincode: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div className='col-12'>
+                                  <label className='form-label'>
+                                    Address Line 1 <span className='text-danger'>*</span>
+                                  </label>
+                                  <input
+                                    type='text'
+                                    className='form-control'
+                                    placeholder='House/Flat No., Building Name'
+                                    value={guestForm.addressLine1}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, addressLine1: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div className='col-12'>
+                                  <label className='form-label'>Address Line 2</label>
+                                  <input
+                                    type='text'
+                                    className='form-control'
+                                    placeholder='Street, Area, Locality (Optional)'
+                                    value={guestForm.addressLine2}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, addressLine2: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div className='col-md-6'>
+                                  <label className='form-label'>
+                                    City <span className='text-danger'>*</span>
+                                  </label>
+                                  <input
+                                    type='text'
+                                    className='form-control'
+                                    placeholder='Enter city'
+                                    value={guestForm.city}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, city: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div className='col-md-6'>
+                                  <label className='form-label'>
+                                    State <span className='text-danger'>*</span>
+                                  </label>
+                                  <input
+                                    type='text'
+                                    className='form-control'
+                                    placeholder='Enter state'
+                                    value={guestForm.state}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, state: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div className='col-md-6'>
+                                  <label className='form-label'>Landmark</label>
+                                  <input
+                                    type='text'
+                                    className='form-control'
+                                    placeholder='Nearby landmark (Optional)'
+                                    value={guestForm.landmark}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, landmark: e.target.value })
+                                    }
+                                  />
+                                </div>
+                                <div className='col-md-6'>
+                                  <label className='form-label'>Country</label>
+                                  <input
+                                    type='text'
+                                    className='form-control'
+                                    placeholder='Country'
+                                    value={guestForm.country}
+                                    onChange={(e) =>
+                                      setGuestForm({ ...guestForm, country: e.target.value })
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ) : loading ? (
                             <div className='text-center'>
                               <div className='!flex !justify-center !items-center !gap-2'>
                                 <Loader
@@ -561,15 +861,21 @@ const Checkout = () => {
                 <button
                   className='font-public-sans !w-full !px-6 !py-3 !text-lg bg-theme-gradient-orange hover:!from-[#e42003] hover:!to-[#e55503] !text-white !font-semibold !rounded-sm !shadow-md hover:!shadow-lg !transition-all !duration-200 !border-0 !mt-4 disabled:!opacity-50 disabled:!cursor-not-allowed'
                   onClick={handlePlaceOrder}
-                  disabled={isPlacingOrder || !selectedAddressId || cartItems.length === 0}
+                  disabled={
+                    isPlacingOrder ||
+                    (isAuthenticated && !selectedAddressId) ||
+                    cartItems.length === 0
+                  }
                 >
                   {isPlacingOrder ? (
                     <div className='!flex !items-center !justify-center !gap-2'>
                       <Loader className='!w-5 !h-5 animate-spin' />
                       <span>Placing Order...</span>
                     </div>
-                  ) : (
+                  ) : isAuthenticated ? (
                     'Place Order'
+                  ) : (
+                    'Place Order & Create Account'
                   )}
                 </button>
               </div>

@@ -13,7 +13,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className='section-t-space footer-section-2 footer-color-3'>
+    <footer className='section-t-space footer-section-2 bg-theme-gradient-radial'>
       <div className='container-fluid-lg'>
         <div className='main-footer'>
           <div className='row g-md-4 gy-sm-5'>
@@ -22,31 +22,48 @@ const Footer = () => {
               <Link to='/' className='foot-logo theme-logo'>
                 <img src='/assets/logo/apsra.png' className='img-fluid blur-up lazyload' alt='' />
               </Link>
-              <p className='information-text information-text-2'>
-                it is a long established fact that a reader will be distracted by the readable
-                content.
+              <p className='information-text information-text-2 !text-white/80'>
+                Your trusted destination for discovering and purchasing books across all genres.
+                Bringing stories to life, one page at a time.
               </p>
               <ul className='social-icon'>
-                <li className='light-bg'>
-                  <a href='https://www.facebook.com/' className='footer-link-color'>
+                <li className='!bg-white/10 hover:!bg-white/20'>
+                  <a
+                    href='https://www.facebook.com/'
+                    className='!text-white'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
                     <i className='fab fa-facebook-f'></i>
                   </a>
                 </li>
-                <li className='light-bg'>
+                <li className='!bg-white/10 hover:!bg-white/20'>
                   <a
                     href='https://accounts.google.com/signin/v2/identifier'
-                    className='footer-link-color'
+                    className='!text-white'
+                    target='_blank'
+                    rel='noopener noreferrer'
                   >
                     <i className='fab fa-google'></i>
                   </a>
                 </li>
-                <li className='light-bg'>
-                  <a href='https://twitter.com/i/flow/login' className='footer-link-color'>
+                <li className='!bg-white/10 hover:!bg-white/20'>
+                  <a
+                    href='https://twitter.com/i/flow/login'
+                    className='!text-white'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
                     <i className='fab fa-twitter'></i>
                   </a>
                 </li>
-                <li className='light-bg'>
-                  <a href='https://www.instagram.com/' className='footer-link-color'>
+                <li className='!bg-white/10 hover:!bg-white/20'>
+                  <a
+                    href='https://www.instagram.com/'
+                    className='!text-white'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
                     <i className='fab fa-instagram'></i>
                   </a>
                 </li>
@@ -62,7 +79,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to='#'
-                    className='light-text'
+                    className='!text-white/80 hover:!text-white transition-colors'
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   >
                     About Us
@@ -71,7 +88,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to='/privacy-policy'
-                    className='light-text'
+                    className='!text-white/80 hover:!text-white transition-colors'
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   >
                     Privacy Policy
@@ -80,7 +97,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to='/terms-conditions'
-                    className='light-text'
+                    className='!text-white/80 hover:!text-white transition-colors'
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   >
                     Terms & Conditions
@@ -89,7 +106,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to='/contact-us'
-                    className='light-text'
+                    className='!text-white/80 hover:!text-white transition-colors'
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   >
                     Contact Us
@@ -98,7 +115,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to='/publish-book'
-                    className='light-text'
+                    className='!text-white/80 hover:!text-white transition-colors'
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   >
                     Publish With Us
@@ -116,7 +133,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to='/dashboard?tab=orders'
-                    className='light-text'
+                    className='!text-white/80 hover:!text-white transition-colors'
                     onClick={(e) => handleProtectedClick(e)}
                   >
                     Your Orders
@@ -125,7 +142,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to='/dashboard?tab=dashboard'
-                    className='light-text'
+                    className='!text-white/80 hover:!text-white transition-colors'
                     onClick={(e) => handleProtectedClick(e)}
                   >
                     Your Account
@@ -134,7 +151,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to='/dashboard?tab=orders'
-                    className='light-text'
+                    className='!text-white/80 hover:!text-white transition-colors'
                     onClick={(e) => handleProtectedClick(e)}
                   >
                     Track Orders
@@ -142,9 +159,8 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to='/dashboard?tab=wishlist'
-                    className='light-text'
-                    onClick={(e) => handleProtectedClick(e)}
+                    to='/wishlist'
+                    className='!text-white/80 hover:!text-white transition-colors'
                   >
                     Your Wishlist
                   </Link>
@@ -159,25 +175,34 @@ const Footer = () => {
               </div>
               <ul className='footer-address footer-contact'>
                 <li>
-                  <a href='javascript:void(0)' className='light-text'>
+                  <a
+                    href='javascript:void(0)'
+                    className='!text-white/80 hover:!text-white transition-colors'
+                  >
                     <div className='inform-box flex-start-box'>
-                      <i data-feather='map-pin'></i>
+                      <i data-feather='map-pin' className='!text-white'></i>
                       <p>Talwandi Sabo, Punjab 151302</p>
                     </div>
                   </a>
                 </li>
                 <li>
-                  <a href='javascript:void(0)' className='light-text'>
+                  <a
+                    href='javascript:void(0)'
+                    className='!text-white/80 hover:!text-white transition-colors'
+                  >
                     <div className='inform-box'>
-                      <i data-feather='phone'></i>
+                      <i data-feather='phone' className='!text-white'></i>
                       <p>Call us: 123-456-7890</p>
                     </div>
                   </a>
                 </li>
                 <li>
-                  <a href='javascript:void(0)' className='light-text'>
+                  <a
+                    href='javascript:void(0)'
+                    className='!text-white/80 hover:!text-white transition-colors'
+                  >
                     <div className='inform-box'>
-                      <i data-feather='mail'></i>
+                      <i data-feather='mail' className='!text-white'></i>
                       <p>Email Us: info@apsrakitabghar.com</p>
                     </div>
                   </a>
@@ -188,9 +213,9 @@ const Footer = () => {
         </div>
 
         {/* Sub Footer */}
-        <div className='sub-footer sub-footer-lite section-b-space section-t-space'>
+        <div className='sub-footer sub-footer-lite section-b-space section-t-space border-t border-white/10'>
           <div className='left-footer w-full text-center'>
-            <p className='light-text'>© 2024 Apsra Kitab Ghar. All rights reserved.</p>
+            <p className='!text-white/80'>© 2025 Apsra Kitab Ghar. All rights reserved.</p>
           </div>
         </div>
       </div>

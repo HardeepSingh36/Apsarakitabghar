@@ -22,7 +22,7 @@ const UserDashboardSection: React.FC = () => {
               <div className='col-12'>
                 <div className='navbar-top'>
                   <Link to='/' className='web-logo nav-logo'>
-                    <img src='/assets/logo/apsra.svg' className='img-fluid lazyload' alt='' />
+                    <img src='/assets/logo/apsra.png' className='img-fluid lazyload' alt='' />
                   </Link>
 
                   <div className='rightside-box flex items-center gap-2'>

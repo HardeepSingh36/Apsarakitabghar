@@ -100,14 +100,14 @@ const Sidebar = () => {
         const categoriesData = await categoriesService.getCategories();
         if (categoriesData.status === 'success') {
           console.log('Fetched categories:', categoriesData.data.categories);
-          setCategories(categoriesData.data.categories); // Limit to 6
+          setCategories(categoriesData.data.categories);
         }
 
         // Fetch Genres
         const genresRes = await fetch(BOOKS_GENRES);
         const genresData = await genresRes.json();
         if (genresData.status === 'success') {
-          setGenres(genresData.data.genres); // Limit to 8
+          setGenres(genresData.data.genres);
         }
       } catch (error) {
         console.error('Error fetching sidebar data:', error);
@@ -120,11 +120,11 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <aside className='hidden lg:block w-64 bg-gradient-to-b from-gray-50 to-gray-100 h-full top-0  rounded-xl mx-2 shadow-md shadow-stone-300'>
+    <aside className='hidden lg:block w-64 bg-gradient-to-b from-gray-50 to-gray-100 h-full top-0 rounded-xl mx-2 shadow-md shadow-stone-300'>
       <div>
         {/* Apsra Spotlight Section */}
         <div className=''>
-          <div className='bg-theme-gradient-orange px-4 py-3 text-white font-semibold !text-lg shadow-md'>
+          <div className='bg-theme-gradient-orange px-4 py-3 text-white rounded-t-xl font-semibold !text-lg shadow-md'>
             Apsra Spotlight
           </div>
           <div className='bg-white border-x border-gray-200'>
