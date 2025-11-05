@@ -13,7 +13,7 @@ const Header = () => {
   const isSpecialPage = specialPages.includes(location.pathname);
 
   return (
-    <header className=''>
+    <header className='mb-3'>
       <HeaderTop />
 
       <div

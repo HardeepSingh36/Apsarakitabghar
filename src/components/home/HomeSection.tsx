@@ -82,9 +82,7 @@ const HomeSection = () => {
           <div className='row'>
             <div className='col-12'>
               <div className='slider-animate skeleton-banner-xl'>
-                <div className='relative !h-60 md:!h-80 overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300 rounded-t-xl animate-pulse flex items-center justify-center'>
-                  <div className='text-gray-400 text-lg'>Loading sliders...</div>
-                </div>
+                <div className='relative !h-60 md:!h-80 overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300 rounded-t-xl animate-pulse flex items-center justify-center'></div>
               </div>
             </div>
           </div>
