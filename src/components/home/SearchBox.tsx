@@ -87,14 +87,17 @@ const SearchField = ({ placeholder, ariaLabel, activeTab, onClose }: SearchField
     slug?: string;
   }) => {
     try {
-      // Validate book exists by fetching it
-      const response = await getBookById(book.id);
-      if (response.status === 'success' && response.data) {
-        // Book exists, navigate to book detail page with complete book data
-        const completeBook = response.data;
-        navigate(`/books/${book.slug || book.id}`, { state: { item: completeBook } });
+      // Navigate to book detail page using slug or id
+      if (book.slug) {
+        navigate(`/books/${book.slug}`);
       } else {
-        toast.error('Book not found.');
+        // If no slug, fetch book to get the slug
+        const response = await getBookById(book.id);
+        if (response.status === 'success' && response.data?.slug) {
+          navigate(`/books/${response.data.slug}`);
+        } else {
+          toast.error('Book not found.');
+        }
       }
     } catch (error) {
       console.error('Book validation error:', error);

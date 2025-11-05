@@ -1,9 +1,10 @@
 import RelatedProducts from '@/components/bookdetail/RelatedProducts';
 import Reviews from '@/components/bookdetail/Reviews';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import BookGalleryDialog from '@/components/bookdetail/BookGalleryDialog';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import type { Book } from '@/types/types';
-import { getBooks } from '@/services/bookService';
+import { getBookBySlug } from '@/services/bookService';
 import { Heart, Loader } from 'react-feather';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { addToCartAsync, addToLocalCartAction } from '@/features/cart/cartSlice';
@@ -65,35 +66,46 @@ const BookDetail = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAuthDialog();
   const [quantity, setQuantity] = useState(1);
-  const { id } = useParams();
+  const { slug } = useParams();
   const [book, setBook] = useState<Book | null>(null);
+  const [isLoadingBook, setIsLoadingBook] = useState(true);
   // const [selectedFormat, setSelectedFormat] = useState('hardcover');
   const tags = ['BookLover', 'Bookworm', 'MustRead', 'Bookstagram'];
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const passedBook = location.state?.item as Book | undefined;
+  // Gallery dialog state
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
   useEffect(() => {
-    if (passedBook) {
-      setBook(passedBook);
-    } else {
-      // fallback: fetch from API if no state (e.g., user refreshed)
-      async function fetchBook() {
-        try {
-          const data = await getBooks({});
-          const found = data?.books?.find((b: Book) => String(b.id) === String(id));
-          setBook(found || null);
-        } catch (e) {
+    async function fetchBook() {
+      if (!slug) return;
+
+      setIsLoadingBook(true);
+      try {
+        const response = await getBookBySlug(slug);
+        if (response.status === 'success' && response.data) {
+          setBook(response.data);
+        } else {
           setBook(null);
+          toast.error('Book not found');
         }
+      } catch (e) {
+        console.error('Error fetching book:', e);
+        setBook(null);
+        toast.error('Failed to load book details');
+      } finally {
+        setIsLoadingBook(false);
       }
-      fetchBook();
     }
+
+    fetchBook();
+
     // Always fetch wishlist if authenticated, so wishlisted status is correct after refresh
     if (isAuthenticated) {
       dispatch(fetchWishlistAsync());
     }
-  }, [id, passedBook, isAuthenticated, dispatch]);
+  }, [slug, isAuthenticated, dispatch]);
 
   const handleAddToCart = async () => {
     if (!book || isAddingToCart) return;
@@ -191,9 +203,29 @@ const BookDetail = () => {
     }
   };
 
-  console.log(IMAGE_BASE_URL + book?.cover_image_name);
+  if (isLoadingBook) {
+    return (
+      <div className='flex items-center justify-center min-h-screen'>
+        <div className='text-center'>
+          <Loader className='w-12 h-12 animate-spin mx-auto text-primary' />
+          <p className='mt-4 text-gray-600'>Loading book details...</p>
+        </div>
+      </div>
+    );
+  }
 
-  if (!book) return null;
+  if (!book) {
+    return (
+      <div className='flex items-center justify-center min-h-screen'>
+        <div className='text-center'>
+          <p className='text-xl text-gray-600'>Book not found</p>
+          <Link to='/books' className='mt-4 inline-block text-primary hover:underline'>
+            Browse all books
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -208,17 +240,35 @@ const BookDetail = () => {
                       <div className='col-xxl-10 col-lg-12 col-md-10 order-xxl-2 order-lg-1 order-md-2'>
                         <div className='product-main-2 no-arrow'>
                           <div>
-                            <div className='slider-image relative'>
+                            <div className='slider-image relative group cursor-pointer shadow-md'>
                               <img
                                 src={`${IMAGE_BASE_URL + book?.cover_image_name}` || ''}
                                 id='img-1'
-                                data-zoom-image={
-                                  IMAGE_BASE_URL + book.cover_image_name ||
-                                  '/assets/images/book/product/1.jpg'
-                                }
-                                className='img-fluid image_zoom_cls-0 blur-up lazyload notranslate'
+                                onClick={() => {
+                                  if (
+                                    book.gallery_images &&
+                                    Array.isArray(book.gallery_images) &&
+                                    book.gallery_images.length > 0
+                                  ) {
+                                    setSelectedImageIndex(0);
+                                    setIsGalleryOpen(true);
+                                  }
+                                }}
+                                className='img-fluid image_zoom_cls-0 blur-up lazyload notranslate hover:opacity-95 transition-opacity duration-200'
                                 alt={book.title || ''}
                               />
+                              {/* Gallery indicator overlay */}
+                              {book.gallery_images &&
+                                Array.isArray(book.gallery_images) &&
+                                book.gallery_images.length > 0 && (
+                                  <div className='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200 flex items-center justify-center'>
+                                    <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white/90 px-4 py-2 rounded-full'>
+                                      <span className='text-sm font-medium text-gray-900'>
+                                        View Gallery ({book.gallery_images.length} images)
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
                               <div className='buy-box absolute right-4 top-4 bg-white p-2 rounded-full'>
                                 <button
                                   onClick={handleAddToWishlist}
@@ -480,10 +530,50 @@ const BookDetail = () => {
                   </div>
                 </div>
 
-                <div className='col-12'>
-                  <div className='product-section-box'>
-                    <ul className='nav nav-tabs custom-nav' id='myTab' role='tablist'>
-                      <li className='nav-item' role='presentation'>
+                {/* put it here  */}
+
+                <div className='col-12 mt-2'>
+                  {/* Gallery Thumbnails */}
+                  {book.gallery_images &&
+                    Array.isArray(book.gallery_images) &&
+                    book.gallery_images.length > 0 && (
+                      <div className='mt-4 mx-auto'>
+                        <div className='left-slider-image-2 left-slider no-arrow slick-top'>
+                          <div
+                            className='flex justify-center lg:justify-start gap-2 overflow-x-auto xxl:overflow-x-visible pb-2 xxl:pb-0'
+                            style={{ scrollbarWidth: 'none' }}
+                          >
+                            {book.gallery_images.map((image, index) => (
+                              <div
+                                key={image.id}
+                                className='flex-shrink-0 cursor-pointer'
+                                onClick={() => {
+                                  setSelectedImageIndex(index);
+                                  setIsGalleryOpen(true);
+                                }}
+                              >
+                                <div className='sidebar-image hover:opacity-75 transition-opacity duration-200 border-2 border-gray-200 rounded overflow-hidden'>
+                                  <img
+                                    src={IMAGE_BASE_URL + image.image_name}
+                                    className='img-fluid blur-up lazyload w-30 h-30 xxl:w-full xxl:h-auto object-cover'
+                                    alt={`${book.title} - Gallery ${index + 1}`}
+                                    onError={(e) => {
+                                      e.currentTarget.src = '/assets/images/book/product/1.jpg';
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                </div>
+
+                <div className='col-12 mt-4'>
+                  <div className='product-section-box mt-0'>
+                    {/* <ul className='nav nav-tabs custom-nav' id='myTab' role='tablist'> */}
+                    {/* <li className='nav-item' role='presentation'>
                         <button
                           className='nav-link'
                           id='description-tab'
@@ -494,9 +584,9 @@ const BookDetail = () => {
                         >
                           Description
                         </button>
-                      </li>
+                      </li> */}
 
-                      {/* <li className='nav-item' role='presentation'>
+                    {/* <li className='nav-item' role='presentation'>
                         <button
                           className='nav-link'
                           id='info-tab'
@@ -521,14 +611,14 @@ const BookDetail = () => {
                           Review
                         </button>
                       </li> */}
-                    </ul>
+                    {/* </ul> */}
 
-                    <div className='tab-content custom-tab' id='myTabContent'>
+                    <div className='tab-content custom-tab pt-0' id='myTabContent'>
                       <div className='tab-pane fade show active' id='description' role='tabpanel'>
                         <div className='product-description'>
-                          <div className='nav-desh'>
+                          {/* <div className='nav-desh'>
                             <p>{book.description || 'No description available.'}</p>
-                          </div>
+                          </div> */}
 
                           <div className='banner-contain nav-desh'>
                             {mainBanner ? (
@@ -617,11 +707,7 @@ const BookDetail = () => {
                         trendingBooks.map((book) => (
                           <li key={book.id}>
                             <div className='offer-product'>
-                              <Link
-                                to={`/books/${book.slug}`}
-                                className='offer-image'
-                                state={{ item: book }}
-                              >
+                              <Link to={`/books/${book.slug}`} className='offer-image'>
                                 <img
                                   src={IMAGE_BASE_URL + book.cover_image_name}
                                   className='img-fluid blur-up lazyload notranslate'
@@ -633,7 +719,7 @@ const BookDetail = () => {
                               </Link>
                               <div className='offer-detail'>
                                 <div>
-                                  <Link to={`/books/${book.slug}`} state={{ item: book }}>
+                                  <Link to={`/books/${book.slug}`}>
                                     <h6 className='name notranslate' translate='no'>
                                       {book.title}
                                     </h6>
@@ -673,18 +759,6 @@ const BookDetail = () => {
                         alt=''
                       />
                     )}
-                    {/* <div className='home-detail p-top-left home-p-medium'>
-                      <div>
-                        <h6 className='text-yellow home-banner'>Seafood</h6>
-                        <h3 className='text-uppercase fw-normal'>
-                          <span className='theme-color fw-bold'>Freshes</span> Products
-                        </h3>
-                        <h3 className='fw-light'>every hour</h3>
-                        <button className='btn btn-animation btn-md fw-bold mend-auto'>
-                          Shop Now <i className='fa-solid fa-arrow-right icon'></i>
-                        </button>
-                      </div>
-                    </div> */}
                   </div>
                 </div>
               </div>
@@ -695,6 +769,17 @@ const BookDetail = () => {
       <section className='product-list-section section-b-space'>
         <RelatedProducts bookId={book?.id} />
       </section>
+
+      {/* Gallery Dialog */}
+      {book.gallery_images && book.gallery_images.length > 0 && (
+        <BookGalleryDialog
+          isOpen={isGalleryOpen}
+          onClose={() => setIsGalleryOpen(false)}
+          images={book.gallery_images}
+          initialIndex={selectedImageIndex}
+          bookTitle={book.title}
+        />
+      )}
     </>
   );
 };

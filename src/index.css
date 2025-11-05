@@ -155,6 +155,10 @@
     background: radial-gradient(circle, #fc2403 0%, #fc6603 50%, #ff8a50 100%);
   }
 
+  .bg-theme-gradient-footer {
+    background: linear-gradient(135deg, #ff9b6b 0%, #ffa875 50%, #ffb685 100%);
+  }
+
   .text-theme-gradient {
     background: linear-gradient(135deg, #fc2403 0%, #fc6603 50%, #ff8a50 100%);
     -webkit-background-clip: text;

@@ -91,7 +91,7 @@ const App = () => {
             <Route path='/forgot-password' element={<ForgotPassword />} />
             <Route path='/reset-password' element={<ResetPassword />} />
             <Route path='/publish-book' element={<PublishBook />} />
-            <Route path='/books/:id' element={<BookDetail />} />
+            <Route path='/books/:slug' element={<BookDetail />} />
             <Route path='/books' element={<BooksPage />} />
             {/* Protected routes */}
             <Route path='/cart' element={<Cart />} />

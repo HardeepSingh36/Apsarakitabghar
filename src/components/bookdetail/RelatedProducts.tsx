@@ -9,40 +9,43 @@ interface RelatedProductsProps {
   bookId?: string | number;
 }
 
-const getSlidesToShow = (width: number) => {
-  if (width < 600) return 2;
-  if (width < 1000) return 3;
-  if (width < 1200) return 4;
-  return 5;
-};
-
-const baseSliderSettings = {
+const sliderSettings = {
   dots: true,
-  infinite: true,
+  infinite: false,
   speed: 500,
+  slidesToShow: 5,
   slidesToScroll: 1,
+  centerMode: false,
+  centerPadding: '0px',
+  responsive: [
+    {
+      breakpoint: 1400,
+      settings: {
+        slidesToShow: 4,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      breakpoint: 1000,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        centerMode: false,
+      },
+    },
+  ],
 };
 
 const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1200
-  );
   const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [sliderSettings, setSliderSettings] = useState<any>({
-    ...baseSliderSettings,
-    slidesToShow: getSlidesToShow(windowWidth),
-    centerMode: false,
-    centerPadding: '0px',
-    infinite: false,
-  });
-
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const fetchRelatedBooks = async () => {
@@ -78,25 +81,6 @@ const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
     fetchRelatedBooks();
   }, [bookId]);
 
-  // recompute slider settings when windowWidth or relatedBooks change
-  useEffect(() => {
-    const defaultSlides = getSlidesToShow(windowWidth);
-
-    const slidesToShow = defaultSlides;
-
-    // Center only when there are MORE items than default visible slots (i.e., meaningful to center)
-    const shouldCenter = relatedBooks.length > defaultSlides;
-
-    setSliderSettings({
-      ...baseSliderSettings,
-      slidesToShow,
-      centerMode: shouldCenter,
-      centerPadding: shouldCenter ? '40px' : '0px',
-      // only infinite when we have enough items to loop nicely
-      infinite: shouldCenter,
-    });
-  }, [windowWidth, relatedBooks]);
-
   // Don't render if no bookId provided
   if (!bookId) {
     return null;
@@ -108,7 +92,7 @@ const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
   }
 
   return (
-    <div className='container-fluid-lg'>
+    <div className='px-4'>
       <div className='title'>
         <h2>Related Products</h2>
         <span className='title-leaf'>
@@ -119,14 +103,14 @@ const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
       </div>
       <div className='row'>
         <div className='col-12'>
-          <div className='slider-6_1 product-wrapper'>
+          <div className='product-wrapper'>
             {isLoading ? (
               <div className='flex justify-center items-center py-8'>
                 <div className='animate-spin h-8 w-8 border-2 border-current border-t-transparent rounded-full'></div>
                 <span className='ml-2'>Loading related books...</span>
               </div>
             ) : (
-              <Slider key={windowWidth} {...sliderSettings}>
+              <Slider {...sliderSettings}>
                 {relatedBooks.map((product, idx) => (
                   <AddProductBox
                     key={product.id}
@@ -134,7 +118,7 @@ const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
                     idx={idx}
                     showOptions={true}
                     showAddToCart={true}
-                    className='!bg-secondary p-2 !block'
+                    className='flex-col items-center'
                   />
                 ))}
               </Slider>

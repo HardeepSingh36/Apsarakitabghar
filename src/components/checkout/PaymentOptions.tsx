@@ -91,11 +91,11 @@ const PaymentOptions: React.FC<PaymentOptionsProps> = ({ onUpiIdChange }) => {
       {/* Show UPI IDs */}
       {paymentData.data.upi_ids.length > 0 && (
         <div>
-          <h3 className='text-lg font-semibold mb-2 text-center'>UPI IDs</h3>
+          <h3 className='text-lg font-semibold mb-2 text-center'>UPI ID</h3>
           <ul className='list-disc list-inside text-center'>
             {paymentData.data.upi_ids.map((upi, idx) => (
               <li key={idx}>
-                {upi.display_text} <span className='font-bold'>{upi.upi_id}</span>
+                <span className='font-bold'>{upi.display_text} </span>
               </li>
             ))}
           </ul>

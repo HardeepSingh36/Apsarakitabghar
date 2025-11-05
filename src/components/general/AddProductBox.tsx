@@ -153,7 +153,7 @@ const AddProductBox = ({
       )}
       <div className='product-header '>
         <div className='product-image p-0 md:!mb-0 !size-36 md:!h-72 md:!w-auto'>
-          <Link to={`/books/${product.slug}`} state={{ item: product }}>
+          <Link to={`/books/${product.slug}`}>
             <img
               src={IMAGE_BASE_URL + product.cover_image_name || '/assets/images/book/product/1.jpg'}
               onError={(e) => {
@@ -169,7 +169,6 @@ const AddProductBox = ({
         <div className='product-detail flex flex-col flex-grow position-relative'>
           <Link
             to={`/books/${product.slug}`}
-            state={{ item: product }}
             className='name !font-semibold text-center notranslate !text-xl leading-6 !text-gray-900 cursor-pointer'
           >
             {product.title}

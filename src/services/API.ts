@@ -92,6 +92,9 @@ export const RESET_PASSWORD = `${API_BASE_URL}/reset-password`;
 export const BANNERS_LIST = `${API_BASE_URL}/banners-list`;
 export const BANNERS_GET = `${API_BASE_URL}/banners-get`;
 
+// ------------- Sliders -------------
+export const SLIDERS_LIST = `${API_BASE_URL}/sliders-list`;
+
 // ------------- QR -------------
 export const GET_QR = `${API_BASE_URL}/get-qr`;
 

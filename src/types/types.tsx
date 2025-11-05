@@ -26,6 +26,14 @@ export interface Genre {
   total_sales: number;
 }
 
+export interface GalleryImage {
+  id: number;
+  image_name: string;
+  image_type: string;
+  display_order: number;
+  is_primary: number;
+}
+
 export interface Book {
   id: number;
   title: string;
@@ -59,6 +67,7 @@ export interface Book {
   genre_name: string | null;
   tags: any[];
   discounted_price: number;
+  gallery_images?: GalleryImage[];
 }
 
 export interface CartItem {
