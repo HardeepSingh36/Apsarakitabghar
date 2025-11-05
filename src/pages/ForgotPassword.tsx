@@ -99,17 +99,24 @@ const ForgotPassword = () => {
 
   if (emailSent) {
     return (
-      <section className='log-in-section section-b-space !min-h-screen'>
-        <div className='container-fluid-lg w-100'>
-          <div className='row'>
-            <div className='col-xxl-6 col-xl-5 col-lg-6 d-lg-block d-none ms-auto'>
-              <div className='image-contain'>
-                <img src='/assets/images/inner-page/forgot.png' className='img-fluid' alt='' />
-              </div>
-            </div>
+      <section className='log-in-section section-b-space min-h-screen flex items-center justify-center relative overflow-hidden'>
+        {/* Background Image with Overlay */}
+        <div className='absolute inset-0 z-0'>
+          <img
+            src='https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2028&auto=format&fit=crop'
+            alt='Books Background'
+            className='w-full h-full object-cover'
+            onError={(e) => {
+              e.currentTarget.src = '/assets/images/book/banner/1.jpg';
+            }}
+          />
+          <div className='absolute inset-0 bg-gradient-to-br from-black/60 via-black/50 to-black/60 backdrop-blur-sm'></div>
+        </div>
 
-            <div className='col-xxl-4 col-xl-5 col-lg-6 col-sm-8 mx-auto'>
-              <div className='log-in-box'>
+        <div className='container-fluid-lg w-100 relative z-10'>
+          <div className='row justify-content-center'>
+            <div className='col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-10'>
+              <div className='log-in-box bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl p-8'>
                 <div className='text-center mb-4'>
                   <Link to='/' className='web-logo'>
                     <img
@@ -187,17 +194,24 @@ const ForgotPassword = () => {
   }
 
   return (
-    <section className='log-in-section section-b-space !min-h-screen'>
-      <div className='container-fluid-lg w-100'>
-        <div className='row'>
-          <div className='col-xxl-6 col-xl-5 col-lg-6 d-lg-block d-none ms-auto'>
-            <div className='image-contain'>
-              <img src='/assets/images/inner-page/forgot.png' className='img-fluid' alt='' />
-            </div>
-          </div>
+    <section className='log-in-section section-b-space min-h-screen flex items-center justify-center relative overflow-hidden'>
+      {/* Background Image with Overlay */}
+      <div className='absolute inset-0 z-0'>
+        <img
+          src='https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2028&auto=format&fit=crop'
+          alt='Books Background'
+          className='w-full h-full object-cover'
+          onError={(e) => {
+            e.currentTarget.src = '/assets/images/book/banner/1.jpg';
+          }}
+        />
+        <div className='absolute inset-0 bg-gradient-to-br from-black/60 via-black/50 to-black/60 backdrop-blur-sm'></div>
+      </div>
 
-          <div className='col-xxl-4 col-xl-5 col-lg-6 col-sm-8 mx-auto'>
-            <div className='log-in-box'>
+      <div className='container-fluid-lg w-100 relative z-10'>
+        <div className='row justify-content-center'>
+          <div className='col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-10'>
+            <div className='log-in-box bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl p-8'>
               <div className='text-center mb-3'>
                 <Link to='/' className='web-logo'>
                   <img

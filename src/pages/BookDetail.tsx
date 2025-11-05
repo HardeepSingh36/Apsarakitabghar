@@ -237,10 +237,10 @@ const BookDetail = () => {
                 <div className='col-xl-6 wow fadeInUp'>
                   <div className='product-left-box'>
                     <div className='row g-2'>
-                      <div className='col-xxl-10 col-lg-12 col-md-10 order-xxl-2 order-lg-1 order-md-2'>
+                      <div className='col-xxl-10 col-lg-12 order-xxl-2 order-lg-1 order-md-2'>
                         <div className='product-main-2 no-arrow'>
                           <div>
-                            <div className='slider-image relative group cursor-pointer shadow-md'>
+                            <div className='slider-image position-relative'>
                               <img
                                 src={`${IMAGE_BASE_URL + book?.cover_image_name}` || ''}
                                 id='img-1'
@@ -254,17 +254,29 @@ const BookDetail = () => {
                                     setIsGalleryOpen(true);
                                   }
                                 }}
-                                className='img-fluid image_zoom_cls-0 blur-up lazyload notranslate hover:opacity-95 transition-opacity duration-200'
+                                className={`img-fluid image_zoom_cls-0 blur-up lazyload notranslate ${
+                                  book.gallery_images && book.gallery_images.length > 0
+                                    ? 'cursor-pointer'
+                                    : ''
+                                }`}
                                 alt={book.title || ''}
                               />
-                              {/* Gallery indicator overlay */}
+                              {/* Gallery indicator badge */}
                               {book.gallery_images &&
                                 Array.isArray(book.gallery_images) &&
                                 book.gallery_images.length > 0 && (
-                                  <div className='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200 flex items-center justify-center'>
-                                    <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white/90 px-4 py-2 rounded-full'>
-                                      <span className='text-sm font-medium text-gray-900'>
-                                        View Gallery ({book.gallery_images.length} images)
+                                  <div className='position-absolute bottom-0 start-0 m-3'>
+                                    <div
+                                      className='bg-white shadow-sm px-3 py-2 rounded d-flex align-items-center gap-2 cursor-pointer'
+                                      onClick={() => {
+                                        setSelectedImageIndex(0);
+                                        setIsGalleryOpen(true);
+                                      }}
+                                      style={{ fontSize: '13px' }}
+                                    >
+                                      <i className='fa fa-images text-muted'></i>
+                                      <span className='fw-semibold text-dark'>
+                                        {book.gallery_images.length} Photos
                                       </span>
                                     </div>
                                   </div>
@@ -530,48 +542,8 @@ const BookDetail = () => {
                   </div>
                 </div>
 
-                {/* put it here  */}
-
-                <div className='col-12 mt-2'>
-                  {/* Gallery Thumbnails */}
-                  {book.gallery_images &&
-                    Array.isArray(book.gallery_images) &&
-                    book.gallery_images.length > 0 && (
-                      <div className='mt-4 mx-auto'>
-                        <div className='left-slider-image-2 left-slider no-arrow slick-top'>
-                          <div
-                            className='flex justify-center lg:justify-start gap-2 overflow-x-auto xxl:overflow-x-visible pb-2 xxl:pb-0'
-                            style={{ scrollbarWidth: 'none' }}
-                          >
-                            {book.gallery_images.map((image, index) => (
-                              <div
-                                key={image.id}
-                                className='flex-shrink-0 cursor-pointer'
-                                onClick={() => {
-                                  setSelectedImageIndex(index);
-                                  setIsGalleryOpen(true);
-                                }}
-                              >
-                                <div className='sidebar-image hover:opacity-75 transition-opacity duration-200 border-2 border-gray-200 rounded overflow-hidden'>
-                                  <img
-                                    src={IMAGE_BASE_URL + image.image_name}
-                                    className='img-fluid blur-up lazyload w-30 h-30 xxl:w-full xxl:h-auto object-cover'
-                                    alt={`${book.title} - Gallery ${index + 1}`}
-                                    onError={(e) => {
-                                      e.currentTarget.src = '/assets/images/book/product/1.jpg';
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                </div>
-
-                <div className='col-12 mt-4'>
-                  <div className='product-section-box mt-0'>
+                <div className='col-12'>
+                  <div className='product-section-box'>
                     {/* <ul className='nav nav-tabs custom-nav' id='myTab' role='tablist'> */}
                     {/* <li className='nav-item' role='presentation'>
                         <button
@@ -613,7 +585,7 @@ const BookDetail = () => {
                       </li> */}
                     {/* </ul> */}
 
-                    <div className='tab-content custom-tab pt-0' id='myTabContent'>
+                    <div className='tab-content custom-tab' id='myTabContent'>
                       <div className='tab-pane fade show active' id='description' role='tabpanel'>
                         <div className='product-description'>
                           {/* <div className='nav-desh'>
