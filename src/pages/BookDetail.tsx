@@ -38,6 +38,13 @@ const BookDetail = () => {
   const [mainBanner, setMainBanner] = useState<any>(null);
   const [sidebarBanner, setSidebarBanner] = useState<any>(null);
 
+  // Zoom effect state
+  const [showZoom, setShowZoom] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+
+  // Image lightbox state
+  const [showLightbox, setShowLightbox] = useState(false);
+
   const tags = ['BookLover', 'Bookworm', 'MustRead', 'Bookstagram'];
 
   // Redux selectors
@@ -112,6 +119,19 @@ const BookDetail = () => {
     fetchBanners();
   }, []);
 
+  // Prevent body scroll when lightbox is open
+  useEffect(() => {
+    if (showLightbox) {
+      document.body.classList.add('lightbox-open');
+    } else {
+      document.body.classList.remove('lightbox-open');
+    }
+
+    return () => {
+      document.body.classList.remove('lightbox-open');
+    };
+  }, [showLightbox]);
+
   // Handlers
   const handleAddToCart = async () => {
     if (!book || isAddingToCart) return;
@@ -168,6 +188,33 @@ const BookDetail = () => {
       toast.error(error || 'Failed to add item to cart', { duration: 4000 });
     } finally {
       setCartAction(null);
+    }
+  };
+
+  // Image zoom handlers
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setZoomPosition({ x, y });
+  };
+
+  const handleMouseEnter = () => {
+    setShowZoom(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowZoom(false);
+  };
+
+  // Handle image click - show lightbox on mobile, gallery on desktop
+  const handleImageClick = () => {
+    if (window.innerWidth < 768) {
+      // Mobile: show lightbox
+      setShowLightbox(true);
+    } else if (book && book.gallery_images && book.gallery_images.length > 0) {
+      // Desktop: show gallery
+      setIsGalleryOpen(true);
     }
   };
 
@@ -265,16 +312,21 @@ const BookDetail = () => {
 
                     {/* Main Image */}
                     <div className='flex-1 relative group'>
-                      <div className='relative rounded-lg overflow-hidden border border-gray-200'>
+                      <div
+                        className='relative rounded-lg overflow-hidden border border-gray-200 cursor-grab'
+                        onMouseMove={handleMouseMove}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                      >
                         <img
                           src={selectedMainImage || IMAGE_BASE_URL + book.cover_image_name}
                           alt={book.title}
-                          className='w-full h-auto object-cover'
-                          onClick={() => {
-                            if (book.gallery_images && book.gallery_images.length > 0) {
-                              setIsGalleryOpen(true);
-                            }
+                          className='w-full h-auto object-cover transition-transform duration-200 cursor-pointer'
+                          style={{
+                            transform: showZoom ? 'scale(1.5)' : 'scale(1)',
+                            transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
                           }}
+                          onClick={handleImageClick}
                           onError={(e) =>
                             (e.currentTarget.src = '/assets/images/book/product/1.jpg')
                           }
@@ -284,7 +336,7 @@ const BookDetail = () => {
                         <button
                           onClick={handleAddToWishlist}
                           disabled={isWishlistLoading}
-                          className='absolute top-4 right-4 bg-white p-2 !rounded-full shadow-md hover:shadow-lg transition-all disabled:opacity-50'
+                          className='absolute top-4 right-4 bg-white p-2 !rounded-full shadow-md hover:shadow-lg transition-all disabled:opacity-50 z-10'
                           data-tooltip-id='wishlist-tooltip'
                           data-tooltip-content={
                             isWishlistLoading
@@ -523,6 +575,37 @@ const BookDetail = () => {
       <div className=''>
         <RelatedProducts bookId={book?.id} />
       </div>
+
+      {/* Image Lightbox for Mobile */}
+      {showLightbox && (
+        <div
+          className='fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4'
+          onClick={() => setShowLightbox(false)}
+        >
+          <button
+            onClick={() => setShowLightbox(false)}
+            className='absolute top-4 right-4 text-white hover:text-gray-300 transition-colors'
+            aria-label='Close lightbox'
+          >
+            <svg className='w-8 h-8' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M6 18L18 6M6 6l12 12'
+              />
+            </svg>
+          </button>
+          <div className='relative max-w-full max-h-full' onClick={(e) => e.stopPropagation()}>
+            <img
+              src={selectedMainImage || IMAGE_BASE_URL + book.cover_image_name}
+              alt={book.title}
+              className='max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg'
+              onError={(e) => (e.currentTarget.src = '/assets/images/book/product/1.jpg')}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };
