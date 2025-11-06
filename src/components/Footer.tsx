@@ -205,7 +205,14 @@ const Footer = () => {
         <div className='sub-footer sub-footer-lite section-b-space section-t-space !border-t !border-black/20'>
           <div className='left-footer w-full text-center'>
             <p className=''>© 2025 Apsra Kitab Ghar. All rights reserved.</p>
-            <p className='flex items-center justify-center'>Made with <span><Heart className='size-4 mx-1 text-red-500 fill-red-500'/></span> by Creative Web Solutions</p>
+            <p className='flex items-center justify-center'>
+              Made with{' '}
+              <span>
+                <Heart className='size-4 mx-1 text-red-500 fill-red-500' />
+              </span>{' '}
+              by
+              <a href='https://codifyguru.com/' className='ms-1' target='_blank'> Codifyguru</a>.
+            </p>
           </div>
         </div>
       </div>
