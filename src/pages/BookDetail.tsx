@@ -257,13 +257,13 @@ const BookDetail = () => {
               <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
                 {/* Image Gallery */}
                 <div className=''>
-                  <div className='flex gap-3'>
+                  <div className='flex flex-col md:flex-row gap-3'>
                     {/* Thumbnails */}
                     {book.gallery_images && book.gallery_images.length > 0 && (
-                      <div className='flex flex-col gap-2 w-20'>
+                      <div className='flex md:flex-col w-auto gap-2 md:w-20 order-2 md:order-1'>
                         {/* Cover Image Thumbnail */}
                         <div
-                          className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                          className={`cursor-pointer rounded-lg border-2 transition-all ${
                             selectedMainImage === IMAGE_BASE_URL + book.cover_image_name
                               ? 'border-[#fc2403]'
                               : 'border-gray-200 hover:border-gray-300'
@@ -276,7 +276,7 @@ const BookDetail = () => {
                           <img
                             src={IMAGE_BASE_URL + book.cover_image_name}
                             alt={`${book.title} cover`}
-                            className='w-full h-24 object-cover'
+                            className=' w-full !h-20 object-cover'
                             onError={(e) =>
                               (e.currentTarget.src = '/assets/images/book/product/1.jpg')
                             }
@@ -300,7 +300,7 @@ const BookDetail = () => {
                             <img
                               src={IMAGE_BASE_URL + image.image_name}
                               alt={`${book.title} ${idx + 1}`}
-                              className='w-full h-24 object-cover'
+                              className='w-full h-20 object-cover'
                               onError={(e) =>
                                 (e.currentTarget.src = '/assets/images/book/product/1.jpg')
                               }

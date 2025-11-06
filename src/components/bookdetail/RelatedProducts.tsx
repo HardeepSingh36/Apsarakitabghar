@@ -9,55 +9,41 @@ interface RelatedProductsProps {
   bookId?: string | number;
 }
 
-const sliderSettings = {
-  dots: true,
-  infinite: false,
-  speed: 500,
-  slidesToShow: 5,
-  slidesToScroll: 1,
-  centerMode: false,
-  arrows: true,
-  responsive: [
-    {
-      breakpoint: 1400,
-      settings: {
-        slidesToShow: 4,
-        slidesToScroll: 1,
-        centerMode: false,
-      },
-    },
-    {
-      breakpoint: 1200,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        centerMode: false,
-      },
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 1,
-        centerMode: false,
-      },
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        centerMode: false,
-        arrows: false,
-      },
-    },
-  ],
-};
-
 const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
   const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  // Update window width on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Calculate slides to show based on window width
+  const getSlidesToShow = () => {
+    if (windowWidth >= 1400) return 5;
+    if (windowWidth >= 1200) return 4;
+    if (windowWidth >= 768) return 3;
+    if (windowWidth >= 480) return 2;
+    return 1;
+  };
+
+  const sliderSettings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: getSlidesToShow(),
+    slidesToScroll: 1,
+    centerMode: false,
+    arrows: windowWidth >= 480,
+  };
+
+  // Fetch related books
   useEffect(() => {
     const fetchRelatedBooks = async () => {
       if (!bookId) {
@@ -114,7 +100,7 @@ const RelatedProducts = ({ bookId }: RelatedProductsProps) => {
           </svg>
         </div>
 
-        <div className='slider-3_1 product-wrapper'>
+        <div className='product-wrapper'>
           {/* Loading State */}
           {isLoading ? (
             <div className='flex justify-center items-center py-12'>
