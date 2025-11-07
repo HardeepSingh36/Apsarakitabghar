@@ -68,15 +68,15 @@ const TopSellingBooks = () => {
 
   const BookGrid: React.FC<{ items: BookFlag[]; flag: string }> = ({ items, flag }) => (
     <div className='row'>
-      {items.length > 0 && (
+      {items.length > 0 && !isLoading && (
         <div className='text-right !-mt-8 !mb-2'>
           <Link
-            to={`#`}
+            to='#'
             onClick={(e) => {
               e.preventDefault();
               navigateToBooks(flag);
             }}
-            className='!text-base font-public-sans !font-semibold !text-[#fc2403] hover:!text-[#fc6603] flex justify-end items-center !transition-all !duration-200'
+            className='!text-base font-public-sans !font-semibold !text-[#fc2403] hover:!text-[#fc6603] flex justify-end items-center gap-1 !transition-all !duration-200'
           >
             View All
             <ChevronRight size={18} />
